@@ -117,13 +117,6 @@
 - [ ] Deploy Convex when account ready
 - [ ] Admin dashboard for management
 
-### voice-docs-app Integration
-- [ ] Clone repo as apps/voice-docs
-- [ ] Add to TurboRepo workspace
-- [ ] Review structure and dependencies
-- [ ] Create /help route
-- [ ] "Ask the docs" floating button
-- [ ] Navigate to relevant app sections from answers
 
 ### Life Planning / Kanban Board
 - [x] KanbanBoard component with 5 columns

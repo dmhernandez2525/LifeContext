@@ -15,6 +15,60 @@
 
 ---
 
+## Gap Analysis & Critical Missing Functionality
+
+
+### 1. Infrastructure & Deployment (Missing)
+- **CI/CD Pipeline**:
+  - [ ] GitHub Actions for building Web + Mobile
+  - [ ] Automated linting and E2E testing on PRs
+  - [ ] Auto-deploy to Render on merge to `main`
+- **Self-Hosting Support**:
+  - [ ] `Dockerfile` for the web app (nginx serving static build)
+  - [ ] `docker-compose.yml` for simplified orchestration
+- **Monitoring**:
+  - [ ] Sentry integration for frontend error tracking
+  - [ ] Performance monitoring (Web Vitals)
+
+### 2. Advanced Security (Missing)
+- **Duress Password**:
+  - [ ] A secondary password that unlocks a "dummy" vault or wipes data
+- **Session Security**:
+  - [ ] Auto-lock timeout settings (e.g., "Lock after 5 mins of inactivity")
+  - [ ] WebAuthn/Biometric unlock support (FaceID/TouchID)
+- **Encryption Updates**:
+  - [ ] Key rotation strategy (changing passcode = re-encrypting DEK)
+
+### 3. Data Retention & Sovereignty (Missing)
+- **Automated Retention Policies**:
+  - [ ] Implementation of "Delete audio older than X days" (UI exists, logic missing)
+  - [ ] "Dead Man's Switch": Trigger email if inactive for Y days
+- **Real S3 Integration**:
+  - [ ] `packages/storage` currently uses local IndexedDB. Need actual S3 client.
+- **Import/Migration**:
+  - [ ] Import from DayOne, Journey, Apple Notes (JSON/ZIP parsers)
+
+### 4. Competitive Features (Missing)
+*vs. Day One, Stoic, Apple Journal*
+- **Health Integration**:
+  - [ ] Sync steps/sleep/heart rate (correlated with mood)
+- **Rich Media**:
+  - [ ] Photo gallery view (Calendar view with thumbnails)
+  - [ ] Voice memos playing *inline* in the timeline
+- **Context Awareness**:
+  - [ ] Location tagging (auto-detect city/weather)
+  - [ ] "On this day" flashbacks (with opt-out)
+
+### 5. Mobile App (Greenfield)
+*Project `apps/mobile` does not exist yet*
+- **Core Stack**: Expo 52, NativeWind, MMKV
+- **Specific Needs**:
+  - [ ] Share Extension (Send text/photos from other apps to LifeContext)
+  - [ ] Background Audio Recording (for long brain dumps)
+  - [ ] Widget support (Quick sentiment check-in)
+
+---
+
 ## Done ✓
 
 ### Demo Data
@@ -28,6 +82,7 @@
 - [x] Replaced "companion" with "insights" throughout codebase
 - [x] Renamed AICompanionPage → AIInsightsPage
 - [x] Updated navigation, routes, and all copy
+- [x] Added "Philosophy" section to README
 
 ### Security UX
 - [x] PasscodeConfirmation component requiring typed phrase
@@ -149,4 +204,4 @@
 
 ---
 
-*Last updated: 2026-01-12 10:01*
+*Last updated: 2026-01-12 10:06*
