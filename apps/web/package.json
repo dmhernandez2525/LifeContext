@@ -1,0 +1,46 @@
+{
+  "name": "@lcc/web",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --clearScreen false",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint \"src/**/*.{ts,tsx}\""
+  },
+  "dependencies": {
+    "@lcc/audio": "workspace:*",
+    "@lcc/core": "workspace:*",
+    "@lcc/encryption": "workspace:*",
+    "@lcc/llm": "workspace:*",
+    "@lcc/storage": "workspace:*",
+    "@lcc/types": "workspace:*",
+    "clsx": "^2.1.0",
+    "framer-motion": "^11.0.0",
+    "fuse.js": "^7.1.0",
+    "lucide-react": "^0.350.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "react-router-dom": "^6.22.0",
+    "secrets.js-grempe": "^2.0.0",
+    "tailwind-merge": "^2.2.0",
+    "zustand": "^4.5.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.17",
+    "eslint": "^8.57.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^4.0.0",
+    "typescript": "5.5.4",
+    "vite": "^5.1.4",
+    "vite-plugin-pwa": "^1.2.0"
+  }
+}
