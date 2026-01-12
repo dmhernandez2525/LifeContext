@@ -1,8 +1,10 @@
 import { View, Text, Pressable, TextInput, ScrollView } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { useAudioRecorder } from '../src/hooks/useAudioRecorder';
+import { useRecordingStore } from '../src/stores/recording-store';
 
 interface BulletPoint {
   id: string;
@@ -19,6 +21,9 @@ export default function BrainDumpScreen() {
     { id: '2', text: '' },
     { id: '3', text: '' },
   ]);
+
+  const { startRecording, stopRecording, duration } = useAudioRecorder();
+  const addRecording = useRecordingStore((state: any) => state.addRecording);
 
   const addBulletPoint = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -44,10 +49,32 @@ export default function BrainDumpScreen() {
   const filledBullets = bulletPoints.filter((bp) => bp.text.trim().length > 0);
   const canStart = filledBullets.length >= 1;
 
-  const handleStartRecording = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    setStep('recording');
-    // TODO: Start actual recording
+  const handleStartRecording = async () => {
+    const success = await startRecording();
+    if (success) {
+      setStep('recording');
+    }
+  };
+
+  const handleFinishRecording = async () => {
+    const uri = await stopRecording();
+    if (uri) {
+        addRecording({
+            id: Date.now().toString(),
+            uri,
+            duration,
+            createdAt: Date.now(),
+            title: `Brain Dump: ${filledBullets[0]?.text.substring(0, 20)}...`,
+            tags: ['brain-dump'],
+            transcription: filledBullets.map(b => b.text).join('\n'), // Placeholder
+            syncStatus: 'pending'
+        });
+        setStep('synthesizing');
+        setTimeout(() => setStep('complete'), 2000);
+    } else {
+        // Failed
+        router.back();
+    }
   };
 
   const handleClose = () => {
@@ -153,11 +180,7 @@ export default function BrainDumpScreen() {
           </View>
 
           <Pressable
-            onPress={() => {
-              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-              setStep('synthesizing');
-              setTimeout(() => setStep('complete'), 2000);
-            }}
+            onPress={handleFinishRecording}
             className="w-20 h-20 bg-red-500 rounded-full items-center justify-center active:scale-95"
           >
             <View className="w-8 h-8 bg-white rounded-md" />

@@ -22,6 +22,7 @@ import {
   EXTENDED_JOURNAL_ENTRIES,
   EXTENDED_PATTERNS,
 } from '@/data/extendedDemoData';
+import { STARTER_QUESTIONS } from '@/data/questions';
 import { PrivacyLevel } from '@lcc/types';
 
 export interface UseDemoDataReturn {
@@ -40,6 +41,7 @@ export function useDemoData(): UseDemoDataReturn {
   const { 
     addRecordingTime, 
     markQuestionAnswered,
+    setQuestions,
     reset 
   } = useAppStore();
 
@@ -48,6 +50,9 @@ export function useDemoData(): UseDemoDataReturn {
     setProgress(0);
 
     try {
+      // Seed questions first
+      setQuestions(STARTER_QUESTIONS);
+
       // Combine all data
       const allRecordings = [...DEMO_RECORDINGS, ...EXTENDED_RECORDINGS];
       const allPatterns = [...DEMO_PATTERNS, ...EXTENDED_PATTERNS];
@@ -89,7 +94,7 @@ export function useDemoData(): UseDemoDataReturn {
     } finally {
       setIsSeeding(false);
     }
-  }, [addRecordingTime, markQuestionAnswered]);
+  }, [addRecordingTime, markQuestionAnswered, setQuestions]);
 
   const clearDemoData = useCallback(async () => {
     reset();

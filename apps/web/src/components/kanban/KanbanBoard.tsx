@@ -11,7 +11,9 @@ import {
   CheckCircle2,
   Trash2,
   Edit2,
-  X
+  X,
+  Book,
+  Link as LinkIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -69,9 +71,10 @@ interface TaskCardProps {
   onEdit: (task: KanbanTask) => void;
   onDelete: (taskId: string) => void;
   onMove: (taskId: string, newStatus: KanbanTask['status']) => void;
+  onDragStart: (e: React.DragEvent, taskId: string) => void;
 }
 
-function TaskCard({ task, onEdit, onDelete, onMove }: TaskCardProps) {
+function TaskCard({ task, onEdit, onDelete, onMove, onDragStart }: TaskCardProps) {
   const [showMenu, setShowMenu] = useState(false);
   const priority = PRIORITY_CONFIG[task.priority];
   const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'done';
@@ -81,6 +84,11 @@ function TaskCard({ task, onEdit, onDelete, onMove }: TaskCardProps) {
   return (
     <motion.div
       layout
+      draggable
+      onDragStart={(e) => {
+        // @ts-ignore
+        onDragStart(e, task.id);
+      }}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
@@ -147,6 +155,14 @@ function TaskCard({ task, onEdit, onDelete, onMove }: TaskCardProps) {
         <p className="text-xs text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">
           {task.description}
         </p>
+      )}
+
+      {/* Linked Journals */}
+      {task.linkedJournalIds && task.linkedJournalIds.length > 0 && (
+        <div className="mb-3 flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-md w-fit">
+          <Book className="w-3 h-3" />
+          <span>{task.linkedJournalIds.length} Linked Entr{task.linkedJournalIds.length === 1 ? 'y' : 'ies'}</span>
+        </div>
       )}
 
       {/* Subtasks Progress */}
@@ -219,9 +235,13 @@ interface ColumnProps {
   onEditTask: (task: KanbanTask) => void;
   onDeleteTask: (taskId: string) => void;
   onMoveTask: (taskId: string, newStatus: KanbanTask['status']) => void;
+  onDragStart: (e: React.DragEvent, taskId: string) => void;
+  onDrop: (e: React.DragEvent, status: KanbanTask['status']) => void;
 }
 
-function Column({ column, tasks, onAddTask, onEditTask, onDeleteTask, onMoveTask }: ColumnProps) {
+function Column({ column, tasks, onAddTask, onEditTask, onDeleteTask, onMoveTask, onDragStart, onDrop }: ColumnProps) {
+  const [isDragOver, setIsDragOver] = useState(false);
+  
   const colorClasses = {
     gray: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400',
     blue: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
@@ -230,8 +250,31 @@ function Column({ column, tasks, onAddTask, onEditTask, onDeleteTask, onMoveTask
     green: 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
   };
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    onDrop(e, column.status);
+  };
+
   return (
-    <div className="flex-shrink-0 w-72">
+    <div 
+      className={cn(
+        "flex-shrink-0 w-72 rounded-xl transition-colors duration-200",
+        isDragOver ? "bg-purple-50 dark:bg-purple-900/10 ring-2 ring-purple-400" : ""
+      )}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
@@ -260,13 +303,14 @@ function Column({ column, tasks, onAddTask, onEditTask, onDeleteTask, onMoveTask
               onEdit={onEditTask}
               onDelete={onDeleteTask}
               onMove={onMoveTask}
+              onDragStart={onDragStart}
             />
           ))}
         </AnimatePresence>
 
         {tasks.length === 0 && (
-          <div className="text-center py-8 text-gray-400 dark:text-gray-500 text-sm">
-            No tasks
+          <div className="text-center py-8 text-gray-400 dark:text-gray-500 text-sm border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl">
+            {isDragOver ? 'Drop here' : 'No tasks'}
           </div>
         )}
       </div>
@@ -293,6 +337,8 @@ function TaskModal({ task, isOpen, defaultStatus = 'todo', onClose, onSave }: Ta
   const [priority, setPriority] = useState<KanbanTask['priority']>(task?.priority || 'medium');
   const [dueDate, setDueDate] = useState(task?.dueDate || '');
   const [tagsInput, setTagsInput] = useState(task?.tags.join(', ') || '');
+  // New: Journal Linking (Mocked for Demo UI as store access is complex here)
+  const [linkedJournalIds, setLinkedJournalIds] = useState<string[]>(task?.linkedJournalIds || []);
 
   if (!isOpen) return null;
 
@@ -307,6 +353,7 @@ function TaskModal({ task, isOpen, defaultStatus = 'todo', onClose, onSave }: Ta
       priority,
       dueDate: dueDate || undefined,
       tags: tagsInput.split(',').map(t => t.trim()).filter(Boolean),
+      linkedJournalIds,
     });
     onClose();
   };
@@ -316,7 +363,7 @@ function TaskModal({ task, isOpen, defaultStatus = 'todo', onClose, onSave }: Ta
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white dark:bg-gray-900 rounded-2xl max-w-md w-full p-6 shadow-xl"
+        className="bg-white dark:bg-gray-900 rounded-2xl max-w-md w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto"
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -416,6 +463,51 @@ function TaskModal({ task, isOpen, defaultStatus = 'todo', onClose, onSave }: Ta
             />
           </div>
 
+          {/* Linked Journal Entries (Demo UI) */}
+          <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
+             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                <LinkIcon className="w-4 h-4 text-purple-500" />
+                Link Journal Entries
+            </label>
+            <p className="text-xs text-gray-500 mb-3">
+              Context from your journal can explain WHY this task matters.
+            </p>
+            
+            {linkedJournalIds.length > 0 ? (
+              <div className="space-y-2 mb-3">
+                 {linkedJournalIds.map(id => (
+                   <div key={id} className="flex items-center justify-between text-sm bg-white dark:bg-gray-800 p-2 rounded border border-gray-200 dark:border-gray-700">
+                      <span className="truncate">Journal Entry #{id.substring(0,6)}...</span>
+                      <button 
+                        type="button" 
+                        onClick={() => setLinkedJournalIds(prev => prev.filter(pid => pid !== id))}
+                        className="text-red-500 hover:text-red-600"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                   </div>
+                 ))}
+              </div>
+            ) : (
+               <div className="text-center py-4 text-xs text-gray-400">
+                  No journals linked
+               </div>
+            )}
+
+            <button
+               type="button"
+               onClick={() => {
+                 // Hacky demo id generation
+                 const demoId = `journal-${Math.floor(Math.random() * 1000)}`;
+                 setLinkedJournalIds(prev => [...prev, demoId]);
+               }}
+               className="w-full py-2 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+            >
+               <Plus className="w-4 h-4" />
+               Select Recent Journal Entry
+            </button>
+          </div>
+
           {/* Actions */}
           <div className="flex gap-3 pt-4">
             <button
@@ -481,6 +573,19 @@ export default function KanbanBoard({ tasks, onTaskCreate, onTaskUpdate, onTaskD
   const getTasksForColumn = (status: KanbanTask['status']) => 
     tasks.filter(t => t.status === status);
 
+  // Drag and drop handlers
+  const handleDragStart = (e: React.DragEvent, taskId: string) => {
+    e.dataTransfer.setData('taskId', taskId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent, status: KanbanTask['status']) => {
+    const taskId = e.dataTransfer.getData('taskId');
+    if (taskId) {
+       handleMoveTask(taskId, status);
+    }
+  };
+
   return (
     <div className="h-full">
       {/* Board */}
@@ -494,6 +599,8 @@ export default function KanbanBoard({ tasks, onTaskCreate, onTaskUpdate, onTaskD
             onEditTask={handleEditTask}
             onDeleteTask={onTaskDelete}
             onMoveTask={handleMoveTask}
+            onDragStart={handleDragStart}
+            onDrop={handleDrop}
           />
         ))}
       </div>

@@ -1,6 +1,22 @@
+
 import { useState } from 'react';
-import { Database, History, Cookie, AlertTriangle, Download, Check, Shield, Chrome } from 'lucide-react';
+import { 
+  Database,
+  AlertTriangle,
+  History,
+  Cookie,
+  Chrome,
+  Shield,
+  Check,
+  Download,
+  // ExternalLink,
+  // Search,
+  // CheckCircle,
+  // Loader2,
+  // ChevronRight
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
+
 
 interface CollectionStatus {
   history: 'idle' | 'collecting' | 'complete' | 'error';
@@ -12,11 +28,13 @@ interface CollectedData {
   historyCount: number;
   cookiesCount: number;
   bookmarksCount: number;
-  oldestDate?: Date;
+  oldestDate?: string; // string for JSON serialization
+  topDomains?: { domain: string; visits: number }[];
 }
 
 export default function DataReclamationPage() {
   const [hasConsented, setHasConsented] = useState(false);
+
   const [status, setStatus] = useState<CollectionStatus>({
     history: 'idle',
     cookies: 'idle',

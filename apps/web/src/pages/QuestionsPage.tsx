@@ -20,91 +20,8 @@ import { useAppStore } from '@/store/app-store';
 import { useRecorder, useTranscription, useSaveRecording } from '@/hooks';
 import Waveform from '@/components/Waveform';
 import { PrivacyLevelSelector } from '@/components/PrivacyLevelSelector';
-import { DEFAULT_CATEGORIES, PrivacyLevel, Question } from '@lcc/types';
-
-// Starter questions database (50+ questions across categories)
-const STARTER_QUESTIONS: Question[] = [
-  // Early Life & Origins
-  { id: 'el-1', categoryId: 'early-life', text: 'Tell me about where you were born and your earliest memories. What stands out most from your childhood?', context: 'Your origins establish the foundation of your life story.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 1, isFollowUp: false },
-  { id: 'el-2', categoryId: 'early-life', text: 'Who were the most influential people in your early life? How did they shape who you became?', context: 'Early influences often define our values and perspectives.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 2, isFollowUp: false },
-  { id: 'el-3', categoryId: 'early-life', text: 'What was your family dynamic like growing up? Describe the atmosphere of your home.', context: 'Family environment shapes our emotional development.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 3, isFollowUp: false },
-  { id: 'el-4', categoryId: 'early-life', text: 'What were your favorite activities and interests as a child? Which ones have stayed with you?', context: 'Childhood interests often reveal our core passions.', suggestedDuration: 10, defaultPrivacyLevel: PrivacyLevel.FAMILY, order: 4, isFollowUp: false },
-
-  // Family & Relationships
-  { id: 'fr-1', categoryId: 'family', text: 'Describe your relationship with your parents. How has it evolved over time?', context: 'Parent relationships profoundly impact our attachment styles.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 1, isFollowUp: false },
-  { id: 'fr-2', categoryId: 'family', text: 'Tell me about your siblings or closest childhood companions. What role did they play in your development?', context: 'Sibling and peer relationships shape social skills.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.FAMILY, order: 2, isFollowUp: false },
-  { id: 'fr-3', categoryId: 'family', text: 'What romantic relationships have been most significant in your life? What did you learn from each?', context: 'Romantic relationships teach us about love and ourselves.', suggestedDuration: 25, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 3, isFollowUp: false },
-  { id: 'fr-4', categoryId: 'family', text: 'Who are your closest friends today? How did those friendships form?', context: 'Adult friendships reflect our evolved values.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.FRIENDS, order: 4, isFollowUp: false },
-
-  // Values & Beliefs
-  { id: 'vb-1', categoryId: 'values', text: 'What values are most important to you? Where do you think these values came from?', context: 'Core values guide our decisions and define our character.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 1, isFollowUp: false },
-  { id: 'vb-2', categoryId: 'values', text: 'How have your spiritual or religious beliefs evolved throughout your life?', context: 'Spiritual development reflects our search for meaning.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 2, isFollowUp: false },
-  { id: 'vb-3', categoryId: 'values', text: 'What do you believe is the meaning of life? How has this view changed over time?', context: 'Exploring life\'s meaning reveals deep personal philosophy.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 3, isFollowUp: false },
-  { id: 'vb-4', categoryId: 'values', text: 'What ethical principles guide your decision-making? Can you give an example?', context: 'Ethics in action show our true values.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 4, isFollowUp: false },
-
-  // Career & Work
-  { id: 'cw-1', categoryId: 'career', text: 'Walk me through your career journey. What pivotal decisions shaped your path?', context: 'Career paths reveal our ambitions and adaptability.', suggestedDuration: 25, defaultPrivacyLevel: PrivacyLevel.PROFESSIONAL, order: 1, isFollowUp: false },
-  { id: 'cw-2', categoryId: 'career', text: 'What accomplishments are you most proud of professionally? Why do they matter to you?', context: 'Professional pride shows what we value in work.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PROFESSIONAL, order: 2, isFollowUp: false },
-  { id: 'cw-3', categoryId: 'career', text: 'What was your biggest professional failure? How did you recover and what did you learn?', context: 'Failures often teach more than successes.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 3, isFollowUp: false },
-  { id: 'cw-4', categoryId: 'career', text: 'What does work-life balance mean to you? How do you try to achieve it?', context: 'Balance reflects our priorities.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 4, isFollowUp: false },
-
-  // Dreams & Aspirations
-  { id: 'da-1', categoryId: 'dreams', text: 'If you could accomplish anything in the next 10 years, what would it be?', context: 'Long-term dreams reveal our deepest desires.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 1, isFollowUp: false },
-  { id: 'da-2', categoryId: 'dreams', text: 'What childhood dreams have you fulfilled? Which ones are still waiting?', context: 'Comparing dreams to reality shows growth.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 2, isFollowUp: false },
-  { id: 'da-3', categoryId: 'dreams', text: 'What legacy do you want to leave behind? How do you want to be remembered?', context: 'Legacy thinking clarifies what truly matters.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.FAMILY, order: 3, isFollowUp: false },
-  { id: 'da-4', categoryId: 'dreams', text: 'If money were no object, how would you spend your time?', context: 'Removing constraints reveals true passions.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 4, isFollowUp: false },
-
-  // Fears & Challenges
-  { id: 'fc-1', categoryId: 'fears', text: 'What are you most afraid of? Where do you think this fear comes from?', context: 'Understanding fears helps overcome them.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 1, isFollowUp: false },
-  { id: 'fc-2', categoryId: 'fears', text: 'What has been the most difficult period of your life? How did you get through it?', context: 'Resilience stories reveal our strength.', suggestedDuration: 25, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 2, isFollowUp: false },
-  { id: 'fc-3', categoryId: 'fears', text: 'What limiting beliefs have held you back? Are you working to overcome any of them?', context: 'Limiting beliefs often hide growth opportunities.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 3, isFollowUp: false },
-  { id: 'fc-4', categoryId: 'fears', text: 'How do you handle stress and anxiety? What coping mechanisms work for you?', context: 'Coping strategies are valuable self-knowledge.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 4, isFollowUp: false },
-
-  // Strengths & Skills
-  { id: 'ss-1', categoryId: 'strengths', text: 'What are your greatest strengths? How have you developed them?', context: 'Recognizing strengths builds confidence.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 1, isFollowUp: false },
-  { id: 'ss-2', categoryId: 'strengths', text: 'What skills have you mastered? Describe your journey from beginner to expert.', context: 'Skill development stories show dedication.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.PROFESSIONAL, order: 2, isFollowUp: false },
-  { id: 'ss-3', categoryId: 'strengths', text: 'What do others consistently come to you for help with?', context: 'What others seek shows our unique value.', suggestedDuration: 10, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 3, isFollowUp: false },
-  { id: 'ss-4', categoryId: 'strengths', text: 'Describe a time when you surprised yourself with your own capabilities.', context: 'Surprises reveal hidden potential.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 4, isFollowUp: false },
-
-  // Weaknesses & Growth
-  { id: 'wg-1', categoryId: 'weaknesses', text: 'What are your biggest weaknesses? How do they affect your life?', context: 'Honest weakness assessment enables growth.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 1, isFollowUp: false },
-  { id: 'wg-2', categoryId: 'weaknesses', text: 'What patterns keep repeating in your life that you wish would change?', context: 'Patterns reveal areas needing attention.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 2, isFollowUp: false },
-  { id: 'wg-3', categoryId: 'weaknesses', text: 'What feedback have you received repeatedly that you struggle to accept?', context: 'Difficult feedback often holds truth.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 3, isFollowUp: false },
-  { id: 'wg-4', categoryId: 'weaknesses', text: 'What skill do you wish you had developed earlier in life?', context: 'Regrets can guide future priorities.', suggestedDuration: 10, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 4, isFollowUp: false },
-
-  // Hobbies & Interests
-  { id: 'hi-1', categoryId: 'hobbies', text: 'What activities make you lose track of time? Why do you think they captivate you?', context: 'Flow states indicate deep passion.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.FRIENDS, order: 1, isFollowUp: false },
-  { id: 'hi-2', categoryId: 'hobbies', text: 'What hobbies have you picked up and dropped over the years? What stuck?', context: 'Hobby patterns show evolving interests.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.FRIENDS, order: 2, isFollowUp: false },
-  { id: 'hi-3', categoryId: 'hobbies', text: 'What would you like to learn if you had unlimited time?', context: 'Learning desires reveal curiosity areas.', suggestedDuration: 10, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 3, isFollowUp: false },
-  { id: 'hi-4', categoryId: 'hobbies', text: 'How do you spend your ideal weekend?', context: 'Ideal time use shows true preferences.', suggestedDuration: 10, defaultPrivacyLevel: PrivacyLevel.FRIENDS, order: 4, isFollowUp: false },
-
-  // Health & Wellness
-  { id: 'hw-1', categoryId: 'health', text: 'How has your relationship with your body and health evolved over the years?', context: 'Body relationship impacts overall wellbeing.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 1, isFollowUp: false },
-  { id: 'hw-2', categoryId: 'health', text: 'What mental health challenges have you faced? How have you addressed them?', context: 'Mental health awareness is crucial for growth.', suggestedDuration: 25, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 2, isFollowUp: false },
-  { id: 'hw-3', categoryId: 'health', text: 'What wellness practices have made the biggest difference in your life?', context: 'Effective practices are worth documenting.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 3, isFollowUp: false },
-  { id: 'hw-4', categoryId: 'health', text: 'How do you define and maintain your energy levels?', context: 'Energy management affects all life areas.', suggestedDuration: 10, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 4, isFollowUp: false },
-
-  // Philosophy & Worldview
-  { id: 'pw-1', categoryId: 'philosophy', text: 'How would you describe your overall philosophy of life in a few sentences?', context: 'Life philosophy guides daily decisions.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 1, isFollowUp: false },
-  { id: 'pw-2', categoryId: 'philosophy', text: 'What books, ideas, or thinkers have most influenced your worldview?', context: 'Intellectual influences shape perspective.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 2, isFollowUp: false },
-  { id: 'pw-3', categoryId: 'philosophy', text: 'How do you think about death and mortality? How does it affect how you live?', context: 'Mortality awareness can clarify priorities.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 3, isFollowUp: false },
-  { id: 'pw-4', categoryId: 'philosophy', text: 'What do you believe about human nature - are people fundamentally good?', context: 'Views on human nature affect relationships.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 4, isFollowUp: false },
-
-  // Accomplishments
-  { id: 'ac-1', categoryId: 'accomplishments', text: 'What achievement are you most proud of in your entire life?', context: 'Peak achievements reveal deep values.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 1, isFollowUp: false },
-  { id: 'ac-2', categoryId: 'accomplishments', text: 'What obstacles did you overcome to achieve something meaningful?', context: 'Obstacle stories show resilience.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 2, isFollowUp: false },
-  { id: 'ac-3', categoryId: 'accomplishments', text: 'What accomplishment surprised you the most?', context: 'Surprises reveal hidden potential.', suggestedDuration: 10, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 3, isFollowUp: false },
-
-  // Regrets & Lessons
-  { id: 'rl-1', categoryId: 'regrets', text: 'If you could go back and change one decision, what would it be and why?', context: 'Regrets often hold important lessons.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 1, isFollowUp: false },
-  { id: 'rl-2', categoryId: 'regrets', text: 'What\'s the most important lesson life has taught you?', context: 'Life lessons are wisdom to preserve.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 2, isFollowUp: false },
-  { id: 'rl-3', categoryId: 'regrets', text: 'What advice would you give your younger self?', context: 'Advice to self reveals growth.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.FAMILY, order: 3, isFollowUp: false },
-
-  // Legacy & Impact
-  { id: 'li-1', categoryId: 'legacy', text: 'How do you want to be remembered by those who knew you?', context: 'Legacy desires clarify current priorities.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 1, isFollowUp: false },
-  { id: 'li-2', categoryId: 'legacy', text: 'What impact do you hope to have on the world?', context: 'Impact goals drive meaningful action.', suggestedDuration: 15, defaultPrivacyLevel: PrivacyLevel.PRIVATE, order: 2, isFollowUp: false },
-  { id: 'li-3', categoryId: 'legacy', text: 'What wisdom would you most want to pass on to future generations?', context: 'Wisdom preservation is a gift to the future.', suggestedDuration: 20, defaultPrivacyLevel: PrivacyLevel.FAMILY, order: 3, isFollowUp: false },
-];
+import { STARTER_QUESTIONS } from '@/data/questions';
+import { DEFAULT_CATEGORIES, PrivacyLevel } from '@lcc/types';
 
 export default function QuestionsPage() {
   const { categorySlug } = useParams();
@@ -128,6 +45,13 @@ export default function QuestionsPage() {
   const [showTranscription, setShowTranscription] = useState(settings?.showLiveTranscription ?? false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [recordingComplete, setRecordingComplete] = useState(false);
+  const [isReviewing, setIsReviewing] = useState(false);
+  const [finalTranscript, setFinalTranscript] = useState('');
+  const [recordingData, setRecordingData] = useState<{
+    blob: Blob;
+    duration: number;
+    waveform: number[];
+  } | null>(null);
 
   // Filter questions by category if specified
   const categoryQuestions = categorySlug
@@ -145,6 +69,9 @@ export default function QuestionsPage() {
   const handleStartRecording = async () => {
     try {
       setRecordingComplete(false);
+      setIsReviewing(false);
+      setFinalTranscript('');
+      setRecordingData(null);
       transcription.clearTranscript();
       await recorder.start();
       // Start live transcription if Web Speech API is available
@@ -159,31 +86,52 @@ export default function QuestionsPage() {
   const handleStopRecording = async () => {
     try {
       const result = await recorder.stop();
-      const finalTranscript = transcription.stopLive();
+      const liveText = transcription.stopLive();
       
-      addRecordingTime(Math.round(result.duration));
-      markQuestionAnswered(currentQuestion.id);
-      setRecordingComplete(true);
-      
-      // Save recording to IndexedDB
-      const saved = await saveRecording({
-        questionId: currentQuestion.id,
-        audioBlob: result.blob,
+      // Don't save yet - go to review mode
+      setFinalTranscript(transcription.transcript || liveText || '');
+      setRecordingData({
+        blob: result.blob,
         duration: result.duration,
-        transcript: transcription.transcript || finalTranscript,
-        waveformData: recorder.waveform,
+        waveform: recorder.waveform,
       });
-      
-      if (saved) {
-        console.log('Recording saved:', saved.id, '- Duration:', Math.round(result.duration), 's');
-      }
+      setIsReviewing(true);
+      setRecordingComplete(true);
     } catch (error) {
       console.error('Failed to stop recording:', error);
     }
   };
 
+  const handleSaveRecording = async () => {
+    try {
+      if (!recordingData) return;
+
+      addRecordingTime(Math.round(recordingData.duration));
+      markQuestionAnswered(currentQuestion.id);
+      
+      // Save recording to IndexedDB with edited transcript
+      const saved = await saveRecording({
+        questionId: currentQuestion.id,
+        audioBlob: recordingData.blob,
+        duration: recordingData.duration,
+        transcript: finalTranscript,
+        waveformData: recordingData.waveform,
+      });
+      
+      if (saved) {
+        console.log('Recording saved:', saved.id, '- Duration:', Math.round(recorder.duration), 's');
+      }
+      
+      setIsReviewing(false);
+    } catch (error) {
+      console.error('Failed to save recording:', error);
+    }
+  };
+
   const handleNextQuestion = () => {
     setRecordingComplete(false);
+    setIsReviewing(false);
+    setFinalTranscript('');
     if (currentQuestionIndex < categoryQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
@@ -193,6 +141,8 @@ export default function QuestionsPage() {
 
   const handleSkip = () => {
     setRecordingComplete(false);
+    setIsReviewing(false);
+    setFinalTranscript('');
     if (currentQuestionIndex < categoryQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
@@ -297,25 +247,64 @@ export default function QuestionsPage() {
 
         {/* Recording Interface */}
         <div className="p-6">
-          {recordingComplete ? (
-            // Recording complete state
+          {isReviewing ? (
+            // REVIEW SCREEN
+            <div className="space-y-6">
+                 <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 flex items-center space-x-3">
+                   <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center flex-shrink-0">
+                     <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                   </div>
+                   <div>
+                     <p className="font-medium text-blue-900 dark:text-blue-100">Recording captured</p>
+                     <p className="text-sm text-blue-700 dark:text-blue-300">
+                       {formatDuration(recordingData?.duration || 0)}
+                     </p>
+                   </div>
+                 </div>
+
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                     Review Transcript (Edit if needed)
+                   </label>
+                   <textarea
+                     value={finalTranscript}
+                     onChange={(e) => setFinalTranscript(e.target.value)}
+                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none h-40"
+                     placeholder="Transcript will appear here..."
+                   />
+                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                     Private: Your recordings and transcripts are encrypted and stored only on this device.
+                   </p>
+                 </div>
+
+                 <div className="flex space-x-3 pt-2">
+                   <button
+                     onClick={handleStartRecording} // Re-record
+                     className="flex-1 py-3 px-4 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                   >
+                     Discard & Re-record
+                   </button>
+                   <button
+                     onClick={handleSaveRecording}
+                     className="flex-1 py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors shadow-sm"
+                   >
+                     Save & Continue
+                   </button>
+                 </div>
+            </div>
+          ) : recordingComplete ? (
+            // Recording complete state (AFTER SAVING)
             <div className="text-center py-8">
               <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                Answer Recorded!
+                Answer Saved!
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
                 Duration: {formatDuration(recorder.duration)}
               </p>
               <div className="flex items-center justify-center space-x-3">
-                <button
-                  onClick={handleStartRecording}
-                  className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                >
-                  Re-record
-                </button>
                 <button
                   onClick={handleNextQuestion}
                   className="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors"

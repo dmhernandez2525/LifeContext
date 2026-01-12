@@ -133,7 +133,7 @@ chrome.runtime.onInstalled.addListener((details) => {
     console.log('LifeContext Extension installed');
     // Open welcome page
     chrome.tabs.create({
-      url: 'https://lifecontext.yourapp.com/data-reclamation?extension=installed'
+      url: 'http://localhost:3000/data-reclamation?extension=installed'
     });
   }
 });

@@ -1,10 +1,10 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { Suspense, lazy } from 'react';
-import { useAppStore } from './store/app-store';
+import { Routes, Route, Navigate, useLocation, BrowserRouter } from 'react-router-dom';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { useKeyboardShortcuts } from './hooks';
 
 // Components
 import ErrorBoundary from './components/ErrorBoundary';
+import OnboardingWizard from './components/onboarding/OnboardingWizard';
 
 // Pages
 import LandingPage from './pages/LandingPage';
@@ -46,98 +46,130 @@ const EmergencyAccessPage = lazy(() => import('./pages/EmergencyAccessPage'));
 import AppLayout from './components/layout/AppLayout';
 import PublicLayout from './components/layout/PublicLayout';
 
-// Check if user has completed onboarding
-function hasCompletedOnboarding(): boolean {
-  return localStorage.getItem('lcc-onboarding-complete') === 'true';
+// Scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
 }
 
-function App() {
-  const isInitialized = useAppStore((state) => state.isInitialized);
-  const onboardingComplete = hasCompletedOnboarding();
-  
+export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isLocked, setIsLocked] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [onboardingComplete, setOnboardingComplete] = useState(false);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('lcc-onboarding-complete');
+    if (stored === 'true') {
+      setOnboardingComplete(true);
+      setIsAuthenticated(true);
+    }
+    setIsInitialized(true);
+  }, []);
+
   // Enable global keyboard shortcuts
   useKeyboardShortcuts();
 
+  if (!isInitialized) {
+      return null; // Or a loading spinner
+  }
+
+  if (!isAuthenticated && !isLocked) {
+    return (
+      <BrowserRouter>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={
+            <OnboardingWizard 
+              onComplete={() => setIsAuthenticated(true)} 
+              onSkip={() => setIsAuthenticated(true)}
+            />
+          } />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
+
   return (
     <ErrorBoundary>
-      <Routes>
-        {/* Public routes wrapped in PublicLayout */}
-        <Route element={<PublicLayout />}>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/media" element={<MediaPage />} />
-          <Route path="/pricing" element={<PricingPage />} />
-          <Route path="/data-ownership" element={<DataSovereigntyPage />} />
-          <Route path="/features" element={<FeaturesPage />} />
-          <Route path="/features/journaling" element={<SecureJournalingPage />} />
-          <Route path="/features/legacy" element={<LegacyBuildingPage />} />
-          <Route path="/features/relationships" element={<RelationshipTechPage />} />
-          <Route path="/solutions/parents" element={<SolutionParentsPage />} />
-          <Route path="/solutions/partners" element={<SolutionPartnersPage />} />
-          <Route path="/solutions/growth" element={<SolutionGrowthPage />} />
-          <Route path="/philosophy" element={<PhilosophyPage />} />
-          <Route path="/features/data-reclamation" element={<DataReclamationMarketingPage />} />
-          
-          <Route path="/security/emergency" element={
-            <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
-              <EmergencyAccessPage />
-            </Suspense>
-          } />
-          <Route path="/settings/storage" element={<StorageSettingsPage />} />
-          <Route path="/data-reclamation" element={<DataReclamationPage />} />
-          <Route path="/data-reclamation/gdpr" element={<GDPRRequestPage />} />
-          <Route path="/feature-request" element={<FeatureRequestPage />} />
-          <Route path="/roadmap" element={<PublicRoadmapPage />} />
-          <Route path="/help" element={<HelpPage />} />
-          
-          {/* Private Routes */}
-        </Route>
+      <Suspense fallback={<div className="h-screen flex items-center justify-center">Loading...</div>}>
+        <Routes>
+          {/* Public Routes with Layout */}
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/media" element={<MediaPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/data-sovereignty" element={<DataSovereigntyPage />} />
+            <Route path="/features" element={<FeaturesPage />} />
+            <Route path="/secure-journaling" element={<SecureJournalingPage />} />
+            <Route path="/legacy-building" element={<LegacyBuildingPage />} />
+            <Route path="/relationship-tech" element={<RelationshipTechPage />} />
+            <Route path="/solutions/parents" element={<SolutionParentsPage />} />
+            <Route path="/solutions/partners" element={<SolutionPartnersPage />} />
+            <Route path="/solutions/growth" element={<SolutionGrowthPage />} />
+            <Route path="/philosophy" element={<PhilosophyPage />} />
+            <Route path="/data-reclamation-info" element={<DataReclamationMarketingPage />} />
+            <Route path="/feature-request" element={<FeatureRequestPage />} />
+            <Route path="/roadmap" element={<PublicRoadmapPage />} />
+            <Route path="/help" element={<HelpPage />} />
+            <Route path="/emergency-access" element={<EmergencyAccessPage />} />
+          </Route>
 
-        {/* Onboarding for first-time users */}
-        <Route 
-          path="/onboarding" 
-          element={
-            onboardingComplete && isInitialized 
-              ? <Navigate to="/app" replace /> 
-              : <OnboardingPage />
-          } 
-        />
+          {/* Onboarding for first-time users */}
+          <Route 
+            path="/onboarding" 
+            element={
+              onboardingComplete && isInitialized 
+                ? <Navigate to="/app" replace /> 
+                : <OnboardingPage />
+            } 
+          />
 
-        <Route 
-          path="/register" 
-          element={
-            isInitialized 
-              ? <Navigate to="/app" replace /> 
-              : !onboardingComplete 
-                ? <Navigate to="/onboarding" replace />
-                : <RegisterPage />
-          } 
-        />
+          <Route 
+            path="/register" 
+            element={
+              isInitialized 
+                ? <Navigate to="/app" replace /> 
+                : !onboardingComplete 
+                  ? <Navigate to="/onboarding" replace />
+                  : <RegisterPage />
+            } 
+          />
 
-        {/* App routes (require initialization) */}
-        <Route
-          path="/app"
-          element={
-            isInitialized ? <AppLayout /> : <Navigate to="/register" replace />
-          }
-        >
-          <Route index element={<DashboardPage />} />
-          <Route path="questions" element={<QuestionsPage />} />
-          <Route path="questions/:categorySlug" element={<QuestionsPage />} />
-          <Route path="brain-dump" element={<BrainDumpPage />} />
-          <Route path="journal" element={<JournalPage />} />
-          <Route path="timeline" element={<TimelinePage />} />
-          <Route path="insights" element={<AIInsightsPage />} />
-          <Route path="life-planning" element={<LifePlanningPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-        </Route>
+          {/* App routes (require initialization) */}
+          <Route
+            path="/app"
+            element={
+              isInitialized ? <AppLayout /> : <Navigate to="/register" replace />
+            }
+          >
+            <Route index element={<DashboardPage />} />
+            <Route path="questions" element={<QuestionsPage />} />
+            <Route path="questions/:categorySlug" element={<QuestionsPage />} />
+            <Route path="brain-dump" element={<BrainDumpPage />} />
+            <Route path="journal" element={<JournalPage />} />
+            <Route path="timeline" element={<TimelinePage />} />
+            <Route path="insights" element={<AIInsightsPage />} />
+            <Route path="life-planning" element={<LifePlanningPage />} />
+            <Route path="data-reclamation" element={<DataReclamationPage />} />
+            <Route path="gdpr-requests" element={<GDPRRequestPage />} />
+            <Route path="storage-settings" element={<StorageSettingsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+          </Route>
 
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </ErrorBoundary>
   );
 }
-
-export default App;

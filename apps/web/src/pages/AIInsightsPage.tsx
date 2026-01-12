@@ -152,14 +152,27 @@ Your role:
     try {
       const apiKey = settings?.aiProvider.apiKey;
       
+      // DEMO MODE: If no API key, simulate a thoughtful response
       if (!apiKey) {
-        const errorMessage: Message = {
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Simple heuristic response for demo
+        let demoResponse = "I've analyzed your input against your life patterns. Since this is a demo without a live API key, I can share that your focus seems to be shifting towards long-term legacy building. In a live environment, I would cross-reference this with your last 5 recording transcripts to find deeper contradictions.";
+        
+        const lowerInput = userMessage.content.toLowerCase();
+        if (lowerInput.includes('relationship') || lowerInput.includes('family')) {
+            demoResponse = "Based on your journal entries, you often mention family when discussing future stability. A pattern emerges where you feel most grounded when connected to them. (Demo Mode: Add an API key for live insights)";
+        } else if (lowerInput.includes('career') || lowerInput.includes('work')) {
+            demoResponse = "Your career reflections often correlate with stress markers in your voice logs. However, you also show high energy when discussing creative projects. (Demo Mode: Add an API key for live insights)";
+        }
+
+        const assistantMessage: Message = {
           id: crypto.randomUUID(),
           role: 'assistant',
-          content: "I'd love to help, but I need an API key to work. Please add your Anthropic API key in Settings to enable AI conversations.",
+          content: demoResponse,
           timestamp: new Date(),
         };
-        setMessages(prev => [...prev, errorMessage]);
+        setMessages(prev => [...prev, assistantMessage]);
         setIsLoading(false);
         return;
       }
@@ -169,7 +182,7 @@ Your role:
         role: m.role as 'user' | 'assistant',
         content: m.content,
       }));
-      conversationHistory.push({ role: 'user', content: input.trim() });
+      conversationHistory.push({ role: 'user', content: userMessage.content });
 
       const response = await generateWithClaude({
         systemPrompt: buildSystemPrompt(),

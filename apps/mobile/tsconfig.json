@@ -1,7 +1,12 @@
 {
-  "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
     "strict": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
     "paths": {
       "@/*": ["./src/*"],
       "@lcc/core": ["../../packages/core/src"],

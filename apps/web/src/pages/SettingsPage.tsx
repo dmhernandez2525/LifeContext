@@ -16,7 +16,8 @@ import {
   Sparkles,
   Cloud,
   RefreshCw,
-  LogOut
+  LogOut,
+  Users // Added import
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
@@ -76,10 +77,17 @@ export default function SettingsPage() {
     }
   };
 
-  if (!settings) return null;
+  // Safe loading state
+  if (!settings) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div className="max-w-2xl mx-auto space-y-8 pb-12">
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Settings
@@ -187,6 +195,50 @@ export default function SettingsPage() {
               </span>
             </button>
           ))}
+        </div>
+      </motion.section>
+
+      {/* Family Sharing (New) */}
+      <motion.section
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              Family Sharing
+            </h2>
+          </div>
+          <span className="text-xs font-medium px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full">
+            Coming Soon
+          </span>
+        </div>
+        
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+          Share specific journals or life chapters with trusted family members. You maintain full control over who sees what and for how long.
+        </p>
+
+        <div className="flex flex-col space-y-3">
+            {/* Mock Family Members */}
+            {[
+                { name: 'Partner', status: 'Not connected' },
+                { name: 'Trusted Contact', status: 'Not connected' }
+            ].map((contact, i) => (
+                <div key={i} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
+                    <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
+                            <Users className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{contact.name}</span>
+                    </div>
+                    <button className="text-xs text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
+                        Invite
+                    </button>
+                </div>
+            ))}
         </div>
       </motion.section>
 
@@ -510,7 +562,7 @@ export default function SettingsPage() {
             onClick={handleReset}
             className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg border border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
           >
-            <Trash2 className="w-5 h-5 text-red-600 dark:text-red-400" />
+            <Trash2 className="w-5 h-4 text-red-600 dark:text-red-400" />
             <div>
               <p className="font-medium text-red-600 dark:text-red-400">Reset All Data</p>
               <p className="text-sm text-red-500 dark:text-red-500/80">Delete everything permanently</p>
