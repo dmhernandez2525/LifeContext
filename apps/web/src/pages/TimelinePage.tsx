@@ -91,14 +91,15 @@ export default function TimelinePage() {
         const question = questionMap.get(recording.questionId);
         // Handle encrypted or plain text transcription
         let transcriptPreview = '';
-        if (typeof recording.transcriptionText === 'object' && recording.transcriptionText && 'data' in recording.transcriptionText) {
+        const transcriptionData = recording.transcriptionText as unknown as string | { data?: string };
+        if (typeof transcriptionData === 'object' && transcriptionData && 'data' in transcriptionData) {
           try {
-            transcriptPreview = atob((recording.transcriptionText as any).data || '').slice(0, 200);
+            transcriptPreview = atob(transcriptionData.data || '').slice(0, 200);
           } catch {
             transcriptPreview = '';
           }
-        } else if (typeof recording.transcriptionText === 'string') {
-          transcriptPreview = (recording.transcriptionText as string).slice(0, 200);
+        } else if (typeof transcriptionData === 'string') {
+          transcriptPreview = transcriptionData.slice(0, 200);
         }
 
         timelineEvents.push({
@@ -116,9 +117,10 @@ export default function TimelinePage() {
       const journals = await db.journalEntries.toArray();
       for (const journal of journals) {
         let content = '';
-        if (typeof journal.content === 'object' && journal.content && 'data' in journal.content) {
+        const journalContent = journal.content as unknown as string | { data?: string };
+        if (typeof journalContent === 'object' && journalContent && 'data' in journalContent) {
           try {
-            content = atob((journal.content as any).data || '');
+            content = atob(journalContent.data || '');
           } catch {
             content = '';
           }
@@ -137,12 +139,14 @@ export default function TimelinePage() {
       // Load brain dumps
       const brainDumps = await db.brainDumps.toArray();
       for (const dump of brainDumps) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const dumpData = dump as unknown as { title?: string; synthesis?: { organizedContent?: string } };
         timelineEvents.push({
           id: dump.id,
           date: dump.createdAt,
-          title: (dump as any).title || 'Brain Dump Session',
+          title: dumpData.title || 'Brain Dump Session',
           type: 'brain-dump',
-          description: (dump as any).synthesis?.organizedContent?.slice(0, 200),
+          description: dumpData.synthesis?.organizedContent?.slice(0, 200),
         });
       }
       

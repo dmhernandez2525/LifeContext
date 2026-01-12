@@ -72,7 +72,7 @@ export default function BrainDumpPage() {
   // Recording, transcription, and synthesis
   const recorder = useRecorder();
   const transcription = useTranscription();
-  const { synthesize, hasApiKey, isLoading: _isSynthesizing } = useSynthesis();
+  const { synthesize, hasApiKey } = useSynthesis();
   const wakeLock = useWakeLock();
 
   // Track final transcription
@@ -507,7 +507,7 @@ export default function BrainDumpPage() {
           </div>
         );
 
-      case 'clarification':
+      case 'clarification': {
         const currentQuestion = clarifications[currentClarificationIndex];
         const progress = ((currentClarificationIndex + 1) / clarifications.length) * 100;
 
@@ -576,6 +576,7 @@ export default function BrainDumpPage() {
             </div>
           </div>
         );
+      }
 
       case 'complete':
         return (

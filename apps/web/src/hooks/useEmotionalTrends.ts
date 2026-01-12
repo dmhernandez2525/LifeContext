@@ -207,7 +207,7 @@ export function useEmotionalTrends(): UseEmotionalTrendsReturn {
     });
     
     return Array.from(tagData.entries())
-      .filter(([_, data]) => data.count >= 2) // At least 2 occurrences
+      .filter(([, data]) => data.count >= 2) // At least 2 occurrences
       .map(([tag, data]) => ({
         tag,
         averageMood: data.total / data.count,

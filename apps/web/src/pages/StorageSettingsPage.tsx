@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { HardDrive, Cloud, AlertCircle, Archive, Database, Save, Check } from 'lucide-react';
 import { useStorageStore } from '@/store/storage-store';
 import { cn } from '@/lib/utils';
@@ -6,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 export default function StorageSettingsPage() {
   const { strategy, provider, s3Config, setStrategy, setProvider, setS3Config } = useStorageStore();
-  const [_showConfig, _setShowConfig] = useState(false);
 
   return (
     <div className="pt-24 pb-12 px-6 max-w-4xl mx-auto min-h-screen">
@@ -96,7 +94,7 @@ export default function StorageSettingsPage() {
                ].map((opt) => (
                  <button
                     key={opt.id}
-                    onClick={() => setProvider(opt.id as any)}
+                    onClick={() => setProvider(opt.id as 'internal' | 'filesystem' | 's3')}
                     className={cn(
                       "flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors border",
                       provider === opt.id

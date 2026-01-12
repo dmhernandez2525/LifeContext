@@ -209,7 +209,8 @@ export function useCloudSync(): UseCloudSyncReturn {
 // Load Google Identity Services library dynamically
 async function loadGoogleIdentityServices(): Promise<void> {
   return new Promise((resolve, reject) => {
-    if ((window as any).google?.accounts) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((window as { google?: { accounts?: unknown } }).google?.accounts) {
       resolve();
       return;
     }
@@ -225,7 +226,8 @@ async function loadGoogleIdentityServices(): Promise<void> {
 // Load MSAL library dynamically
 async function loadMSAL(): Promise<void> {
   return new Promise((resolve, reject) => {
-    if ((window as any).msal) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((window as { msal?: unknown }).msal) {
       resolve();
       return;
     }

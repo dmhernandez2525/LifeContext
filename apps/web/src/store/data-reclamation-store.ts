@@ -28,7 +28,7 @@ export interface DataBrokerProfile {
     phones?: string[];
     emails?: string[];
     relatives?: string[];
-    propertyRecords?: any[];
+    propertyRecords?: Array<{ address: string; owner?: string; value?: number }>;
   };
 }
 
@@ -36,7 +36,7 @@ interface DataReclamationState {
   // Browser Data
   browserHistory: BrowserHistoryItem[];
   cookieDomains: string[];
-  bookmarks: any[];
+  bookmarks: Array<{ url: string; title: string; folder?: string }>;
   
   // GDPR Requests
   gdprRequests: GDPRRequest[];

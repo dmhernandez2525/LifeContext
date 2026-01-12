@@ -83,7 +83,7 @@ Identify recurring themes, contradictions, strengths, growth areas, and potentia
   }
 
   const data = await response.json();
-  const textContent = data.content?.find((c: any) => c.type === 'text');
+  const textContent = data.content?.find((c: { type: string; text?: string }) => c.type === 'text');
   
   if (!textContent?.text) {
     throw new Error('No response from Claude');
