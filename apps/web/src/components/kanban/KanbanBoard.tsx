@@ -86,7 +86,7 @@ function TaskCard({ task, onEdit, onDelete, onMove, onDragStart }: TaskCardProps
       layout
       draggable
       onDragStart={(e) => {
-        // @ts-ignore
+        // @ts-expect-error - Framer motion event type mismatch with React DragEvent
         onDragStart(e, task.id);
       }}
       initial={{ opacity: 0, y: 10 }}

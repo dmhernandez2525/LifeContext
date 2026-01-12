@@ -132,12 +132,12 @@
 - [ ] Google Calendar OAuth integration
 
 ### Mobile App (Expo)
-- [ ] Create apps/mobile with create-expo-app
-- [ ] Add to TurboRepo workspace
-- [ ] Move shared stores to packages/core
-- [ ] NativeWind for Tailwind on mobile
-- [ ] Core screens: login, dashboard, quick record
-- [ ] expo-av for voice recording
+- [x] Create apps/mobile with create-expo-app
+- [x] Add to TurboRepo workspace
+- [x] Move shared stores to packages/core
+- [x] NativeWind for Tailwind on mobile
+- [x] Core screens: login, dashboard, quick record (Expo Router tabs)
+- [x] expo-av for voice recording (`useAudioRecorder` hook)
 - [ ] Push notifications
 
 ### Premium Tier Definitions

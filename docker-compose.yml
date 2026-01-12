@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Optional: voice-docs service (commented out until needed)
+  # voice-docs:
+  #   build:
+  #     context: ./apps/voice-docs
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3001:3001"
+  #   restart: unless-stopped
+  #   environment:
+  #     - NODE_ENV=production
+
+networks:
+  default:
+    name: lifecontext-network
+
+volumes:
+  # Future: persistent storage for local-first data
+  lifecontext-data:
