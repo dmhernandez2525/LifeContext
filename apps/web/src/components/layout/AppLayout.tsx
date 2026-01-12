@@ -17,6 +17,7 @@ import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
 import LockScreen from '../security/LockScreen';
+import AskDocsButton from '../help/AskDocsButton';
 import { Target } from 'lucide-react';
 
 const navItems = [
@@ -164,6 +165,9 @@ export default function AppLayout() {
           <Outlet />
         </div>
       </main>
+
+      {/* Floating Help Button */}
+      <AskDocsButton />
     </div>
   );
 }

@@ -53,7 +53,7 @@ const NAV_STRUCTURE = [
       },
       { 
         label: 'Data Reclamation', 
-        path: '/data-reclamation',
+        path: '/features/data-reclamation',
         description: 'Reclaim your scattered data',
         icon: Lock 
       },

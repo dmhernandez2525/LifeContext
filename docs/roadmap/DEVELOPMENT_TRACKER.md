@@ -32,6 +32,8 @@
 ### Security UX
 - [x] PasscodeConfirmation component requiring typed phrase
 - [x] Zero-knowledge warning messaging
+- [x] LockScreen component
+- [x] Lock button wired in AppLayout
 
 ### Documentation
 - [x] ROADMAP.md with all planned features
@@ -41,62 +43,65 @@
 ### Onboarding
 - [x] OnboardingWizard component (6 steps)
 - [x] Funny, skippable, privacy-focused
+- [x] Wired to show on first login
+- [x] localStorage completion tracking
+- [x] PasscodeConfirmation integrated
+- [x] Data Reclamation opt-in toggle
+
+### Life Planning Kanban ✓
+- [x] KanbanBoard component with 5 columns
+- [x] Task cards with due dates, priorities, tags
+- [x] Subtasks progress bar
+- [x] Add/Edit modal for tasks
+- [x] Category filter
+- [x] Timeline views (week, month, year, life)
+- [x] AI suggestions panel (mock)
+- [x] 60-year life timeline visualization
+
+### Feature Request System ✓
+- [x] FeatureRequestPage with voting UI
+- [x] PublicRoadmapPage with 3 columns
+- [x] Convex schema prepared (schema.ts)
+- [x] Convex functions prepared (features.ts)
+- [x] Routes: /feature-request, /roadmap
+
+### Philosophy & Content ✓
+- [x] PhilosophyPage: "Why We Avoid Emotional Attachment"
+- [x] Added to navigation (header + footer)
+
+### voice-docs Integration ✓
+- [x] Cloned as apps/voice-docs
+- [x] Removed .git for monorepo
+- [x] Renamed package to @lcc/voice-docs
+
+### Navigation Updates ✓
+- [x] Data Reclamation in Product dropdown
+- [x] Philosophy link in header
+- [x] Roadmap link (highlighted)
+- [x] Philosophy in footer
 
 ---
 
 ## In Progress
 
-### Onboarding Integration
-- [ ] Wire OnboardingWizard to show on first login
-- [ ] Save wizard completion to localStorage
-- [ ] Test full onboarding flow
+### Data Reclamation Marketing
+- [ ] Create dedicated marketing page (/features/data-reclamation)
+- [ ] Chrome extension download with badges
+- [ ] GDPR automation showcase
 
----
-
-## Done Recently ✓
-
-### Lock Button (Just Completed)
-- [x] LockScreen component created
-- [x] Wired to show when isUnlocked=false
-- [x] Lock/unlock flow works end-to-end
+### voice-docs Integration (Remaining)
+- [ ] Add shared dependencies to packages/
+- [ ] Create /help route in main app
+- [ ] "Ask the docs" floating button
 
 ---
 
 ## Up Next
 
-### Content & Marketing
-- [ ] Blog post: "Why We Avoid Emotional Attachment by Design"
-  - How ad-driven companies profit from keeping users engaged
-  - How data powers the attention economy
-  - Why LifeContext intentionally avoids this
-  - Leveling the playing field for personal data ownership
-- [ ] Add "No Emotional Attachment" section to website
-- [ ] Explain the difference between a diary and a companion
-
-### Data Reclamation on Website
-- [ ] Add to main navigation
-- [ ] Dedicated marketing page
-- [ ] Chrome extension download section
-- [ ] GDPR automation showcase
-
-### Feature Request System
-- [ ] Set up Convex project
-- [ ] Create /roadmap page (public)
-- [ ] Upvoting and comments
-- [ ] /feature-request submission form
-
-### voice-docs-app Integration
-- [ ] Clone repo as apps/voice-docs
-- [ ] Add to TurboRepo workspace
-- [ ] "Ask the docs" floating button
-- [ ] Navigate to relevant app sections
-
-### Life Planning / Kanban
-- [ ] KanbanBoard component with drag-and-drop
-- [ ] Task cards with due dates, priorities, tags
-- [ ] Link tasks to journal entries
-- [ ] Google Calendar OAuth integration
-- [ ] Life timeline views (day/week/year/life)
+### Chrome Extension
+- [ ] Package for Chrome Web Store
+- [ ] Create icons and promotional images
+- [ ] Write store listing
 
 ### Mobile App
 - [ ] Create apps/mobile with Expo
@@ -104,18 +109,16 @@
 - [ ] NativeWind setup
 - [ ] Core screens: login, dashboard, quick record
 
----
+### Convex Deployment
+- [ ] Set up Convex account
+- [ ] Deploy schema and functions
+- [ ] Connect UI to live backend
 
-## Recording Demos (After Features Complete)
-
+### Recording Demos
 - [ ] Full onboarding wizard
-- [ ] Dashboard with demo data loaded
-- [ ] Creating journal entry
-- [ ] Life Chapters timeline
+- [ ] Dashboard with demo data
 - [ ] Kanban board usage
 - [ ] Data Reclamation flow
-- [ ] GDPR request process
-- [ ] Emergency Access setup
 
 ---
 
@@ -128,4 +131,4 @@
 
 ---
 
-*Last updated: 2026-01-12*
+*Last updated: 2026-01-12 09:51*
