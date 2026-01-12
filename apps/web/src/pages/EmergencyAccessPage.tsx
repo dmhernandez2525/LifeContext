@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Shield, AlertTriangle, Copy } from 'lucide-react';
-import { splitStartKey, SECURITY_CONFIG, reconstructKey } from '@/lib/security';
+import { splitKey, SECURITY_CONFIG, reconstructKey } from '@/lib/security';
 import { cn } from '@/lib/utils';
 
 export default function EmergencyAccessPage() {
@@ -19,7 +19,7 @@ export default function EmergencyAccessPage() {
   const handleGenerate = () => {
     if (!secret) return;
     try {
-      const shares = splitStartKey(secret, numShares, threshold);
+      const shares = splitKey(secret, numShares, threshold);
       setGeneratedShares(shares);
     } catch (e) {
       console.error(e);

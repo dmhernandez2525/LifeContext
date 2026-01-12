@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
 import { useAppStore } from './store/app-store';
 import { useKeyboardShortcuts } from './hooks';
 
@@ -29,8 +30,10 @@ import RelationshipTechPage from './pages/RelationshipTechPage';
 import SolutionParentsPage from './pages/SolutionParentsPage';
 import SolutionPartnersPage from './pages/SolutionPartnersPage';
 import SolutionGrowthPage from './pages/SolutionGrowthPage';
-import EmergencyAccessPage from './pages/EmergencyAccessPage';
 import StorageSettingsPage from './pages/StorageSettingsPage';
+
+// Lazy load EmergencyAccessPage to avoid loading secrets.js-grempe on initial load
+const EmergencyAccessPage = lazy(() => import('./pages/EmergencyAccessPage'));
 
 // Layouts
 import AppLayout from './components/layout/AppLayout';
@@ -67,7 +70,11 @@ function App() {
           <Route path="/solutions/partners" element={<SolutionPartnersPage />} />
           <Route path="/solutions/growth" element={<SolutionGrowthPage />} />
           
-          <Route path="/security/emergency" element={<EmergencyAccessPage />} />
+          <Route path="/security/emergency" element={
+            <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+              <EmergencyAccessPage />
+            </Suspense>
+          } />
           <Route path="/settings/storage" element={<StorageSettingsPage />} />
           
           {/* Private Routes */}
