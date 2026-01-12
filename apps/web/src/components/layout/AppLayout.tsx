@@ -17,6 +17,7 @@ import {
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
+import LockScreen from '../security/LockScreen';
 
 const navItems = [
   { path: '/app', icon: LayoutDashboard, label: 'Dashboard', exact: true },
@@ -33,6 +34,7 @@ export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const lock = useAppStore((state) => state.lock);
+  const isUnlocked = useAppStore((state) => state.isUnlocked);
   const settings = useAppStore((state) => state.settings);
   const updateSettings = useAppStore((state) => state.updateSettings);
   const [isDark, setIsDark] = useState(false);
@@ -50,6 +52,11 @@ export default function AppLayout() {
     const newTheme = isDark ? 'light' : 'dark';
     updateSettings({ theme: newTheme });
   };
+
+  // Show lock screen when not unlocked
+  if (!isUnlocked) {
+    return <LockScreen />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
