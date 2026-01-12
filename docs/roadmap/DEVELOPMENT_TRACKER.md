@@ -144,6 +144,7 @@
 - [x] GDPR automation showcase with 8 platforms
 - [x] Hero with "Free During Beta" messaging
 - [x] Three pillars: Browser Data, GDPR, Data Brokers
+- [x] Data broker section (marked "Coming Soon")
 
 ### Help Center ✓
 - [x] HelpPage at /help with documentation links
