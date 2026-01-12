@@ -58,16 +58,25 @@
 
 ## In Progress
 
-### Lock Button Fix
+### Lock Button
 - [x] LockScreen component created
-- [ ] Wire LockScreen to show when isUnlocked=false in AppLayout
-- [ ] Test lock/unlock flow end-to-end
-- [ ] Add visual feedback when clicking lock button
+- [x] Wired to show when isUnlocked=false in AppLayout
+- [x] Test lock/unlock flow end-to-end
+- [x] Lock button in sidebar triggers lock state
 
 ### Onboarding Integration
 - [ ] Wire OnboardingWizard to show on first login
 - [ ] Check localStorage for 'lcc-onboarding-complete'
 - [ ] Test full onboarding flow
+
+### voice-docs-app Integration
+- [x] Clone repo as apps/voice-docs
+- [x] Remove .git for monorepo integration
+- [x] Rename package to @lcc/voice-docs
+- [ ] Add shared dependencies to packages/
+- [ ] Create /help route in main app
+- [ ] "Ask the docs" floating button
+- [ ] Navigate to relevant app sections
 
 ---
 
