@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useLocation, BrowserRouter } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, Suspense, lazy } from 'react';
 import { useKeyboardShortcuts } from './hooks';
 
@@ -82,7 +82,7 @@ export default function App() {
 
   if (!isAuthenticated && !isLocked) {
     return (
-      <BrowserRouter>
+      <>
         <ScrollToTop />
         <Routes>
           <Route path="/" element={
@@ -93,7 +93,7 @@ export default function App() {
           } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </BrowserRouter>
+      </>
     );
   }
 
