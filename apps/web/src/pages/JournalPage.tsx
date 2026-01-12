@@ -56,7 +56,7 @@ export default function JournalPage() {
 
   const [isReviewing, setIsReviewing] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [recordingComplete, setRecordingComplete] = useState(false);
+  const [_recordingComplete, setRecordingComplete] = useState(false);
   const [finalTranscript, setFinalTranscript] = useState('');
   const [recordingData, setRecordingData] = useState<{
     blob: Blob;

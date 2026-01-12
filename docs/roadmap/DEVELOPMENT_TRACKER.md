@@ -144,7 +144,7 @@
 - [x] GDPR automation showcase with 8 platforms
 - [x] Hero with "Free During Beta" messaging
 - [x] Three pillars: Browser Data, GDPR, Data Brokers
-- [x] Data broker section (marked "Coming Soon")
+- [x] Data broker section (implemented with mock scan flow)
 
 ### Help Center ✓
 - [x] HelpPage at /help with documentation links
@@ -172,14 +172,14 @@
 ## Up Next
 
 ### Chrome Extension
-- [ ] Package for Chrome Web Store
-- [ ] Create icons and promotional images
-- [ ] Write store listing
+- [x] Package for Chrome Web Store
+- [x] Create icons and promotional images
+- [ ] Write store listing (text)
 
 ### Mobile App
-- [ ] Create apps/mobile with Expo
-- [ ] Move shared stores to packages/core
-- [ ] NativeWind setup
+- [x] Create apps/mobile with Expo
+- [x] Move shared stores to packages/core
+- [x] NativeWind setup
 - [ ] Core screens: login, dashboard, quick record
 
 ### Convex Deployment

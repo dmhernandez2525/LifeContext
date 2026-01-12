@@ -60,7 +60,7 @@ function ScrollToTop() {
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isLocked, setIsLocked] = useState(false);
+  const [isLocked, _setIsLocked] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const [onboardingComplete, setOnboardingComplete] = useState(false);
 
