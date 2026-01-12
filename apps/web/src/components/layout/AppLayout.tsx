@@ -3,7 +3,6 @@ import {
   LayoutDashboard, 
   MessageSquare, 
   Brain,
-  Sparkles,
   Settings, 
   Lock,
   Menu,
@@ -18,15 +17,16 @@ import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
 import LockScreen from '../security/LockScreen';
+import { Target } from 'lucide-react';
 
 const navItems = [
   { path: '/app', icon: LayoutDashboard, label: 'Dashboard', exact: true },
   { path: '/app/questions', icon: MessageSquare, label: 'Questions' },
   { path: '/app/journal', icon: BookOpen, label: 'Journal' },
   { path: '/app/timeline', icon: Calendar, label: 'Timeline' },
+  { path: '/app/life-planning', icon: Target, label: 'Life Planning' },
   { path: '/app/insights', icon: Bot, label: 'AI Insights' },
   { path: '/app/brain-dump', icon: Brain, label: 'Brain Dump' },
-  { path: '/app/insights', icon: Sparkles, label: 'Insights' },
   { path: '/app/settings', icon: Settings, label: 'Settings' },
 ];
 

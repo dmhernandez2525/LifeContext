@@ -15,7 +15,6 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import QuestionsPage from './pages/QuestionsPage';
 import BrainDumpPage from './pages/BrainDumpPage';
-import InsightsPage from './pages/InsightsPage';
 import SettingsPage from './pages/SettingsPage';
 import JournalPage from './pages/JournalPage';
 import OnboardingPage from './pages/OnboardingPage';
@@ -34,6 +33,7 @@ import StorageSettingsPage from './pages/StorageSettingsPage';
 import DataReclamationPage from './pages/DataReclamationPage';
 import GDPRRequestPage from './pages/GDPRRequestPage';
 import PhilosophyPage from './pages/PhilosophyPage';
+import LifePlanningPage from './pages/LifePlanningPage';
 
 // Lazy load EmergencyAccessPage to avoid loading secrets.js-grempe on initial load
 const EmergencyAccessPage = lazy(() => import('./pages/EmergencyAccessPage'));
@@ -121,7 +121,7 @@ function App() {
           <Route path="journal" element={<JournalPage />} />
           <Route path="timeline" element={<TimelinePage />} />
           <Route path="insights" element={<AIInsightsPage />} />
-          <Route path="insights" element={<InsightsPage />} />
+          <Route path="life-planning" element={<LifePlanningPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
 
