@@ -261,7 +261,7 @@ export default function PublicLayout() {
         className={cn(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b',
           isScrolled
-            ? 'bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-gray-200 dark:border-white/10 py-3'
+            ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-xl border-gray-200 dark:border-white/10 py-3 shadow-sm'
             : 'bg-transparent border-transparent py-5'
         )}
       >

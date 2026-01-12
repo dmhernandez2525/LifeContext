@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect, Suspense, lazy } from 'react';
 import { useKeyboardShortcuts } from './hooks';
 
@@ -46,16 +46,7 @@ const EmergencyAccessPage = lazy(() => import('./pages/EmergencyAccessPage'));
 import AppLayout from './components/layout/AppLayout';
 import PublicLayout from './components/layout/PublicLayout';
 
-// Scroll to top on route change
-function ScrollToTop() {
-  const { pathname } = useLocation();
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return null;
-}
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -83,7 +74,7 @@ export default function App() {
   if (!isAuthenticated && !isLocked) {
     return (
       <>
-        <ScrollToTop />
+
         <Routes>
           <Route path="/" element={
             <OnboardingWizard 
