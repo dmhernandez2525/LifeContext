@@ -18,3 +18,5 @@ services:
         value: "20.11.0"
       - key: SKIP_INSTALL_DEPS
         value: "true"
+      - key: VITE_CONVEX_URL
+        value: "FIXME"
