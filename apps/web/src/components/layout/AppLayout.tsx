@@ -49,6 +49,41 @@ export default function AppLayout() {
     document.documentElement.classList.toggle('dark', shouldBeDark);
   }, [settings?.theme]);
 
+  // Auto-Lock on inactivity
+  useEffect(() => {
+    // 5 minutes default if not set
+    const timeoutMinutes = settings?.autoLockTimeout ?? 5;
+    const timeoutMs = timeoutMinutes * 60 * 1000;
+    
+    let timer: ReturnType<typeof setTimeout>;
+
+    const resetTimer = () => {
+      clearTimeout(timer);
+      if (isUnlocked) {
+        timer = setTimeout(() => {
+          lock();
+        }, timeoutMs);
+      }
+    };
+
+    // Events to track activity
+    const events = ['mousedown', 'keydown', 'scroll', 'touchstart', 'mousemove'];
+    
+    events.forEach(event => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    // Initial timer start
+    resetTimer();
+
+    return () => {
+      clearTimeout(timer);
+      events.forEach(event => {
+        window.removeEventListener(event, resetTimer);
+      });
+    };
+  }, [isUnlocked, settings?.autoLockTimeout, lock]);
+
   const toggleTheme = () => {
     const newTheme = isDark ? 'light' : 'dark';
     updateSettings({ theme: newTheme });
