@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeContext Data Export</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 400px;
+      min-height: 500px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 24px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .header p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .card h3 {
+      font-size: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .icon {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .stat {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .label {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    
+    button {
+      width: 100%;
+      background: white;
+      color: #667eea;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .status {
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      font-size: 12px;
+      text-align: center;
+    }
+    
+    .success {
+      background: rgba(72, 187, 120, 0.3);
+    }
+    
+    .error {
+      background: rgba(245, 101, 101, 0.3);
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-left: 8px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔍 Data Reclamation</h1>
+    <p>Export your browser data to LifeContext</p>
+  </div>
+  
+  <div class="card">
+    <h3>
+      <span class="icon">📜</span>
+      Browser History
+    </h3>
+    <div class="stat" id="historyCount">—</div>
+    <div class="label">URLs visited (last 5 years)</div>
+  </div>
+  
+  <div class="card">
+    <h3>
+      <span class="icon">🍪</span>
+      Cookie Domains
+    </h3>
+    <div class="stat" id="cookieCount">—</div>
+    <div class="label">Unique domains with cookies</div>
+  </div>
+  
+  <div class="card">
+    <h3>
+      <span class="icon">📚</span>
+      Bookmarks
+    </h3>
+    <div class="stat" id="bookmarkCount">—</div>
+    <div class="label">Saved bookmarks</div>
+  </div>
+  
+  <button id="exportBtn">Export to LifeContext</button>
+  
+  <div id="status" class="status" style="display: none;"></div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
