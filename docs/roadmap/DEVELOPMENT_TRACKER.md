@@ -51,10 +51,14 @@
 - [ ] Save wizard completion to localStorage
 - [ ] Test full onboarding flow
 
-### Lock Button Fix
-- [ ] Dashboard lock button currently does nothing
-- [ ] Need to trigger actual passcode verification
-- [ ] Visual feedback when locked vs unlocked
+---
+
+## Done Recently ✓
+
+### Lock Button (Just Completed)
+- [x] LockScreen component created
+- [x] Wired to show when isUnlocked=false
+- [x] Lock/unlock flow works end-to-end
 
 ---
 
