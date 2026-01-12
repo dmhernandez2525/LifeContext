@@ -34,6 +34,8 @@ import DataReclamationPage from './pages/DataReclamationPage';
 import GDPRRequestPage from './pages/GDPRRequestPage';
 import PhilosophyPage from './pages/PhilosophyPage';
 import LifePlanningPage from './pages/LifePlanningPage';
+import FeatureRequestPage from './pages/FeatureRequestPage';
+import PublicRoadmapPage from './pages/PublicRoadmapPage';
 
 // Lazy load EmergencyAccessPage to avoid loading secrets.js-grempe on initial load
 const EmergencyAccessPage = lazy(() => import('./pages/EmergencyAccessPage'));
@@ -82,6 +84,8 @@ function App() {
           <Route path="/settings/storage" element={<StorageSettingsPage />} />
           <Route path="/data-reclamation" element={<DataReclamationPage />} />
           <Route path="/data-reclamation/gdpr" element={<GDPRRequestPage />} />
+          <Route path="/feature-request" element={<FeatureRequestPage />} />
+          <Route path="/roadmap" element={<PublicRoadmapPage />} />
           
           {/* Private Routes */}
         </Route>

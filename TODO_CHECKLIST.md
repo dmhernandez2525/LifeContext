@@ -116,15 +116,17 @@
 - [ ] Navigate to relevant app sections from answers
 
 ### Life Planning / Kanban Board
-- [ ] KanbanBoard component with drag-and-drop
-- [ ] Default columns: Backlog, To Do, In Progress, Blocked, Done
-- [ ] Custom columns support
-- [ ] Task cards: title, description, due date, priority, tags
+- [x] KanbanBoard component with 5 columns
+- [x] Task cards: title, description, due date, priority, tags
+- [x] Subtasks progress bar
+- [x] Add/Edit modal for tasks
+- [x] Category filter (Career, Health, Family, etc.)
+- [x] Timeline views: week, month, year, life
+- [x] AI suggestions panel (mock)
+- [x] 60-year life timeline visualization
+- [ ] Drag-and-drop reordering (planned for v2)
 - [ ] Link tasks to journal entries for context
-- [ ] Subtasks / checklist items
-- [ ] AI task suggestions ("You mentioned X 5 times")
 - [ ] Google Calendar OAuth integration
-- [ ] Timeline views: day, week, month, year, life (60+ years)
 
 ### Mobile App (Expo)
 - [ ] Create apps/mobile with create-expo-app
