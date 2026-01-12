@@ -31,6 +31,7 @@ import SolutionParentsPage from './pages/SolutionParentsPage';
 import SolutionPartnersPage from './pages/SolutionPartnersPage';
 import SolutionGrowthPage from './pages/SolutionGrowthPage';
 import StorageSettingsPage from './pages/StorageSettingsPage';
+import DataReclamationPage from './pages/DataReclamationPage';
 
 // Lazy load EmergencyAccessPage to avoid loading secrets.js-grempe on initial load
 const EmergencyAccessPage = lazy(() => import('./pages/EmergencyAccessPage'));
@@ -76,6 +77,7 @@ function App() {
             </Suspense>
           } />
           <Route path="/settings/storage" element={<StorageSettingsPage />} />
+          <Route path="/data-reclamation" element={<DataReclamationPage />} />
           
           {/* Private Routes */}
         </Route>
