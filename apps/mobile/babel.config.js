@@ -5,9 +5,7 @@ module.exports = function (api) {
       ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
       'nativewind/babel',
     ],
-    plugins: [
-      'react-native-worklets-core/plugin',
-      'react-native-reanimated/plugin',
-    ],
+    // TODO-p3: Add 'react-native-reanimated/plugin' back when using advanced animations
+    plugins: [],
   };
 };
