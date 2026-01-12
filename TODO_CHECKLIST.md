@@ -196,4 +196,14 @@
 
 ---
 
+## Known Issues / User Feedback
+
+### Images (Priority: High)
+- [ ] AI-generated images look untrustworthy (user feedback)
+- [ ] Consider replacing with GIFs or real screenshots
+- [ ] Most pages use icons/gradients which is good
+- [ ] Review LandingPage for problematic images
+
+---
+
 *Last updated: 2026-01-12 09:18*

@@ -40,7 +40,7 @@
 - [x] Life Planning Kanban specs
 - [x] Premium tier definitions
 
-### Onboarding
+### Onboarding ✓
 - [x] OnboardingWizard component (6 steps)
 - [x] Funny, skippable, privacy-focused
 - [x] Wired to show on first login
@@ -73,26 +73,43 @@
 - [x] Cloned as apps/voice-docs
 - [x] Removed .git for monorepo
 - [x] Renamed package to @lcc/voice-docs
+- [x] "Ask the docs" floating button (AskDocsButton component)
+- [x] Available on BOTH dashboard AND public website
 
 ### Navigation Updates ✓
-- [x] Data Reclamation in Product dropdown
+- [x] Data Reclamation in Product dropdown (links to marketing page)
 - [x] Philosophy link in header
 - [x] Roadmap link (highlighted)
 - [x] Philosophy in footer
+- [x] Roadmap in footer
+
+### Data Reclamation Marketing ✓
+- [x] Dedicated marketing page at /features/data-reclamation
+- [x] Chrome extension download with badges
+- [x] GDPR automation showcase with 8 platforms
+- [x] Hero with "Free During Beta" messaging
+- [x] Three pillars: Browser Data, GDPR, Data Brokers
+
+### Help Center ✓
+- [x] HelpPage at /help with documentation links
+- [x] FAQ section (4 common questions)
+- [x] Video tutorials placeholder
+- [x] AskDocsButton floating on all pages
 
 ---
 
-## In Progress
+## In Progress / Known Issues
 
-### Data Reclamation Marketing
-- [ ] Create dedicated marketing page (/features/data-reclamation)
-- [ ] Chrome extension download with badges
-- [ ] GDPR automation showcase
+### Images - User Feedback (IMPORTANT)
+- [ ] **AI-generated images look untrustworthy** - user feedback
+- [ ] Consider replacing with GIFs or real screenshots
+- [ ] Most pages already use icons/gradients (good)
+- [ ] Review LandingPage and feature pages for problematic images
 
 ### voice-docs Integration (Remaining)
 - [ ] Add shared dependencies to packages/
-- [ ] Create /help route in main app
-- [ ] "Ask the docs" floating button
+- [ ] Connect AskDocsButton to actual voice-docs AI backend
+- [ ] Navigate to relevant app sections from AI answers
 
 ---
 
@@ -128,7 +145,8 @@
 - Focus: data, insights, legacy, action
 - Zero-knowledge is non-negotiable
 - Commit early and often
+- **Image quality matters** - AI images can hurt trust
 
 ---
 
-*Last updated: 2026-01-12 09:51*
+*Last updated: 2026-01-12 10:01*
