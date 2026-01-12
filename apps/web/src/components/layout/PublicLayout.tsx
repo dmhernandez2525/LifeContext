@@ -17,6 +17,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
+import AskDocsButton from '../help/AskDocsButton';
 
 // ============================================================
 // NAVIGATION DATA
@@ -451,6 +452,9 @@ export default function PublicLayout() {
           </div>
         </div>
       </footer>
+
+      {/* Floating Help Button */}
+      <AskDocsButton />
     </div>
   );
 }

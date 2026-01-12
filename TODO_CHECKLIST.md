@@ -75,9 +75,9 @@
 - [x] Clone repo as apps/voice-docs
 - [x] Remove .git for monorepo integration
 - [x] Rename package to @lcc/voice-docs
+- [x] "Ask the docs" floating button
 - [ ] Add shared dependencies to packages/
-- [ ] Create /help route in main app
-- [ ] "Ask the docs" floating button
+- [ ] Create /help route in main app (connect to voice-docs)
 - [ ] Navigate to relevant app sections
 
 ---
@@ -90,23 +90,31 @@
   - How data powers the attention economy
   - Why LifeContext intentionally avoids this
   - Leveling the playing field for personal data ownership
-- [ ] Add "Philosophy" link to website navigation
+- [x] Add "Philosophy" link to website navigation
 - [ ] Add more content to README with this philosophy
 
 ### Data Reclamation on Website
-- [ ] Add Data Reclamation to main navigation
-- [ ] Create dedicated marketing page (/features/data-reclamation)
-- [ ] Chrome extension download section with badges
-- [ ] GDPR automation showcase with platform logos
+- [x] Add Data Reclamation to main navigation
+- [x] Create dedicated marketing page (/features/data-reclamation)
+- [x] Chrome extension download section with badges
+- [x] GDPR automation showcase with platform logos
 - [ ] Data broker section (mark "Coming Soon")
 
-### Feature Request System (Like Strapi)
-- [ ] Set up Convex project
-- [ ] Schema: FeatureRequest, Comment, Vote
-- [ ] Create /roadmap public page
-- [ ] Upvoting (anonymous, rate-limited)
-- [ ] Comment sections per feature
-- [ ] /feature-request submission form
+### Help Center
+- [x] Create /help route
+- [x] HelpPage with documentation links
+- [x] FAQ section
+- [x] "Ask the Docs" floating button
+- [ ] Connect to voice-docs AI (requires backend)
+
+### Feature Request System (Like Canny)
+- [x] FeatureRequestPage UI complete
+- [x] PublicRoadmapPage with 3 columns
+- [x] Convex schema prepared (schema.ts)
+- [x] Convex functions prepared (features.ts)
+- [x] /feature-request route
+- [x] /roadmap route
+- [ ] Deploy Convex when account ready
 - [ ] Admin dashboard for management
 
 ### voice-docs-app Integration
