@@ -24,9 +24,11 @@ config.resolver.unstable_enablePackageExports = true;
 // Ensure packages can find their dependencies
 config.resolver.extraNodeModules = {
   '@expo/metro-runtime': path.resolve(projectRoot, 'node_modules/@expo/metro-runtime'),
-  'react-native-css-interop': path.resolve(projectRoot, 'node_modules/react-native-css-interop'),
   '@babel/runtime': path.resolve(workspaceRoot, 'node_modules/@babel/runtime'),
+  // Manually resolve react-native-css-interop imports for web
+  'react-native-css-interop': path.resolve(projectRoot, 'node_modules/react-native-css-interop'),
 };
 
 module.exports = withNativeWind(config, { input: './global.css' });
+
 

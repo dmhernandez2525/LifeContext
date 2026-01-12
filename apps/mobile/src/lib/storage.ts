@@ -10,10 +10,13 @@ import { generateId } from './encryption';
 // MMKV STORAGE (Fast key-value)
 // ============================================================
 
+import { Platform } from 'react-native';
+
 export const storage = new MMKV({
   id: 'lcc-storage',
-  encryptionKey: 'lcc-encryption-key', // Will be replaced with secure key
+  ...(Platform.OS !== 'web' ? { encryptionKey: 'lcc-encryption-key' } : {}), // Encryption only on native
 });
+
 
 // ============================================================
 // CONSTANTS
