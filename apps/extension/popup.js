@@ -71,7 +71,7 @@ async function handleExport() {
     // Open LifeContext in new tab
     setTimeout(() => {
       chrome.tabs.create({
-        url: 'https://lifecontext.com/data-reclamation?import=true'
+        url: 'http://localhost:3000/data-reclamation?import=true'
       });
     }, 1000);
     

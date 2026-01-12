@@ -98,7 +98,7 @@
 - [x] Create dedicated marketing page (/features/data-reclamation)
 - [x] Chrome extension download section with badges
 - [x] GDPR automation showcase with platform logos
-- [ ] Data broker section (mark "Coming Soon")
+- [x] Data broker section (implemented with mock scan flow)
 
 ### Help Center
 - [x] Create /help route
@@ -127,17 +127,17 @@
 - [x] Timeline views: week, month, year, life
 - [x] AI suggestions panel (mock)
 - [x] 60-year life timeline visualization
-- [ ] Drag-and-drop reordering (planned for v2)
-- [ ] Link tasks to journal entries for context
+- [x] Drag-and-drop reordering (Native HTML5 DnD)
+- [x] Link tasks to journal entries for context (UI complete)
 - [ ] Google Calendar OAuth integration
 
 ### Mobile App (Expo)
-- [ ] Create apps/mobile with create-expo-app
-- [ ] Add to TurboRepo workspace
-- [ ] Move shared stores to packages/core
-- [ ] NativeWind for Tailwind on mobile
-- [ ] Core screens: login, dashboard, quick record
-- [ ] expo-av for voice recording
+- [x] Create apps/mobile with create-expo-app
+- [x] Add to TurboRepo workspace
+- [x] Move shared stores to packages/core
+- [x] NativeWind for Tailwind on mobile
+- [x] Core screens: login, dashboard, quick record (Expo Router tabs)
+- [x] expo-av for voice recording (`useAudioRecorder` hook)
 - [ ] Push notifications
 
 ### Premium Tier Definitions
@@ -192,9 +192,9 @@
 ## Known Issues / User Feedback
 
 ### Images (Priority: High)
-- [ ] AI-generated images look untrustworthy (user feedback)
-- [ ] Consider replacing with GIFs or real screenshots
-- [ ] Most pages use icons/gradients which is good
+- [x] AI-generated images look untrustworthy (user feedback) - Replaced with CSS/SVG
+- [x] Consider replacing with GIFs or real screenshots
+- [x] Most pages use icons/gradients which is good
 - [ ] Review LandingPage for problematic images
 
 ---

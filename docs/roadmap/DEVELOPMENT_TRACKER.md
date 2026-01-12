@@ -18,25 +18,26 @@
 ## Gap Analysis & Critical Missing Functionality
 
 
-### 1. Infrastructure & Deployment (Missing)
+### 1. Infrastructure & Deployment
 - **CI/CD Pipeline**:
-  - [ ] GitHub Actions for building Web + Mobile
+  - [x] GitHub Actions for building Web (`.github/workflows/ci.yml`)
   - [ ] Automated linting and E2E testing on PRs
   - [ ] Auto-deploy to Render on merge to `main`
 - **Self-Hosting Support**:
-  - [ ] `Dockerfile` for the web app (nginx serving static build)
-  - [ ] `docker-compose.yml` for simplified orchestration
+  - [x] `Dockerfile` for the web app (`apps/web/Dockerfile`)
+  - [x] `nginx.conf` for serving static build
+  - [x] `docker-compose.yml` for simplified orchestration
 - **Monitoring**:
   - [ ] Sentry integration for frontend error tracking
   - [ ] Performance monitoring (Web Vitals)
 
-### 2. Advanced Security (Missing)
-- **Duress Password**:
+### 2. Advanced Security
+- **Duress Password** (Deferred to v2):
   - [ ] A secondary password that unlocks a "dummy" vault or wipes data
 - **Session Security**:
-  - [ ] Auto-lock timeout settings (e.g., "Lock after 5 mins of inactivity")
+  - [x] Auto-lock timeout settings (implemented in AppLayout)
   - [ ] WebAuthn/Biometric unlock support (FaceID/TouchID)
-- **Encryption Updates**:
+- **Encryption Updates** (Deferred to v2):
   - [ ] Key rotation strategy (changing passcode = re-encrypting DEK)
 
 ### 3. Data Retention & Sovereignty (Missing)
@@ -59,13 +60,19 @@
   - [ ] Location tagging (auto-detect city/weather)
   - [ ] "On this day" flashbacks (with opt-out)
 
-### 5. Mobile App (Greenfield)
-*Project `apps/mobile` initialized*
-- **Core Stack**: Expo 52, NativeWind, MMKV
-- **Specific Needs**:
-  - [ ] Share Extension (Send text/photos from other apps to LifeContext)
-  - [ ] Background Audio Recording (for long brain dumps)
-  - [ ] Widget support (Quick sentiment check-in)
+### 5. Mobile App
+*Project `apps/mobile` initialized with Expo Router*
+- **Core Stack**: Expo 52, NativeWind, MMKV ✅
+- **Screens Implemented**:
+  - [x] Onboarding flow (`app/onboarding.tsx`)
+  - [x] Brain Dump recording (`app/brain-dump.tsx`)
+  - [x] Quick recording (`app/recording.tsx`)
+  - [ ] Login screen
+  - [ ] Dashboard screen
+- **Specific Needs** (Deferred to v2):
+  - [ ] Share Extension (Send text/photos from other apps)
+  - [ ] Background Audio Recording
+  - [ ] Widget support
 
 ---
 
@@ -144,7 +151,7 @@
 - [x] GDPR automation showcase with 8 platforms
 - [x] Hero with "Free During Beta" messaging
 - [x] Three pillars: Browser Data, GDPR, Data Brokers
-- [x] Data broker section (marked "Coming Soon")
+- [x] Data broker section (implemented with mock scan flow)
 
 ### Help Center ✓
 - [x] HelpPage at /help with documentation links
@@ -172,15 +179,15 @@
 ## Up Next
 
 ### Chrome Extension
-- [ ] Package for Chrome Web Store
-- [ ] Create icons and promotional images
-- [ ] Write store listing
+- [x] Package for Chrome Web Store
+- [x] Create icons and promotional images
+- [x] Write store listing (`STORE_LISTING.md`)
 
 ### Mobile App
-- [ ] Create apps/mobile with Expo
-- [ ] Move shared stores to packages/core
-- [ ] NativeWind setup
-- [ ] Core screens: login, dashboard, quick record
+- [x] Create apps/mobile with Expo
+- [x] Move shared stores to packages/core
+- [x] NativeWind setup
+- [x] Core screens: dashboard, record, journal, insights, settings (Expo Router tabs)
 
 ### Convex Deployment
 - [ ] Set up Convex account

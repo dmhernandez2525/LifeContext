@@ -227,8 +227,8 @@ export function useVideoRecorder(options: UseVideoRecorderOptions = {}): UseVide
         }
       };
 
-      mediaRecorder.onerror = (event: any) => {
-        const err = new Error(event.error?.message || 'Recording error');
+      mediaRecorder.onerror = (event: Event) => {
+        const err = new Error((event as ErrorEvent).message || 'Recording error');
         setError(err);
         updateStatus('error');
         onError?.(err);

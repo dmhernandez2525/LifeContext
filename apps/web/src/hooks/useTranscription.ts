@@ -113,9 +113,21 @@ async function transcribeWithWhisper(
 // HOOK IMPLEMENTATION
 // ============================================================
 
+// Web Speech API SpeechRecognition interface (not fully typed by TS)
+interface SpeechRecognitionInstance {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  onerror: (event: { error: string }) => void;
+  onend: () => void;
+  start: () => void;
+  stop: () => void;
+}
+
 export function useTranscription(options: UseTranscriptionOptions = {}): UseTranscriptionReturn {
   const settings = useAppStore((state) => state.settings);
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -144,7 +156,7 @@ export function useTranscription(options: UseTranscriptionOptions = {}): UseTran
     }
 
     try {
-      // @ts-ignore - Browser API
+      // @ts-expect-error - Browser API not fully typed
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
       
@@ -173,7 +185,7 @@ export function useTranscription(options: UseTranscriptionOptions = {}): UseTran
         }
       };
 
-      recognition.onerror = (event: any) => {
+      recognition.onerror = (event: { error: string }) => {
         const err = new Error(event.error);
         setError(event.error);
         options.onError?.(err);

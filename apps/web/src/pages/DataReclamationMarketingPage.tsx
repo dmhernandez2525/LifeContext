@@ -16,6 +16,7 @@ import {
   Check,
   Sparkles
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const PLATFORMS = [
   { name: 'Google', icon: '🔍', status: 'available' },
@@ -172,6 +173,91 @@ export default function DataReclamationMarketingPage() {
                 ))}
               </ul>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Data Broker Buyback Section (Advanced) */}
+      <section className="py-24 bg-gray-50 dark:bg-gray-800 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-red-500/5 to-transparent"></div>
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-4 py-2 rounded-full text-sm font-bold mb-6">
+                <Shield className="w-4 h-4" />
+                Advanced Protection
+              </div>
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+                Stop Them From Selling You
+              </h2>
+              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
+                Data brokers like Spokeo, Whitepages, and PeopleFinders trade your personal info for pennies. remove yourself from their databases automatically.
+              </p>
+              
+              <div className="space-y-6">
+                {[
+                  { title: 'Scan 50+ Brokers', desc: 'We check every major data broker for your records.' },
+                  { title: 'Auto-Removal Requests', desc: 'We send legal opt-out requests on your behalf.' },
+                  { title: 'Continuous Monitoring', desc: 'We verify they actually delete it (and keep it deleted).' }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-4">
+                    <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
+                      <Check className="w-5 h-5 text-red-600 dark:text-red-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 dark:text-white">{item.title}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-10">
+                <button
+                  onClick={() => alert("This feature is currently in closed beta. We've added you to the waitlist.")} 
+                  className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors flex items-center gap-2 shadow-lg shadow-red-600/20"
+                >
+                  Start Removal Scan
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+                <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">
+                  * Requires Identity Verification level 2
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 border border-gray-200 dark:border-gray-700 shadow-2xl">
+              <div className="flex items-center justify-between mb-8 border-b border-gray-100 dark:border-gray-800 pb-4">
+                <h3 className="font-bold text-gray-900 dark:text-white">Live Broker Scan (Demo)</h3>
+                <span className="animate-pulse flex items-center gap-2 text-xs font-mono text-green-500">
+                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  SCANNING
+                </span>
+              </div>
+              
+              <div className="space-y-4 font-mono text-sm max-h-[400px] overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white dark:to-gray-900 pointer-events-none"></div>
+                
+                {[
+                  { broker: 'Spokeo', status: 'FOUND', records: 'Address, Age, Relatives', color: 'text-red-500' },
+                  { broker: 'Whitepages', status: 'FOUND', records: 'Phone, Email', color: 'text-red-500' },
+                  { broker: 'Intelius', status: 'SCANNING', records: '...', color: 'text-gray-400' },
+                  { broker: 'PeopleFinders', status: 'QUEUED', records: '', color: 'text-gray-400' },
+                  { broker: 'BeenVerified', status: 'QUEUED', records: '', color: 'text-gray-400' },
+                ].map((row, i) => (
+                  <div key={i} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                    <span className="font-bold text-gray-700 dark:text-gray-300">{row.broker}</span>
+                    <span className={cn("font-bold", row.color)}>{row.status}</span>
+                  </div>
+                ))}
+                
+                <div className="p-3 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 rounded-lg mt-4">
+                  <p className="text-red-800 dark:text-red-300 text-xs">
+                    ⚠️ 2 Profiles found potentially exposing your home address.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

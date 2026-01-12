@@ -120,11 +120,50 @@ In an era of "AI Companions" designed to simulate intimacy for retention, LifeCo
 
 **We are a mirror, not a lover.**
 
-- **No Gamification**: We don't use streaks or badges to manipulate your dopamine.
-- **No Emotional Attachment**: Our AI is designed to be a supportive *analyst*, not a fake friend. It will not say "I missed you." It will say "You haven't written in 3 days; would you like to log this gap?"
-- **Data Sovereignty**: The Attention Economy relies on your data being trapped. We build escape hatches first.
+### Why Most Apps Want You Addicted
+
+Modern tech companies have discovered something insidious: **emotional attachment drives engagement**.
+
+- **Streaks**: Miss a day? Feel guilty. That's by design.
+- **AI Companions**: "I missed you!" No, it's a server that ran a cron job.
+- **Notifications**: Carefully timed to trigger dopamine at optimal hours.
+- **Infinite Scroll**: Your attention is the product being sold to advertisers.
+
+The Attention Economy is built on one truth: **the more you scroll, the more ads you see, the more data we can sell about you**.
+
+Your diary app shouldn't be part of this machine.
+
+### How We're Different
+
+| Them | Us |
+|------|----|
+| Streaks and badges to gamify your habits | No manipulation. Use it when it helps you. |
+| "I missed you" messages from AI | "You haven't written in 3 days. Would you like to note this gap?" |
+| Data sold to advertisers | Your data never leaves your device |
+| Designed to maximize time-in-app | Designed to maximize insight-per-minute |
+| Lock-in via proprietary formats | Export everything (JSON, Markdown, MP3) |
+
+### Leveling the Playing Field
+
+Big Tech companies have been hoarding your data for decades. They know:
+- What you search for at 2am
+- Who you text when you're sad
+- What products you buy when stressed
+
+**They use this data to build psychological profiles to sell you things.**
+
+LifeContext flips the script. **You** get the same power they have, but for your own benefit:
+- See your own emotional patterns over years
+- Understand your decision-making trends
+- Build a context engine that works *for* you, not for advertisers
 
 > "The most dangerous data is the data you don't know you're generating."
+
+### The Bottom Line
+
+- **No Gamification**: We don't use streaks or badges to manipulate your dopamine.
+- **No Emotional Attachment**: Our AI is a supportive *analyst*, not a fake friend.
+- **Data Sovereignty**: The Attention Economy relies on your data being trapped. We build escape hatches first.
 
 ---
 

@@ -91,7 +91,7 @@ Please synthesize this into organized thoughts, identify contradictions, and gen
   }
 
   const data = await response.json();
-  const textContent = data.content?.find((c: any) => c.type === 'text');
+  const textContent = data.content?.find((c: { type: string; text?: string }) => c.type === 'text');
   
   if (!textContent?.text) {
     throw new Error('No response from Claude');

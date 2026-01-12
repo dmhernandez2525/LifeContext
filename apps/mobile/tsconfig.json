@@ -1,12 +1,30 @@
 {
-  "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
     "strict": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
     "paths": {
-      "@/*": ["./src/*"],
-      "@lcc/core": ["../../packages/core/src"],
-      "@lcc/types": ["../../packages/types/src"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@lcc/core": [
+        "../../packages/core/src"
+      ],
+      "@lcc/types": [
+        "../../packages/types/src"
+      ]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "nativewind-env.d.ts"
+  ],
+  "extends": "expo/tsconfig.base"
 }

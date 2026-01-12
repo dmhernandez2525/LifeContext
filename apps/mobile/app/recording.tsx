@@ -1,103 +1,60 @@
 import { View, Text, Pressable } from 'react-native';
-import { useState, useRef, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Audio } from 'expo-av';
-import * as Haptics from 'expo-haptics';
-import { formatDuration } from '@lcc/core';
+import { useAudioRecorder } from '../src/hooks/useAudioRecorder';
+import { useRecordingStore } from '../src/stores/recording-store';
 
 export default function RecordingScreen() {
   const router = useRouter();
-  const [status, setStatus] = useState<'idle' | 'recording' | 'paused'>('idle');
-  const [duration, setDuration] = useState(0);
-  const recordingRef = useRef<Audio.Recording | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const { 
+    startRecording, 
+    stopRecording, 
+    pauseRecording, 
+    resumeRecording, 
+    status, 
+    duration,
+    formatDuration
+  } = useAudioRecorder();
+  
+  const addRecording = useRecordingStore((state: any) => state.addRecording);
 
   useEffect(() => {
-    startRecording();
+    // Auto-start
+    let started = false;
+    const init = async () => {
+      const success = await startRecording();
+      if (!success) router.back();
+      started = true;
+    };
+    init();
+
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (recordingRef.current) {
-        recordingRef.current.stopAndUnloadAsync();
-      }
+      // If we unmount and are still recording, stop and save? nothing, hook handles stop
     };
   }, []);
 
-  const startRecording = async () => {
-    try {
-      const { granted } = await Audio.requestPermissionsAsync();
-      if (!granted) {
-        router.back();
-        return;
-      }
-
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
+  const handleStop = async () => {
+    const uri = await stopRecording();
+    if (uri) {
+      addRecording({
+        id: Date.now().toString(),
+        uri,
+        duration,
+        createdAt: Date.now(),
+        title: `Recording ${new Date().toLocaleTimeString()}`,
+        tags: ['quick-record'],
+        syncStatus: 'pending'
       });
-
-      const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
-
-      recordingRef.current = recording;
-      setStatus('recording');
-
-      intervalRef.current = setInterval(() => {
-        setDuration((d) => d + 1);
-      }, 1000);
-
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    } catch (error) {
-      console.error('Failed to start recording:', error);
+      // Navigate to list or dashboard
+      console.log('Saved to', uri);
       router.back();
     }
   };
 
-  const pauseRecording = async () => {
-    if (recordingRef.current && status === 'recording') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      await recordingRef.current.pauseAsync();
-      setStatus('paused');
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    }
-  };
-
-  const resumeRecording = async () => {
-    if (recordingRef.current && status === 'paused') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      await recordingRef.current.startAsync();
-      setStatus('recording');
-      intervalRef.current = setInterval(() => {
-        setDuration((d) => d + 1);
-      }, 1000);
-    }
-  };
-
-  const stopRecording = async () => {
-    if (recordingRef.current) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-
-      if (intervalRef.current) clearInterval(intervalRef.current);
-
-      await recordingRef.current.stopAndUnloadAsync();
-      const uri = recordingRef.current.getURI();
-      console.log('Recording saved to:', uri);
-
-      recordingRef.current = null;
-
-      // TODO: Save recording and navigate to transcription
-      router.back();
-    }
-  };
-
-  const cancelRecording = async () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    if (recordingRef.current) {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      await recordingRef.current.stopAndUnloadAsync();
-      recordingRef.current = null;
-    }
+  const handleCancel = async () => {
+    await stopRecording(); // Just stop, don't save (or save and delete?)
+    // Actually hook stop returns URI but we just ignore it
     router.back();
   };
 
@@ -105,7 +62,7 @@ export default function RecordingScreen() {
     <SafeAreaView className="flex-1 bg-dark-background">
       {/* Header */}
       <View className="flex-row items-center justify-between px-4 py-3">
-        <Pressable onPress={cancelRecording} className="p-2">
+        <Pressable onPress={handleCancel} className="p-2">
           <Text className="text-red-400 text-lg">Cancel</Text>
         </Pressable>
         <View className="flex-row items-center">
@@ -129,7 +86,7 @@ export default function RecordingScreen() {
         </Text>
 
         {/* Waveform Placeholder */}
-        <View className="w-full h-24 bg-dark-surface rounded-xl mb-8 items-center justify-center">
+        <View className="w-full h-24 bg-dark-surface rounded-xl mb-8 items-center justify-center border border-dark-border">
           <Text className="text-dark-text-secondary">
             {status === 'recording' ? '🎵 Recording audio...' : '⏸️ Paused'}
           </Text>
@@ -154,8 +111,8 @@ export default function RecordingScreen() {
           )}
 
           <Pressable
-            onPress={stopRecording}
-            className="w-24 h-24 bg-red-500 rounded-full items-center justify-center active:scale-95"
+            onPress={handleStop}
+            className="w-24 h-24 bg-red-500 rounded-full items-center justify-center active:scale-95 border-4 border-red-900"
           >
             <View className="w-10 h-10 bg-white rounded-md" />
           </Pressable>

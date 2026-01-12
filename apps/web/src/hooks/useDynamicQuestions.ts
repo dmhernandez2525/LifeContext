@@ -174,7 +174,7 @@ export function useDynamicQuestions(): UseDynamicQuestionsReturn {
       // 2. Follow-up suggestions based on answered questions
       // In a full implementation, this would analyze transcripts
       const answeredCategories = Object.entries(categoryStats)
-        .filter(([_, stats]) => stats.answered > 0)
+        .filter(([, stats]) => stats.answered > 0)
         .map(([slug]) => slug);
 
       answeredCategories.slice(0, 2).forEach(catSlug => {

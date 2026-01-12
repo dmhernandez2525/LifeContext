@@ -17,7 +17,18 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, 'node_modules'),
 ];
 
-// Force Metro to resolve (sub)dependencies only from the workspaceRoot
-config.resolver.disableHierarchicalLookup = true;
+// Handle pnpm symlinks
+config.resolver.unstable_enableSymlinks = true;
+config.resolver.unstable_enablePackageExports = true;
+
+// Ensure packages can find their dependencies
+config.resolver.extraNodeModules = {
+  '@expo/metro-runtime': path.resolve(projectRoot, 'node_modules/@expo/metro-runtime'),
+  '@babel/runtime': path.resolve(workspaceRoot, 'node_modules/@babel/runtime'),
+  // Manually resolve react-native-css-interop imports for web
+  'react-native-css-interop': path.resolve(projectRoot, 'node_modules/react-native-css-interop'),
+};
 
 module.exports = withNativeWind(config, { input: './global.css' });
+
+

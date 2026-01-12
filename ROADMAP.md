@@ -91,7 +91,12 @@ Create the world's most comprehensive, private, and intelligent life documentati
 - [ ] **Public Roadmap Page** (`/roadmap`)
   - [ ] Planned / In Progress / Done columns
   - [ ] Upvoting (like Canny/ProductBoard)
-  - [ ] Comment sections
+  - [x] Feature: Legacy Building
+- [x] Feature: Relationship Intelligence
+- [ ] Feature: Life Planning AI (Deep Dive Creation)
+  - [ ] Contextual "Create" validation
+  - [ ] Voice-based "Deep Dive" session for detailed goal setting
+  - [ ] Auto-transcription to structured plan
 - [ ] **Feature Request Form**
   - [ ] Submit title, description, category
   - [ ] Store in Convex database

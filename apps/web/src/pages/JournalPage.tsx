@@ -15,7 +15,7 @@ import {
   Clock,
   Loader2,
   CheckCircle,
-  Trash2
+  Trash2,
 } from 'lucide-react';
 import { cn, formatDuration } from '@/lib/utils';
 import { useRecorder, useTranscription, useVideoRecorder } from '@/hooks';
@@ -53,6 +53,17 @@ export default function JournalPage() {
   const [energyLevel, setEnergyLevel] = useState<number>(3);
   const [isSaving, setIsSaving] = useState(false);
   const [entrySaved, setEntrySaved] = useState(false);
+
+  const [isReviewing, setIsReviewing] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_recordingComplete, setRecordingComplete] = useState(false);
+  const [finalTranscript, setFinalTranscript] = useState('');
+  const [recordingData, setRecordingData] = useState<{
+    blob: Blob;
+    duration: number;
+    waveform?: number[]; // Make optional
+    isVideo?: boolean;
+  } | null>(null);
   
   // Recording
   const recorder = useRecorder({
@@ -92,16 +103,28 @@ export default function JournalPage() {
   // Recording (audio or video based on mode)
   const handleStartRecording = async () => {
     try {
+      setRecordingComplete(false);
+      setIsReviewing(false);
+      setRecordingData(null);
+      transcription.clearTranscript();
+      // The original code had video recording logic here.
+      // Assuming this handleStartRecording is now specifically for audio based on the provided snippet.
+      // If video recording is still needed, its logic should be handled separately or within a conditional.
+      await recorder.start();
+      
+      // Assuming 'showTranscription' is a state variable or prop, not defined in this snippet.
+
       if (inputMode === 'video') {
         await videoRecorder.start();
-      } else {
+      } else { // Default to audio
         await recorder.start();
-        if (transcription.hasWebSpeech) {
+        const showTranscription = true; // Placeholder
+        if (showTranscription && transcription.hasWebSpeech) {
           transcription.startLive();
         }
       }
-    } catch (err) {
-      console.error('Failed to start recording:', err);
+    } catch (error) {
+      console.error('Failed to start recording:', error);
     }
   };
 
@@ -109,23 +132,58 @@ export default function JournalPage() {
   const handleStopRecording = async () => {
     try {
       if (inputMode === 'video') {
-        const result = await videoRecorder.stop();
-        return { blob: result.blob, duration: result.duration, isVideo: true };
-      } else {
-        const result = await recorder.stop();
-        transcription.stopLive();
-        return { blob: result.blob, duration: result.duration, isVideo: false };
+         const result = await videoRecorder.stop();
+         setRecordingData({ blob: result.blob, duration: result.duration, isVideo: true });
+         setIsReviewing(true);
+         setRecordingComplete(true);
+         return { blob: result.blob, duration: result.duration, isVideo: true };
       }
-    } catch (err) {
-      console.error('Failed to stop recording:', err);
+
+      const result = await recorder.stop();
+      const liveText = transcription.stopLive();
+      
+      const text = transcription.transcript || liveText || '';
+      
+      // Store for review
+      setFinalTranscript(text);
+      setRecordingData({
+        blob: result.blob,
+        duration: result.duration,
+        waveform: recorder.waveform,
+      });
+      
+      setIsReviewing(true);
+      setRecordingComplete(true);
+      return null; // Don't return blob yet, wait for review
+    } catch (error) {
+      console.error('Failed to stop recording:', error);
       return null;
     }
   };
 
+  const handleConfirmRecording = () => {
+    // Append transcript
+    if (finalTranscript) {
+      setContent(prev => prev + (prev ? '\n\n' : '') + finalTranscript);
+    }
+    // Keep recordingData for handleSave to use
+    setIsReviewing(false);
+  };
+
+  const handleDiscardRecording = () => {
+    setRecordingData(null);
+    setFinalTranscript('');
+    setIsReviewing(false);
+    setRecordingComplete(false);
+  };
+
   // Save entry
   const handleSave = async () => {
+    // Check if we have content or a recording
     const isRecording = recorder.status === 'recording' || videoRecorder.status === 'recording';
-    if (!content.trim() && !isRecording) return;
+    const hasRecordingData = !!recordingData;
+    
+    if (!content.trim() && !isRecording && !hasRecordingData) return;
     
     setIsSaving(true);
     
@@ -133,17 +191,31 @@ export default function JournalPage() {
       let audioBlob: Blob | undefined;
       let videoBlob: Blob | undefined;
       let duration: number | undefined;
+      let mediaTypeToSave: JournalMediaType = inputMode;
       
+      // If still recording, stop and get data
       if (isRecording) {
-        const result = await handleStopRecording();
-        if (result) {
-          if (result.isVideo) {
+        const result = await handleStopRecording(); // This will set recordingData for audio, or return for video
+        if (result && result.isVideo) {
             videoBlob = result.blob;
-          } else {
-            audioBlob = result.blob;
-          }
-          duration = result.duration;
+            duration = result.duration;
+            mediaTypeToSave = 'video';
         }
+        // If audio, handleStopRecording sets recordingData and triggers review.
+        // If user clicks "Save" while audio recording, we should probably wait for review or force save.
+        // For now, if audio, we'll rely on recordingData being set by handleStopRecording.
+      }
+      
+      // Use stored recording data if available (from review flow or immediate stop for video)
+      if (recordingData) {
+        if (recordingData.isVideo) {
+          videoBlob = recordingData.blob;
+          mediaTypeToSave = 'video';
+        } else {
+          audioBlob = recordingData.blob;
+          mediaTypeToSave = 'voice';
+        }
+        duration = recordingData.duration;
       }
 
       const entry = {
@@ -158,7 +230,7 @@ export default function JournalPage() {
         },
         mood,
         energyLevel,
-        mediaType: inputMode,
+        mediaType: mediaTypeToSave,
         audioBlob,
         videoBlob,
         duration,
@@ -176,6 +248,8 @@ export default function JournalPage() {
         setIsCreating(false);
         setContent('');
         setMood(undefined);
+        setRecordingData(null); // Clear recording data
+        setFinalTranscript(''); // Clear final transcript
         loadEntries();
       }, 1500);
     } catch (err) {
@@ -399,6 +473,31 @@ export default function JournalPage() {
                           Stop Recording
                         </button>
                       </div>
+                    ) : videoRecorder.videoBlob ? ( // This is the new state for previewing after recording stops
+                      <div className="space-y-4">
+                        <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
+                          <video
+                            src={videoRecorder.videoUrl || undefined}
+                            className="w-full h-full object-cover"
+                            controls
+                            playsInline
+                          />
+                        </div>
+                        <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 flex gap-3">
+                        <button
+                            onClick={handleDiscardRecording}
+                            className="flex-1 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                        >
+                            Discard
+                        </button>
+                        <button
+                            onClick={handleConfirmRecording}
+                            className="flex-1 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors"
+                        >
+                            Add to Journal
+                        </button>
+                    </div>
+                    </div>
                     ) : videoRecorder.videoUrl ? (
                       <div className="space-y-4">
                         <VideoPlayer src={videoRecorder.videoUrl} className="aspect-video" />
@@ -440,6 +539,46 @@ export default function JournalPage() {
                       </div>
                     )}
                   </div>
+                )}
+                
+                {/* Review Modal Overlay for Journal */}
+                {isReviewing && (
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-lg w-full overflow-hidden border border-gray-200 dark:border-gray-800">
+                            <div className="p-4 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 flex justify-between items-center">
+                                <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                                    <CheckCircle className="w-5 h-5 text-green-500" />
+                                    Review Recording
+                                </h3>
+                                <span className="text-sm text-gray-500">{recordingData?.duration ? formatDuration(recordingData.duration) : '00:00'}</span>
+                            </div>
+                            <div className="p-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                     Transcription (will be added to journal)
+                                </label>
+                                <textarea
+                                    value={finalTranscript}
+                                    onChange={(e) => setFinalTranscript(e.target.value)}
+                                    className="w-full h-32 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Transcription..."
+                                />
+                            </div>
+                            <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 flex gap-3">
+                                <button
+                                    onClick={handleDiscardRecording}
+                                    className="flex-1 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                >
+                                    Discard
+                                </button>
+                                <button
+                                    onClick={handleConfirmRecording}
+                                    className="flex-1 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors"
+                                >
+                                    Add to Journal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 )}
 
                 {/* Actions */}

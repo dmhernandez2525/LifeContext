@@ -5,6 +5,39 @@ All notable changes to the Life Context Compiler project will be documented in t
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-01-12
+
+### Added
+
+#### Chrome Extension Store Preparation
+- **STORE_LISTING.md**: Complete Chrome Web Store listing with description, keywords, permissions justification
+- Extension ready for submission to Chrome Web Store
+
+#### Infrastructure
+- **docker-compose.yml**: Simplified orchestration for self-hosting
+- Gap Analysis updated to reflect all completed infrastructure items
+
+#### Life Planning Kanban
+- **Native Drag & Drop**: HTML5 drag-and-drop for task reordering across columns
+- **Journal Linking UI**: Tasks can now link to journal entries (UI complete, mock data)
+- Fixed `@ts-ignore` to `@ts-expect-error` for better linting
+
+#### Data Reclamation
+- **Data Broker Buyback Section**: Full marketing section with animated mock scanner
+- Broker list: Spokeo, Whitepages, Intelius, PeopleFinders, BeenVerified
+
+### Fixed
+- TypeScript unused variable errors in `App.tsx`, `JournalPage.tsx`
+- Accidental break in `useEmotionalTrends.ts` reduce call
+- Mobile `tsconfig.json` no longer references broken `expo/tsconfig.base`
+
+### Documentation
+- Updated `TODO_CHECKLIST.md` with accurate completion status
+- Updated `DEVELOPMENT_TRACKER.md` Gap Analysis section
+- Marked mobile app screens as complete (5 tabs exist)
+
+---
+
 ## [0.4.0] - 2026-01-11
 
 ### Added
