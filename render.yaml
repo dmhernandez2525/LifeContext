@@ -4,7 +4,11 @@ services:
   - type: web
     name: life-context-web
     runtime: static
-    buildCommand: npm install -g pnpm && pnpm install --no-frozen-lockfile && pnpm --filter @lcc/web build
+    buildCommand: |
+      corepack enable
+      corepack prepare pnpm@9.15.0 --activate
+      pnpm install --no-frozen-lockfile
+      pnpm --filter @lcc/web build
     staticPublishPath: apps/web/dist
     routes:
       - type: rewrite
@@ -13,5 +17,7 @@ services:
     envVars:
       - key: NODE_VERSION
         value: "20.11.0"
-      - key: SKIP_INSTALL
-        value: "true"
+      - key: CI
+        value: "false"
+      - key: npm_config_frozen_lockfile
+        value: "false"
