@@ -17,6 +17,7 @@ export interface UserSettings {
   showLiveTranscription: boolean;
   aiProvider: AIProviderConfig;
   storage: StorageConfig;
+  autoLockTimeout?: number; // Minutes, optional (default 5 if enabled)
 }
 
 export interface AIProviderConfig {

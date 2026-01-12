@@ -3,7 +3,6 @@ import {
   LayoutDashboard, 
   MessageSquare, 
   Brain,
-  Sparkles,
   Settings, 
   Lock,
   Menu,
@@ -17,15 +16,18 @@ import {
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
+import LockScreen from '../security/LockScreen';
+import AskDocsButton from '../help/AskDocsButton';
+import { Target } from 'lucide-react';
 
 const navItems = [
   { path: '/app', icon: LayoutDashboard, label: 'Dashboard', exact: true },
   { path: '/app/questions', icon: MessageSquare, label: 'Questions' },
   { path: '/app/journal', icon: BookOpen, label: 'Journal' },
   { path: '/app/timeline', icon: Calendar, label: 'Timeline' },
-  { path: '/app/companion', icon: Bot, label: 'AI Companion' },
+  { path: '/app/life-planning', icon: Target, label: 'Life Planning' },
+  { path: '/app/insights', icon: Bot, label: 'AI Insights' },
   { path: '/app/brain-dump', icon: Brain, label: 'Brain Dump' },
-  { path: '/app/insights', icon: Sparkles, label: 'Insights' },
   { path: '/app/settings', icon: Settings, label: 'Settings' },
 ];
 
@@ -33,6 +35,7 @@ export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const lock = useAppStore((state) => state.lock);
+  const isUnlocked = useAppStore((state) => state.isUnlocked);
   const settings = useAppStore((state) => state.settings);
   const updateSettings = useAppStore((state) => state.updateSettings);
   const [isDark, setIsDark] = useState(false);
@@ -46,10 +49,50 @@ export default function AppLayout() {
     document.documentElement.classList.toggle('dark', shouldBeDark);
   }, [settings?.theme]);
 
+  // Auto-Lock on inactivity
+  useEffect(() => {
+    // 5 minutes default if not set
+    const timeoutMinutes = settings?.autoLockTimeout ?? 5;
+    const timeoutMs = timeoutMinutes * 60 * 1000;
+    
+    let timer: ReturnType<typeof setTimeout>;
+
+    const resetTimer = () => {
+      clearTimeout(timer);
+      if (isUnlocked) {
+        timer = setTimeout(() => {
+          lock();
+        }, timeoutMs);
+      }
+    };
+
+    // Events to track activity
+    const events = ['mousedown', 'keydown', 'scroll', 'touchstart', 'mousemove'];
+    
+    events.forEach(event => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    // Initial timer start
+    resetTimer();
+
+    return () => {
+      clearTimeout(timer);
+      events.forEach(event => {
+        window.removeEventListener(event, resetTimer);
+      });
+    };
+  }, [isUnlocked, settings?.autoLockTimeout, lock]);
+
   const toggleTheme = () => {
     const newTheme = isDark ? 'light' : 'dark';
     updateSettings({ theme: newTheme });
   };
+
+  // Show lock screen when not unlocked
+  if (!isUnlocked) {
+    return <LockScreen />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -157,6 +200,9 @@ export default function AppLayout() {
           <Outlet />
         </div>
       </main>
+
+      {/* Floating Help Button */}
+      <AskDocsButton />
     </div>
   );
 }

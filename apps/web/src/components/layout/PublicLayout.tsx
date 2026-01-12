@@ -17,6 +17,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
+import AskDocsButton from '../help/AskDocsButton';
 
 // ============================================================
 // NAVIGATION DATA
@@ -50,6 +51,12 @@ const NAV_STRUCTURE = [
         path: '/features/relationships',
         description: 'Understand connection patterns',
         icon: Heart 
+      },
+      { 
+        label: 'Data Reclamation', 
+        path: '/features/data-reclamation',
+        description: 'Reclaim your scattered data',
+        icon: Lock 
       },
     ]
   },
@@ -85,6 +92,15 @@ const NAV_STRUCTURE = [
   { 
     label: 'Pricing', 
     path: '/pricing' 
+  },
+  { 
+    label: 'Philosophy', 
+    path: '/philosophy' 
+  },
+  { 
+    label: 'Roadmap', 
+    path: '/roadmap',
+    highlight: true
   },
 ];
 
@@ -401,6 +417,7 @@ export default function PublicLayout() {
                 <li><NavLink to="/features" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">All Features</NavLink></li>
                 <li><NavLink to="/features/journaling" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Secure Journal</NavLink></li>
                 <li><NavLink to="/features/legacy" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Legacy Building</NavLink></li>
+                <li><NavLink to="/roadmap" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Roadmap</NavLink></li>
                 <li><NavLink to="/pricing" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Pricing</NavLink></li>
               </ul>
             </div>
@@ -409,6 +426,7 @@ export default function PublicLayout() {
               <h4 className="font-bold text-gray-900 dark:text-white mb-6">Company</h4>
               <ul className="space-y-4 text-gray-500 dark:text-gray-400">
                 <li><NavLink to="/about" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">About Us</NavLink></li>
+                <li><NavLink to="/philosophy" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Our Philosophy</NavLink></li>
                 <li><NavLink to="/data-ownership" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Data Sovereignty</NavLink></li>
                 <li><NavLink to="/contact" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Contact</NavLink></li>
                 <li><NavLink to="/media" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Media Kit</NavLink></li>
@@ -434,6 +452,9 @@ export default function PublicLayout() {
           </div>
         </div>
       </footer>
+
+      {/* Floating Help Button */}
+      <AskDocsButton />
     </div>
   );
 }

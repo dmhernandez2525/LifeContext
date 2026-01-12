@@ -63,6 +63,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
     autoBackup: false,
     backupFrequency: 'daily',
   },
+  autoLockTimeout: 5, // 5 minutes default
 };
 
 // ============================================================

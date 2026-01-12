@@ -16,7 +16,6 @@ import VideoShowcase from '@/components/marketing/VideoShowcase';
 
 const useCases = [
   {
-    image: '/marketing/jarvis.png',
     title: 'Your Digital Essence',
     subtitle: 'The Personal Jarvis',
     description: 'More than a journal, LCC is a living extension of your consciousness. An AI coach that understands your philosophies, dreams, and values to provide truly personalized guidance.',
@@ -27,7 +26,6 @@ const useCases = [
     ]
   },
   {
-    image: '/marketing/legacy.png',
     title: 'Across Generations',
     subtitle: 'Legacy & Lineage',
     description: 'Pass down more than just photos. Give your children the context of your strengths, weaknesses, and the stories that shaped you. Help them understand family mental health patterns through generations.',
@@ -38,7 +36,6 @@ const useCases = [
     ]
   },
   {
-    image: '/marketing/relationships.png',
     title: 'Deepen Connection',
     subtitle: 'Relationships & Partners',
     description: 'Find alignment where it matters most. Safely compare life contexts with partners to identify shared passions or understand how past traumas influence your current dynamics.',
@@ -49,7 +46,6 @@ const useCases = [
     ]
   },
   {
-    image: '/marketing/security.png',
     title: 'Granular Sharing',
     subtitle: 'Trust Levels',
     description: 'You decide who sees what. Define security levels for different groups—from high-level intros for a new manager to intimate details for a spouse.',
@@ -96,11 +92,9 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-white dark:bg-gray-950 transition-colors duration-300">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/marketing/hero.png" 
-            alt="Hero Background" 
-            className="w-full h-full object-cover opacity-20 dark:opacity-40 scale-105"
-          />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-100/40 via-blue-50/40 to-white dark:from-purple-900/20 dark:via-gray-950 dark:to-gray-950" />
+          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" 
+               style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '32px 32px' }} />
           <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-white/80 to-white dark:from-gray-950/20 dark:via-gray-950/60 dark:to-gray-950" />
         </div>
         
@@ -126,7 +120,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
-              Build a comprehensive understanding of yourself. A private, voice-first companion that organizes your 
+              Build a comprehensive understanding of yourself. A private, voice-first journal that organizes your 
               life context to empower your legacy, your relationships, and your future.
             </p>
 
@@ -227,14 +221,36 @@ export default function LandingPage() {
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="relative"
+              className="relative aspect-square flex items-center justify-center"
             >
               <div className="absolute inset-0 bg-purple-500/10 dark:bg-purple-500/20 blur-[120px] rounded-full" />
-              <img 
-                src="/marketing/security.png" 
-                alt="Granular Sharing" 
-                className="relative z-10 w-full max-w-lg mx-auto rounded-3xl shadow-2xl shadow-purple-900/20 dark:shadow-none"
-              />
+              <div className="relative z-10 w-full max-w-sm aspect-square bg-gradient-to-tr from-gray-900 to-gray-800 rounded-3xl border border-white/10 shadow-2xl flex items-center justify-center p-8">
+                <div className="grid grid-cols-2 gap-4 w-full">
+                   <div className="bg-gray-800/50 rounded-xl p-4 border border-white/5">
+                      <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center mb-2">
+                        <Users className="w-4 h-4 text-green-400" />
+                      </div>
+                      <div className="h-2 w-16 bg-white/10 rounded mb-1" />
+                      <div className="h-2 w-10 bg-white/5 rounded" />
+                   </div>
+                   <div className="bg-gray-800/50 rounded-xl p-4 border border-white/5">
+                      <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mb-2">
+                        <Lock className="w-4 h-4 text-blue-400" />
+                      </div>
+                      <div className="h-2 w-16 bg-white/10 rounded mb-1" />
+                      <div className="h-2 w-8 bg-white/5 rounded" />
+                   </div>
+                   <div className="col-span-2 bg-gray-800/50 rounded-xl p-4 border border-white/5 flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0">
+                        <Brain className="w-5 h-5 text-purple-400" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="h-2 w-24 bg-white/10 rounded mb-2" />
+                        <div className="h-2 w-full bg-white/5 rounded" />
+                      </div>
+                   </div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -258,8 +274,13 @@ export default function LandingPage() {
                 transition={{ delay: idx * 0.1 }}
                 className="group bg-white dark:bg-gray-950/50 border border-gray-200 dark:border-white/5 rounded-3xl p-8 hover:border-purple-300 dark:hover:border-white/10 transition-all shadow-xl shadow-gray-200/50 dark:shadow-none"
               >
-                <div className="aspect-video mb-8 overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-900">
-                  <img src={useCase.image} alt={useCase.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="aspect-video mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center relative group-hover:scale-105 transition-transform duration-500">
+                  <div className="absolute inset-0 bg-grid-slate-200/50 dark:bg-grid-slate-800/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
+                  {/* Dynamic Icon Composition based on index/title */}
+                  {idx === 0 && <Brain className="w-24 h-24 text-purple-500/80 drop-shadow-2xl" />}
+                  {idx === 1 && <Users className="w-24 h-24 text-blue-500/80 drop-shadow-2xl" />}
+                  {idx === 2 && <Share2 className="w-24 h-24 text-pink-500/80 drop-shadow-2xl" />}
+                  {idx === 3 && <Shield className="w-24 h-24 text-green-500/80 drop-shadow-2xl" />}
                 </div>
                 <span className="text-purple-600 dark:text-purple-400 font-mono text-sm tracking-widest uppercase mb-2 block">{useCase.subtitle}</span>
                 <h3 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{useCase.title}</h3>

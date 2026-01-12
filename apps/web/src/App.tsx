@@ -15,12 +15,11 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import QuestionsPage from './pages/QuestionsPage';
 import BrainDumpPage from './pages/BrainDumpPage';
-import InsightsPage from './pages/InsightsPage';
 import SettingsPage from './pages/SettingsPage';
 import JournalPage from './pages/JournalPage';
 import OnboardingPage from './pages/OnboardingPage';
 import TimelinePage from './pages/TimelinePage';
-import AICompanionPage from './pages/AICompanionPage';
+import AIInsightsPage from './pages/AIInsightsPage';
 import PricingPage from './pages/PricingPage';
 import DataSovereigntyPage from './pages/DataSovereigntyPage';
 import FeaturesPage from './pages/FeaturesPage';
@@ -31,6 +30,14 @@ import SolutionParentsPage from './pages/SolutionParentsPage';
 import SolutionPartnersPage from './pages/SolutionPartnersPage';
 import SolutionGrowthPage from './pages/SolutionGrowthPage';
 import StorageSettingsPage from './pages/StorageSettingsPage';
+import DataReclamationPage from './pages/DataReclamationPage';
+import GDPRRequestPage from './pages/GDPRRequestPage';
+import PhilosophyPage from './pages/PhilosophyPage';
+import LifePlanningPage from './pages/LifePlanningPage';
+import FeatureRequestPage from './pages/FeatureRequestPage';
+import PublicRoadmapPage from './pages/PublicRoadmapPage';
+import DataReclamationMarketingPage from './pages/DataReclamationMarketingPage';
+import HelpPage from './pages/HelpPage';
 
 // Lazy load EmergencyAccessPage to avoid loading secrets.js-grempe on initial load
 const EmergencyAccessPage = lazy(() => import('./pages/EmergencyAccessPage'));
@@ -69,6 +76,8 @@ function App() {
           <Route path="/solutions/parents" element={<SolutionParentsPage />} />
           <Route path="/solutions/partners" element={<SolutionPartnersPage />} />
           <Route path="/solutions/growth" element={<SolutionGrowthPage />} />
+          <Route path="/philosophy" element={<PhilosophyPage />} />
+          <Route path="/features/data-reclamation" element={<DataReclamationMarketingPage />} />
           
           <Route path="/security/emergency" element={
             <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
@@ -76,6 +85,11 @@ function App() {
             </Suspense>
           } />
           <Route path="/settings/storage" element={<StorageSettingsPage />} />
+          <Route path="/data-reclamation" element={<DataReclamationPage />} />
+          <Route path="/data-reclamation/gdpr" element={<GDPRRequestPage />} />
+          <Route path="/feature-request" element={<FeatureRequestPage />} />
+          <Route path="/roadmap" element={<PublicRoadmapPage />} />
+          <Route path="/help" element={<HelpPage />} />
           
           {/* Private Routes */}
         </Route>
@@ -114,8 +128,8 @@ function App() {
           <Route path="brain-dump" element={<BrainDumpPage />} />
           <Route path="journal" element={<JournalPage />} />
           <Route path="timeline" element={<TimelinePage />} />
-          <Route path="companion" element={<AICompanionPage />} />
-          <Route path="insights" element={<InsightsPage />} />
+          <Route path="insights" element={<AIInsightsPage />} />
+          <Route path="life-planning" element={<LifePlanningPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
 

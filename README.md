@@ -114,6 +114,20 @@ We built LifeContext because we don't trust Big Tech, and frankly, you shouldn't
 
 ---
 
+## Philosophy: The Tool, Not The Friend
+
+In an era of "AI Companions" designed to simulate intimacy for retention, LifeContext stands apart.
+
+**We are a mirror, not a lover.**
+
+- **No Gamification**: We don't use streaks or badges to manipulate your dopamine.
+- **No Emotional Attachment**: Our AI is designed to be a supportive *analyst*, not a fake friend. It will not say "I missed you." It will say "You haven't written in 3 days; would you like to log this gap?"
+- **Data Sovereignty**: The Attention Economy relies on your data being trapped. We build escape hatches first.
+
+> "The most dangerous data is the data you don't know you're generating."
+
+---
+
 ## Tech Stack
 
 ### Web Application (`apps/web`)

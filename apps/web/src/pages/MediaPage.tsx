@@ -27,17 +27,15 @@ export default function MediaPage() {
           </p>
         </motion.div>
 
-        {/* Video Placeholder */}
+            {/* Video Placeholder */}
         <div className="max-w-4xl mx-auto mb-24">
           <div className="aspect-video bg-gray-900 rounded-3xl border border-white/10 flex items-center justify-center relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent z-10" />
-            <img 
-               src="/marketing/hero.png" 
-               alt="Video Thumbnail" 
-               className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700"
-            />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/40 via-gray-900 to-gray-950 group-hover:scale-110 transition-transform duration-700" />
+            <div className="absolute inset-0 opacity-[0.03]" 
+                 style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
             
-            <button className="relative z-20 w-20 h-20 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-all hover:bg-white text-white hover:text-black">
+            <button className="relative z-20 w-20 h-20 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-all hover:bg-white text-white hover:text-black shadow-2xl">
               <Play className="w-8 h-8 ml-1" />
             </button>
             
@@ -61,8 +59,13 @@ export default function MediaPage() {
             </div>
 
             <div className="bg-gray-900/50 border border-white/5 p-6 rounded-2xl hover:border-white/10 transition-colors cursor-pointer">
-              <div className="h-32 bg-black/40 rounded-xl mb-4 flex items-center justify-center border border-white/5 overflow-hidden">
-                <img src="/marketing/jarvis.png" className="w-full h-full object-cover opacity-50" />
+              <div className="h-32 bg-black/40 rounded-xl mb-4 flex items-center justify-center border border-white/5 overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20" />
+                <div className="grid grid-cols-2 gap-2 p-4 w-full opacity-50">
+                  <div className="bg-white/10 rounded h-12" />
+                  <div className="bg-white/10 rounded h-12" />
+                  <div className="col-span-2 bg-white/10 rounded h-8" />
+                </div>
               </div>
               <h3 className="font-bold mb-1">Product Screenshots</h3>
               <p className="text-sm text-gray-400">High-res interface shots for press use.</p>
@@ -70,7 +73,7 @@ export default function MediaPage() {
 
             <div className="bg-gray-900/50 border border-white/5 p-6 rounded-2xl hover:border-white/10 transition-colors cursor-pointer">
               <div className="h-32 bg-black/40 rounded-xl mb-4 flex items-center justify-center border border-white/5">
-                <div className="w-12 h-12 bg-white rounded-full" />
+                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-black font-bold text-xs">A</div>
               </div>
               <h3 className="font-bold mb-1">Brand Guidelines</h3>
               <p className="text-sm text-gray-400">Colors, typography, and voice.</p>
