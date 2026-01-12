@@ -96,6 +96,11 @@ const NAV_STRUCTURE = [
     label: 'Philosophy', 
     path: '/philosophy' 
   },
+  { 
+    label: 'Roadmap', 
+    path: '/roadmap',
+    highlight: true
+  },
 ];
 
 // ============================================================
@@ -411,6 +416,7 @@ export default function PublicLayout() {
                 <li><NavLink to="/features" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">All Features</NavLink></li>
                 <li><NavLink to="/features/journaling" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Secure Journal</NavLink></li>
                 <li><NavLink to="/features/legacy" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Legacy Building</NavLink></li>
+                <li><NavLink to="/roadmap" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Roadmap</NavLink></li>
                 <li><NavLink to="/pricing" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Pricing</NavLink></li>
               </ul>
             </div>

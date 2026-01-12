@@ -65,9 +65,11 @@
 - [x] Lock button in sidebar triggers lock state
 
 ### Onboarding Integration
-- [ ] Wire OnboardingWizard to show on first login
-- [ ] Check localStorage for 'lcc-onboarding-complete'
-- [ ] Test full onboarding flow
+- [x] Wire OnboardingWizard to show on first login
+- [x] Check localStorage for 'lcc-onboarding-complete'
+- [x] Test full onboarding flow
+- [x] PasscodeConfirmation integrated
+- [x] Data Reclamation opt-in toggle
 
 ### voice-docs-app Integration
 - [x] Clone repo as apps/voice-docs
