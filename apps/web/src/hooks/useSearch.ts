@@ -20,6 +20,9 @@ export interface SearchableItem {
   duration?: number;
 }
 
+// Type for encrypted content that could be string or object with data field
+type EncryptedContent = string | { data?: string; [key: string]: unknown };
+
 export interface SearchResult extends SearchableItem {
   matches?: readonly FuseResultMatch[];
   score?: number;
@@ -92,14 +95,15 @@ export function useSearch(options: UseSearchOptions = {}): UseSearchReturn {
         const question = questionMap.get(recording.questionId);
         // Handle encrypted or plain text transcription
         let content = '';
-        if (typeof recording.transcriptionText === 'object' && recording.transcriptionText && 'data' in recording.transcriptionText) {
+        const transcription = recording.transcriptionText as unknown as EncryptedContent;
+        if (typeof transcription === 'object' && transcription && 'data' in transcription) {
           try {
-            content = atob((recording.transcriptionText as any).data || '');
+            content = atob(transcription.data || '');
           } catch {
             content = '';
           }
-        } else if (typeof recording.transcriptionText === 'string') {
-          content = recording.transcriptionText;
+        } else if (typeof transcription === 'string') {
+          content = transcription;
         }
 
         searchableItems.push({
@@ -119,14 +123,15 @@ export function useSearch(options: UseSearchOptions = {}): UseSearchReturn {
       for (const journal of journals) {
         // Try to decode content if it's base64 encoded
         let content = '';
-        if (typeof journal.content === 'object' && journal.content && 'data' in journal.content) {
+        const journalContent = journal.content as unknown as EncryptedContent;
+        if (typeof journalContent === 'object' && journalContent && 'data' in journalContent) {
           try {
-            content = atob((journal.content as any).data || '');
+            content = atob(journalContent.data || '');
           } catch {
             content = '';
           }
-        } else if (typeof journal.content === 'string') {
-          content = journal.content;
+        } else if (typeof journalContent === 'string') {
+          content = journalContent;
         }
         
         searchableItems.push({
@@ -143,16 +148,19 @@ export function useSearch(options: UseSearchOptions = {}): UseSearchReturn {
       const brainDumps = await db.brainDumps.toArray();
       for (const dump of brainDumps) {
         let content = '';
-        if ((dump as any).synthesis?.organizedContent) {
-          content = (dump as any).synthesis.organizedContent;
-        } else if ((dump as any).bulletPoints) {
-          content = (dump as any).bulletPoints.map((b: any) => b.text).join(' ');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const dumpData = dump as unknown as Record<string, unknown>;
+        if (dumpData.synthesis && typeof dumpData.synthesis === 'object') {
+          const synthesis = dumpData.synthesis as { organizedContent?: string };
+          content = synthesis.organizedContent || '';
+        } else if (Array.isArray(dumpData.bulletPoints)) {
+          content = dumpData.bulletPoints.map((b: { text?: string }) => b.text || '').join(' ');
         }
         
         searchableItems.push({
           id: dump.id,
           type: 'brain-dump',
-          title: (dump as any).title || 'Brain Dump',
+          title: (typeof dumpData.title === 'string' ? dumpData.title : '') || 'Brain Dump',
           content,
           date: dump.createdAt,
         });

@@ -347,6 +347,47 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Feature Gallery */}
+      <section className="py-24 bg-gray-50 dark:bg-gray-900/50 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
+              Built for Real Life
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
+              A comprehensive dashboard for your entire life journey
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            {[
+              { src: '/demos/dashboard.png', title: 'Intelligent Dashboard', desc: 'Track progress, see suggested actions, explore life areas' },
+              { src: '/demos/kanban.png', title: 'Life Planning Board', desc: 'Kanban-style goal tracking with drag-and-drop' },
+              { src: '/demos/journal.png', title: 'Daily Journal', desc: 'Voice-first entries with AI synthesis' },
+              { src: '/demos/insights.png', title: 'AI Insights', desc: 'Pattern recognition and personalized recommendations' },
+            ].map((demo) => (
+              <motion.div
+                key={demo.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <img 
+                  src={demo.src} 
+                  alt={demo.title}
+                  className="w-full aspect-video object-cover object-top"
+                />
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-6">
+                  <h3 className="text-xl font-bold text-white mb-1">{demo.title}</h3>
+                  <p className="text-gray-300 text-sm">{demo.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Footer / Final CTA */}
       <section className="py-24 bg-white dark:bg-gray-950 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-6 text-center">
