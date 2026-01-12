@@ -19,4 +19,5 @@ services:
       - key: SKIP_INSTALL_DEPS
         value: "true"
       - key: VITE_CONVEX_URL
-        value: "FIXME"
+        sync: false  # Set in Render dashboard - your Convex deployment URL
+

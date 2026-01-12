@@ -1,39 +1,63 @@
-import { View, Text, ScrollView, Pressable, Switch, Alert } from 'react-native';
-import { useState } from 'react';
+/**
+ * Settings Screen - API keys, preferences, and data management
+ */
+import { View, Text, ScrollView, Pressable, Switch, Alert, TextInput, Modal } from 'react-native';
+import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { useAppStore } from '@lcc/core';
+import { getSettings, updateSettings, clearAllData, exportAllData, AppSettings } from '../../src/lib/storage';
+import * as Sharing from 'expo-sharing';
 
 export default function SettingsScreen() {
-  const { settings, updateSettings, reset } = useAppStore();
-  const [showLiveTranscription, setShowLiveTranscription] = useState(
-    settings?.showLiveTranscription ?? false
-  );
-
-  const handleToggleTranscription = (value: boolean) => {
+  const [settings, setSettings] = useState<AppSettings>(getSettings());
+  const [apiKeyModalVisible, setApiKeyModalVisible] = useState(false);
+  const [apiKeyInput, setApiKeyInput] = useState('');
+  const [whisperKeyInput, setWhisperKeyInput] = useState('');
+  
+  // Reload settings when screen focuses
+  useEffect(() => {
+    setSettings(getSettings());
+  }, []);
+  
+  const handleToggle = (key: keyof AppSettings, value: boolean) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setShowLiveTranscription(value);
-    updateSettings({ showLiveTranscription: value });
+    updateSettings({ [key]: value });
+    setSettings(prev => ({ ...prev, [key]: value }));
   };
-
-  const handleExportData = () => {
+  
+  const handleSaveApiKeys = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    Alert.alert(
-      'Export Data',
-      'Your data will be exported as an encrypted backup file.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Export',
-          onPress: () => {
-            // TODO: Implement data export
-            Alert.alert('Coming Soon', 'Data export will be available in a future update.');
-          },
-        },
-      ]
-    );
+    updateSettings({
+      apiKey: apiKeyInput || undefined,
+      whisperApiKey: whisperKeyInput || undefined,
+    });
+    setSettings(prev => ({
+      ...prev,
+      apiKey: apiKeyInput || undefined,
+      whisperApiKey: whisperKeyInput || undefined,
+    }));
+    setApiKeyModalVisible(false);
+    Alert.alert('Saved', 'API keys updated successfully.');
   };
-
+  
+  const handleExportData = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    try {
+      const fileUri = await exportAllData();
+      
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(fileUri, {
+          mimeType: 'application/json',
+          dialogTitle: 'Export LifeContext Data',
+        });
+      } else {
+        Alert.alert('Exported', `Data saved to: ${fileUri}`);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to export data.');
+    }
+  };
+  
   const handleDeleteData = () => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     Alert.alert(
@@ -44,15 +68,17 @@ export default function SettingsScreen() {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => {
-            reset();
+          onPress: async () => {
+            await clearAllData();
+            setSettings(getSettings());
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            Alert.alert('Deleted', 'All data has been cleared.');
           },
         },
       ]
     );
   };
-
+  
   const SettingRow = ({
     icon,
     title,
@@ -70,14 +96,12 @@ export default function SettingsScreen() {
   }) => (
     <Pressable
       onPress={onPress}
-      disabled={!onPress}
+      disabled={!onPress && !rightElement}
       className="flex-row items-center py-4 active:opacity-70"
     >
       <Text className="text-2xl mr-4">{icon}</Text>
       <View className="flex-1">
-        <Text
-          className={`font-medium ${destructive ? 'text-red-400' : 'text-white'}`}
-        >
+        <Text className={`font-medium ${destructive ? 'text-red-400' : 'text-white'}`}>
           {title}
         </Text>
         {subtitle && (
@@ -92,7 +116,7 @@ export default function SettingsScreen() {
       )}
     </Pressable>
   );
-
+  
   return (
     <SafeAreaView className="flex-1 bg-dark-background" edges={['top']}>
       <ScrollView className="flex-1 p-4">
@@ -103,7 +127,35 @@ export default function SettingsScreen() {
             Customize your LifeContext experience
           </Text>
         </View>
-
+        
+        {/* AI Settings */}
+        <View className="bg-dark-surface rounded-2xl px-5 border border-dark-border mb-4">
+          <Text className="text-dark-text-secondary text-sm uppercase tracking-wide pt-4 pb-2">
+            AI Provider
+          </Text>
+          <SettingRow
+            icon="🤖"
+            title="Claude AI"
+            subtitle={settings.apiKey ? 'API key configured ✓' : 'Not configured'}
+            onPress={() => {
+              setApiKeyInput(settings.apiKey || '');
+              setWhisperKeyInput(settings.whisperApiKey || '');
+              setApiKeyModalVisible(true);
+            }}
+          />
+          <View className="h-px bg-dark-border" />
+          <SettingRow
+            icon="🎙️"
+            title="Whisper (Transcription)"
+            subtitle={settings.whisperApiKey ? 'API key configured ✓' : 'Uses Claude key if set'}
+            onPress={() => {
+              setApiKeyInput(settings.apiKey || '');
+              setWhisperKeyInput(settings.whisperApiKey || '');
+              setApiKeyModalVisible(true);
+            }}
+          />
+        </View>
+        
         {/* Recording Settings */}
         <View className="bg-dark-surface rounded-2xl px-5 border border-dark-border mb-4">
           <Text className="text-dark-text-secondary text-sm uppercase tracking-wide pt-4 pb-2">
@@ -115,8 +167,8 @@ export default function SettingsScreen() {
             subtitle="Show text as you speak"
             rightElement={
               <Switch
-                value={showLiveTranscription}
-                onValueChange={handleToggleTranscription}
+                value={settings.showLiveTranscription}
+                onValueChange={(v) => handleToggle('showLiveTranscription', v)}
                 trackColor={{ false: '#334155', true: '#0ea5e9' }}
                 thumbColor="#fff"
               />
@@ -124,60 +176,20 @@ export default function SettingsScreen() {
           />
           <View className="h-px bg-dark-border" />
           <SettingRow
-            icon="🔊"
-            title="Audio Quality"
-            subtitle="High (recommended)"
-            onPress={() => {}}
+            icon="📳"
+            title="Haptic Feedback"
+            subtitle="Vibration on actions"
+            rightElement={
+              <Switch
+                value={settings.hapticFeedback}
+                onValueChange={(v) => handleToggle('hapticFeedback', v)}
+                trackColor={{ false: '#334155', true: '#0ea5e9' }}
+                thumbColor="#fff"
+              />
+            }
           />
         </View>
-
-        {/* AI Settings */}
-        <View className="bg-dark-surface rounded-2xl px-5 border border-dark-border mb-4">
-          <Text className="text-dark-text-secondary text-sm uppercase tracking-wide pt-4 pb-2">
-            AI Provider
-          </Text>
-          <SettingRow
-            icon="🤖"
-            title="Claude AI"
-            subtitle="Anthropic (Cloud)"
-            onPress={() => {}}
-          />
-          <View className="h-px bg-dark-border" />
-          <SettingRow
-            icon="🔑"
-            title="API Key"
-            subtitle="Configure your own key"
-            onPress={() => {}}
-          />
-        </View>
-
-        {/* Privacy & Security */}
-        <View className="bg-dark-surface rounded-2xl px-5 border border-dark-border mb-4">
-          <Text className="text-dark-text-secondary text-sm uppercase tracking-wide pt-4 pb-2">
-            Privacy & Security
-          </Text>
-          <SettingRow
-            icon="🔒"
-            title="Encryption"
-            subtitle="AES-256-GCM (Active)"
-            onPress={() => {}}
-          />
-          <View className="h-px bg-dark-border" />
-          <SettingRow
-            icon="🔐"
-            title="Change Passcode"
-            subtitle="Update your encryption key"
-            onPress={() => {}}
-          />
-          <View className="h-px bg-dark-border" />
-          <SettingRow
-            icon="👥"
-            title="Emergency Access"
-            subtitle="Set up trusted contacts"
-            onPress={() => {}}
-          />
-        </View>
-
+        
         {/* Data Management */}
         <View className="bg-dark-surface rounded-2xl px-5 border border-dark-border mb-4">
           <Text className="text-dark-text-secondary text-sm uppercase tracking-wide pt-4 pb-2">
@@ -186,15 +198,22 @@ export default function SettingsScreen() {
           <SettingRow
             icon="📤"
             title="Export Data"
-            subtitle="Download encrypted backup"
+            subtitle="Download JSON backup"
             onPress={handleExportData}
           />
           <View className="h-px bg-dark-border" />
           <SettingRow
             icon="☁️"
             title="Cloud Sync"
-            subtitle="Not configured"
-            onPress={() => {}}
+            subtitle={settings.cloudSyncEnabled ? 'Enabled' : 'Disabled'}
+            rightElement={
+              <Switch
+                value={settings.cloudSyncEnabled}
+                onValueChange={(v) => handleToggle('cloudSyncEnabled', v)}
+                trackColor={{ false: '#334155', true: '#0ea5e9' }}
+                thumbColor="#fff"
+              />
+            }
           />
           <View className="h-px bg-dark-border" />
           <SettingRow
@@ -205,7 +224,7 @@ export default function SettingsScreen() {
             destructive
           />
         </View>
-
+        
         {/* About */}
         <View className="bg-dark-surface rounded-2xl px-5 border border-dark-border mb-8">
           <Text className="text-dark-text-secondary text-sm uppercase tracking-wide pt-4 pb-2">
@@ -220,16 +239,10 @@ export default function SettingsScreen() {
           <SettingRow
             icon="📜"
             title="Privacy Policy"
-            onPress={() => {}}
-          />
-          <View className="h-px bg-dark-border" />
-          <SettingRow
-            icon="📋"
-            title="Terms of Service"
-            onPress={() => {}}
+            subtitle="Your data stays local"
           />
         </View>
-
+        
         {/* Footer */}
         <View className="items-center pb-8">
           <Text className="text-dark-text-secondary text-sm">
@@ -240,6 +253,58 @@ export default function SettingsScreen() {
           </Text>
         </View>
       </ScrollView>
+      
+      {/* API Key Modal */}
+      <Modal
+        visible={apiKeyModalVisible}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setApiKeyModalVisible(false)}
+      >
+        <View className="flex-1 bg-dark-background p-6">
+          <View className="flex-row justify-between items-center mb-8">
+            <Text className="text-2xl font-bold text-white">API Keys</Text>
+            <Pressable onPress={() => setApiKeyModalVisible(false)}>
+              <Text className="text-brand-400 font-semibold">Cancel</Text>
+            </Pressable>
+          </View>
+          
+          <Text className="text-dark-text-secondary mb-2">
+            Claude API Key (Anthropic)
+          </Text>
+          <TextInput
+            value={apiKeyInput}
+            onChangeText={setApiKeyInput}
+            placeholder="sk-ant-..."
+            placeholderTextColor="#64748b"
+            secureTextEntry
+            className="bg-dark-surface border border-dark-border rounded-xl p-4 text-white mb-6"
+          />
+          
+          <Text className="text-dark-text-secondary mb-2">
+            Whisper API Key (OpenAI) - Optional
+          </Text>
+          <TextInput
+            value={whisperKeyInput}
+            onChangeText={setWhisperKeyInput}
+            placeholder="sk-..."
+            placeholderTextColor="#64748b"
+            secureTextEntry
+            className="bg-dark-surface border border-dark-border rounded-xl p-4 text-white mb-6"
+          />
+          
+          <Text className="text-dark-text-secondary text-sm mb-8">
+            API keys are stored securely on your device and never shared.
+          </Text>
+          
+          <Pressable
+            onPress={handleSaveApiKeys}
+            className="bg-brand-500 rounded-xl p-4 active:opacity-80"
+          >
+            <Text className="text-white font-semibold text-center">Save Keys</Text>
+          </Pressable>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

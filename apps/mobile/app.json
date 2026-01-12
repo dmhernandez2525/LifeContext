@@ -18,7 +18,9 @@
       "bundleIdentifier": "com.lifecontext.app",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "LifeContext needs access to your microphone for voice recordings and brain dumps.",
-        "UIBackgroundModes": ["audio"]
+        "UIBackgroundModes": [
+          "audio"
+        ]
       }
     },
     "android": {
@@ -44,7 +46,8 @@
         {
           "microphonePermission": "Allow LifeContext to access your microphone for voice recordings."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
