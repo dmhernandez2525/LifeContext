@@ -60,7 +60,7 @@
   - [ ] "On this day" flashbacks (with opt-out)
 
 ### 5. Mobile App (Greenfield)
-*Project `apps/mobile` does not exist yet*
+*Project `apps/mobile` initialized*
 - **Core Stack**: Expo 52, NativeWind, MMKV
 - **Specific Needs**:
   - [ ] Share Extension (Send text/photos from other apps to LifeContext)
@@ -157,10 +157,10 @@
 ## In Progress / Known Issues
 
 ### Images - User Feedback (IMPORTANT)
-- [ ] **AI-generated images look untrustworthy** - user feedback
-- [ ] Consider replacing with GIFs or real screenshots
-- [ ] Most pages already use icons/gradients (good)
-- [ ] Review LandingPage and feature pages for problematic images
+- [x] **AI-generated images look untrustworthy** - user feedback
+- [x] Consider replacing with GIFs or real screenshots (Replaced with CSS/SVG visuals)
+- [x] Most pages already use icons/gradients (good)
+- [x] Review LandingPage and feature pages for problematic images
 
 ### voice-docs Integration (Remaining)
 - [ ] Add shared dependencies to packages/
