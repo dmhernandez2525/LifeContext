@@ -1,5 +1,6 @@
 /**
- * AICompanionPage - Conversational interface for life context insights
+ * AIInsightsPage - Conversational interface for life context insights
+ * Note: This is NOT a companion - it's an insights engine that asks questions and provides data-driven observations.
  */
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
@@ -53,7 +54,7 @@ const SUGGESTED_PROMPTS = [
 // MAIN COMPONENT
 // ============================================================
 
-export default function AICompanionPage() {
+export default function AIInsightsPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -104,7 +105,7 @@ export default function AICompanionPage() {
 
   // Build system prompt with context
   const buildSystemPrompt = () => {
-    let prompt = `You are a compassionate AI life companion for the Life Context Compiler. You help users understand themselves better through thoughtful, empathetic conversation about their life story.
+    let prompt = `You are an AI insights engine for Life Context. You analyze the user's journal entries and provide data-driven observations, patterns, and questions to help them understand themselves better. You are NOT a companion or therapist - you are a diary that asks questions and surfaces insights.
 
 Your role:
 - Provide insights based on what the user has shared in their recordings and journal entries
@@ -230,7 +231,7 @@ Your role:
           </div>
           <div>
             <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-              AI Companion
+              AI Insights
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Your personal life insights assistant

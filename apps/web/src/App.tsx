@@ -20,7 +20,7 @@ import SettingsPage from './pages/SettingsPage';
 import JournalPage from './pages/JournalPage';
 import OnboardingPage from './pages/OnboardingPage';
 import TimelinePage from './pages/TimelinePage';
-import AICompanionPage from './pages/AICompanionPage';
+import AIInsightsPage from './pages/AIInsightsPage';
 import PricingPage from './pages/PricingPage';
 import DataSovereigntyPage from './pages/DataSovereigntyPage';
 import FeaturesPage from './pages/FeaturesPage';
@@ -118,7 +118,7 @@ function App() {
           <Route path="brain-dump" element={<BrainDumpPage />} />
           <Route path="journal" element={<JournalPage />} />
           <Route path="timeline" element={<TimelinePage />} />
-          <Route path="companion" element={<AICompanionPage />} />
+          <Route path="insights" element={<AIInsightsPage />} />
           <Route path="insights" element={<InsightsPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>

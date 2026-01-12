@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Copy, Check, Download, Clock, AlertCircle, FileText } from 'lucide-react';
+import { Mail, Copy, Check, Clock, AlertCircle, FileText } from 'lucide-react';
 import { GDPR_TEMPLATES, getAllCategories, type PlatformTemplate } from '@/data/gdpr-templates';
 import { useDataReclamationStore } from '@/store/data-reclamation-store';
 import { cn } from '@/lib/utils';

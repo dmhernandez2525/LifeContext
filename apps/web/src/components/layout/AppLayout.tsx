@@ -23,7 +23,7 @@ const navItems = [
   { path: '/app/questions', icon: MessageSquare, label: 'Questions' },
   { path: '/app/journal', icon: BookOpen, label: 'Journal' },
   { path: '/app/timeline', icon: Calendar, label: 'Timeline' },
-  { path: '/app/companion', icon: Bot, label: 'AI Companion' },
+  { path: '/app/insights', icon: Bot, label: 'AI Insights' },
   { path: '/app/brain-dump', icon: Brain, label: 'Brain Dump' },
   { path: '/app/insights', icon: Sparkles, label: 'Insights' },
   { path: '/app/settings', icon: Settings, label: 'Settings' },

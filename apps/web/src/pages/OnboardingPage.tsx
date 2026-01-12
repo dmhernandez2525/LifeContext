@@ -30,7 +30,7 @@ const steps: OnboardingStep[] = [
   {
     id: 'welcome',
     title: 'Welcome to Life Context',
-    subtitle: 'Your private life documentation companion',
+    subtitle: 'Your private life documentation journal',
     icon: <Sparkles className="w-12 h-12" />,
     color: 'from-purple-500 to-blue-500',
     content: (

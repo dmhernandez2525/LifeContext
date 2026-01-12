@@ -126,7 +126,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
-              Build a comprehensive understanding of yourself. A private, voice-first companion that organizes your 
+              Build a comprehensive understanding of yourself. A private, voice-first journal that organizes your 
               life context to empower your legacy, your relationships, and your future.
             </p>
 
