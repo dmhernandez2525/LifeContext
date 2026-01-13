@@ -63,9 +63,11 @@ export function Badge({
       {typeof children === 'string' ? (
         <Text
           className={`font-medium ${textSizeStyles[size]} ${textColorStyles[variant]}`}
+          style={{ fontFamily: 'Inter_600SemiBold' }}
         >
           {children}
         </Text>
+
       ) : (
         children
       )}

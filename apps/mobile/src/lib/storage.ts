@@ -3,19 +3,73 @@
  * Uses expo-file-system for recordings and MMKV for fast key-value storage
  */
 import * as FileSystem from 'expo-file-system';
-import { MMKV } from 'react-native-mmkv';
+import { Platform } from 'react-native';
 import { generateId } from './encryption';
 
 // ============================================================
-// MMKV STORAGE (Fast key-value)
+// PLATFORM-AWARE STORAGE (MMKV on native, localStorage on web)
 // ============================================================
 
-import { Platform } from 'react-native';
+// Simple storage interface
+interface SimpleStorage {
+  getString: (key: string) => string | undefined;
+  set: (key: string, value: string) => void;
+  clearAll: () => void;
+}
 
-export const storage = new MMKV({
-  id: 'lcc-storage',
-  ...(Platform.OS !== 'web' ? { encryptionKey: 'lcc-encryption-key' } : {}), // Encryption only on native
-});
+// Web localStorage wrapper
+const webStorage: SimpleStorage = {
+  getString: (key: string) => {
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem(key) || undefined;
+    }
+    return undefined;
+  },
+  set: (key: string, value: string) => {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(key, value);
+    }
+  },
+  clearAll: () => {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.clear();
+    }
+  },
+};
+
+let _storage: SimpleStorage | null = null;
+
+function getStorageInstance(): SimpleStorage {
+  if (_storage) return _storage;
+  
+  // On web, use localStorage
+  if (Platform.OS === 'web') {
+    _storage = webStorage;
+    return _storage;
+  }
+  
+  // On native, use MMKV
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { MMKV } = require('react-native-mmkv');
+    _storage = new MMKV({
+      id: 'lcc-storage',
+      encryptionKey: 'lcc-encryption-key',
+    });
+  } catch (e) {
+    // Fallback to web storage
+    _storage = webStorage;
+  }
+  
+  return _storage as SimpleStorage;
+}
+
+// Export a proxy that lazily initializes storage
+export const storage: SimpleStorage = {
+  getString: (key: string) => getStorageInstance().getString(key),
+  set: (key: string, value: string) => getStorageInstance().set(key, value),
+  clearAll: () => getStorageInstance().clearAll(),
+};
 
 
 // ============================================================
@@ -227,6 +281,21 @@ export async function saveBrainDump(
 export function getBrainDumps(): StoredBrainDump[] {
   const data = storage.getString('brainDumps');
   return data ? JSON.parse(data) : [];
+}
+
+/**
+ * Delete a brain dump
+ */
+export async function deleteBrainDump(id: string): Promise<void> {
+  const dumps = getBrainDumps();
+  const dump = dumps.find(d => d.id === id);
+  
+  if (dump?.audioUri) {
+    await FileSystem.deleteAsync(dump.audioUri, { idempotent: true });
+  }
+  
+  const updated = dumps.filter(d => d.id !== id);
+  storage.set('brainDumps', JSON.stringify(updated));
 }
 
 // ============================================================

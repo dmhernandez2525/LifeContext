@@ -29,7 +29,10 @@ export function Input({
   return (
     <View className={`mb-4 ${containerClassName}`}>
       {label && (
-        <Text className="text-dark-text-primary text-sm font-medium mb-2">
+        <Text 
+          className="text-dark-text-primary text-sm font-medium mb-2"
+          style={{ fontFamily: 'Inter_600SemiBold' }}
+        >
           {label}
         </Text>
       )}
@@ -57,7 +60,8 @@ export function Input({
             text-dark-text-primary text-base
             ${className}
           `}
-          placeholderTextColor="#64748b"
+          placeholderTextColor="#94a3b8"
+          style={{ fontFamily: 'Inter_400Regular' }}
           {...props}
         />
 
@@ -69,13 +73,19 @@ export function Input({
       </View>
 
       {error && (
-        <Text className="text-red-400 text-sm mt-1">
+        <Text 
+          className="text-red-400 text-sm mt-1"
+          style={{ fontFamily: 'Inter_400Regular' }}
+        >
           {error}
         </Text>
       )}
 
       {helperText && !error && (
-        <Text className="text-dark-text-secondary text-sm mt-1">
+        <Text 
+          className="text-dark-text-secondary text-sm mt-1"
+          style={{ fontFamily: 'Inter_400Regular' }}
+        >
           {helperText}
         </Text>
       )}

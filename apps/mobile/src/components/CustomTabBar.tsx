@@ -7,7 +7,9 @@ import Animated, {
   withSpring,
   useSharedValue,
   withTiming,
+  FadeIn,
 } from 'react-native-reanimated';
+
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Home,
@@ -15,7 +17,9 @@ import {
   Mic,
   Columns,
   Settings,
+  Brain,
 } from 'lucide-react-native';
+
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -28,10 +32,12 @@ interface TabItem {
 const TAB_ICONS: Record<string, TabItem> = {
   index: { icon: Home, activeColor: '#3b82f6' },
   journal: { icon: BookOpen, activeColor: '#10b981' },
+  braindump: { icon: Brain, activeColor: '#0ea5e9' },
   record: { icon: Mic, activeColor: '#a855f7', scale: 1.3 },
   kanban: { icon: Columns, activeColor: '#f59e0b' },
   settings: { icon: Settings, activeColor: '#64748b' },
 };
+
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
@@ -56,18 +62,20 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
     <View
       style={[
         styles.container,
-        { paddingBottom: Math.max(insets.bottom, 16) }
+        { paddingBottom: Math.max(insets.bottom, 12) }
       ]}
-      className="absolute bottom-0 left-0 right-0"
+      className="absolute bottom-0 left-0 right-0 pointer-events-box-none"
     >
-      <View className="mx-4 mb-2 overflow-hidden rounded-3xl">
+      <View 
+        className="mx-6 mb-2 overflow-hidden rounded-[32px] border border-white/10 shadow-2xl shadow-black/40"
+      >
         <BlurView
-          intensity={80}
+          intensity={65}
           tint="dark"
           style={StyleSheet.absoluteFill}
         />
-        <View className="flex-row items-center justify-around px-6 py-4">
-          {state.routes.map((route, index) => {
+        <View className="flex-row items-center justify-around px-2 py-3 bg-slate-900/40">
+          {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
             const { options } = descriptors[route.key];
             const isFocused = state.index === index;
             const tabConfig = TAB_ICONS[route.name];
@@ -84,22 +92,12 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
                 accessibilityRole="button"
                 accessibilityState={isFocused ? { selected: true } : {}}
                 accessibilityLabel={options.tabBarAccessibilityLabel}
-                testID={options.tabBarTestID}
                 onPress={() => handleTabPress(route, isFocused)}
                 className={`items-center justify-center ${
                   isRecordButton
-                    ? 'bg-accent-purple rounded-full p-4 -mt-4 shadow-lg shadow-accent-purple/50'
-                    : 'py-2'
+                    ? 'bg-primary-500 rounded-full w-14 h-14 -mt-8 shadow-xl shadow-primary-500/50 border-4 border-slate-950/20'
+                    : 'flex-1 py-1'
                 }`}
-                style={[
-                  isRecordButton && {
-                    shadowColor: tabConfig.activeColor,
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 8,
-                    elevation: 8,
-                  }
-                ]}
               >
                 <Animated.View
                   style={[
@@ -107,8 +105,8 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
                       transform: [
                         {
                           scale: withSpring(
-                            isFocused ? scale * 1.1 : scale,
-                            { damping: 12 }
+                            isFocused ? 1.15 : 1,
+                            { damping: 15, stiffness: 200 }
                           )
                         },
                       ],
@@ -116,22 +114,26 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
                   ]}
                 >
                   <Icon
-                    size={isRecordButton ? 28 : 24}
+                    size={isRecordButton ? 28 : 22}
                     color={
-                      isFocused || isRecordButton
-                        ? tabConfig.activeColor
-                        : '#64748b'
+                      isRecordButton
+                        ? '#ffffff'
+                        : isFocused
+                          ? tabConfig.activeColor
+                          : '#94a3b8'
                     }
-                    strokeWidth={isFocused ? 2.5 : 2}
+                    strokeWidth={isFocused || isRecordButton ? 2.5 : 2}
                   />
                 </Animated.View>
 
                 {/* Active indicator dot */}
                 {isFocused && !isRecordButton && (
-                  <View
+                  <Animated.View
+                    entering={FadeIn.duration(200)}
                     className="mt-1 h-1 w-1 rounded-full"
                     style={{ backgroundColor: tabConfig.activeColor }}
                   />
+
                 )}
               </AnimatedTouchableOpacity>
             );
@@ -139,6 +141,7 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
         </View>
       </View>
     </View>
+
   );
 }
 

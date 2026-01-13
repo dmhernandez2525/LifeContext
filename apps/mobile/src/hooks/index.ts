@@ -13,3 +13,4 @@ export type { UseSynthesisReturn, UseSynthesisOptions, SynthesisResult } from '.
 export { useAnalysis } from './useAnalysis';
 export type { UseAnalysisReturn, AnalysisPattern } from './useAnalysis';
 
+export { useScrollOffset } from './useScrollOffset';

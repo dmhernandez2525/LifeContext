@@ -1,9 +1,10 @@
-import { View, ViewProps } from 'react-native';
+import { View, ViewProps, StyleSheet } from 'react-native';
 import { ReactNode } from 'react';
+import { BlurView } from 'expo-blur';
 
 interface CardProps extends ViewProps {
   children: ReactNode;
-  variant?: 'default' | 'elevated' | 'outlined';
+  variant?: 'default' | 'elevated' | 'outlined' | 'glass';
   className?: string;
 }
 
@@ -11,20 +12,32 @@ export function Card({
   children,
   variant = 'default',
   className = '',
+  style,
   ...props
 }: CardProps) {
   const variantStyles = {
     default: 'bg-dark-surface border border-dark-border',
-    elevated: 'bg-dark-surface shadow-lg shadow-black/20',
+    elevated: 'bg-dark-surface shadow-2xl shadow-black/40 border border-white/5',
     outlined: 'bg-transparent border-2 border-dark-border',
+    glass: 'bg-white/5 border border-white/10 overflow-hidden',
   };
 
   return (
     <View
-      className={`rounded-xl p-4 ${variantStyles[variant]} ${className}`}
+      className={`rounded-2xl ${variantStyles[variant]} ${className}`}
+      style={style}
       {...props}
     >
-      {children}
+      {variant === 'glass' && (
+        <BlurView
+          intensity={40}
+          tint="dark"
+          style={StyleSheet.absoluteFill}
+        />
+      )}
+      <View className="p-4">
+        {children}
+      </View>
     </View>
   );
 }
@@ -75,8 +88,9 @@ interface CardFooterProps {
 
 export function CardFooter({ children, className = '' }: CardFooterProps) {
   return (
-    <View className={`mt-3 pt-3 border-t border-dark-border ${className}`}>
+    <View className={`mt-3 pt-3 border-t border-white/5 ${className}`}>
       {children}
     </View>
   );
 }
+

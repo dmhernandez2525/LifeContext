@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TextInput,
   Alert,
   Platform,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlashList } from '@shopify/flash-list';
@@ -21,227 +22,149 @@ import {
   Edit2,
   X,
   ChevronDown,
+  Clock,
+  Tag as TagIcon,
 } from 'lucide-react-native';
 import { Card, Button, Badge } from '../../src/components/ui';
-import Animated, { FadeInRight } from 'react-native-reanimated';
+import * as storage from '../../src/lib/storage';
+import { StoredTask } from '../../src/lib/storage';
+import Animated, { FadeInDown, FadeInRight, Layout } from 'react-native-reanimated';
 
 // ============================================================
-// TYPES
+// TYPES & CONSTANTS
 // ============================================================
 
-interface KanbanTask {
-  id: string;
-  title: string;
-  description?: string;
-  status: 'backlog' | 'todo' | 'in_progress' | 'blocked' | 'done';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  dueDate?: string;
-  tags: string[];
-  subtasks?: { id: string; title: string; completed: boolean }[];
-  createdAt: string;
-  updatedAt: string;
-}
+type KanbanStatus = StoredTask['status'];
+type KanbanPriority = StoredTask['priority'];
 
 interface KanbanColumn {
   id: string;
   title: string;
-  status: KanbanTask['status'];
+  status: KanbanStatus;
   color: string;
 }
 
-// ============================================================
-// CONSTANTS
-// ============================================================
-
 const COLUMNS: KanbanColumn[] = [
-  { id: 'backlog', title: 'Backlog', status: 'backlog', color: '#6b7280' },
   { id: 'todo', title: 'To Do', status: 'todo', color: '#3b82f6' },
-  { id: 'in_progress', title: 'In Progress', status: 'in_progress', color: '#f59e0b' },
-  { id: 'blocked', title: 'Blocked', status: 'blocked', color: '#ef4444' },
+  { id: 'in-progress', title: 'In Progress', status: 'in-progress', color: '#f59e0b' },
   { id: 'done', title: 'Done', status: 'done', color: '#10b981' },
+  { id: 'backlog', title: 'Backlog', status: 'backlog', color: '#64748b' },
 ];
 
 const PRIORITY_CONFIG = {
-  low: { label: 'Low', variant: 'default' as const },
-  medium: { label: 'Medium', variant: 'primary' as const },
-  high: { label: 'High', variant: 'warning' as const },
-  urgent: { label: 'Urgent', variant: 'danger' as const },
+  low: { label: 'Low', color: '#94a3b8', bg: 'bg-slate-500/10' },
+  medium: { label: 'Medium', color: '#3b82f6', bg: 'bg-blue-500/10' },
+  high: { label: 'High', color: '#f59e0b', bg: 'bg-amber-500/10' },
 };
-
-// ============================================================
-// MOCK DATA (Replace with actual storage later)
-// ============================================================
-
-const MOCK_TASKS: KanbanTask[] = [
-  {
-    id: '1',
-    title: 'Complete mobile UI design',
-    description: 'Finish the remaining screens for the mobile app',
-    status: 'in_progress',
-    priority: 'high',
-    dueDate: '2026-01-20',
-    tags: ['design', 'mobile'],
-    subtasks: [
-      { id: 's1', title: 'Timeline screen', completed: true },
-      { id: 's2', title: 'Kanban screen', completed: false },
-      { id: 's3', title: 'Settings screen', completed: false },
-    ],
-    createdAt: '2026-01-10',
-    updatedAt: '2026-01-12',
-  },
-  {
-    id: '2',
-    title: 'Write documentation',
-    description: 'Document the API and component usage',
-    status: 'todo',
-    priority: 'medium',
-    tags: ['docs'],
-    createdAt: '2026-01-11',
-    updatedAt: '2026-01-11',
-  },
-  {
-    id: '3',
-    title: 'Fix performance issues',
-    status: 'backlog',
-    priority: 'low',
-    tags: ['bug', 'performance'],
-    createdAt: '2026-01-09',
-    updatedAt: '2026-01-09',
-  },
-];
 
 // ============================================================
 // COMPONENTS
 // ============================================================
 
 interface TaskCardProps {
-  task: KanbanTask;
-  onEdit: (task: KanbanTask) => void;
+  task: StoredTask;
+  onEdit: (task: StoredTask) => void;
   onDelete: (taskId: string) => void;
   onMove: (taskId: string) => void;
 }
 
 function TaskCard({ task, onEdit, onDelete, onMove }: TaskCardProps) {
-  const priority = PRIORITY_CONFIG[task.priority];
-  const isOverdue =
-    task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'done';
-  const completedSubtasks = task.subtasks?.filter((s) => s.completed).length || 0;
-  const totalSubtasks = task.subtasks?.length || 0;
+  const priority = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium;
+  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'done';
+
+  const handlePress = () => onEdit(task);
 
   const handleLongPress = () => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
-
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    
     Alert.alert(
+      'Task Actions',
       task.title,
-      'Choose an action',
       [
-        { text: 'Edit', onPress: () => onEdit(task) },
-        { text: 'Move to...', onPress: () => onMove(task.id) },
-        { text: 'Delete', onPress: () => onDelete(task.id), style: 'destructive' },
+        { text: 'Move Status', onPress: () => onMove(task.id) },
+        { text: 'Delete Task', onPress: () => onDelete(task.id), style: 'destructive' },
         { text: 'Cancel', style: 'cancel' },
-      ],
-      { cancelable: true }
+      ]
     );
   };
 
   return (
-    <TouchableOpacity
-      onLongPress={handleLongPress}
-      activeOpacity={0.7}
-      delayLongPress={300}
+    <Animated.View 
+      layout={Layout.springify()}
+      entering={FadeInDown.springify().damping(15)}
     >
-      <Card
-        variant="default"
-        className={`mb-3 ${isOverdue ? 'border-red-500' : ''}`}
+      <TouchableOpacity
+        onPress={handlePress}
+        onLongPress={handleLongPress}
+        activeOpacity={0.9}
+        className="mb-4"
       >
-        {/* Header */}
-        <View className="flex-row justify-between items-start mb-2">
-          <Text className="flex-1 text-white font-medium text-sm mr-2">
-            {task.title}
-          </Text>
-          <TouchableOpacity
-            onPress={handleLongPress}
-            className="p-1 rounded-lg active:bg-slate-700"
-          >
-            <MoreVertical size={16} color="#94a3b8" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Description */}
-        {task.description && (
-          <Text
-            className="text-dark-text-secondary text-xs mb-3"
-            numberOfLines={2}
-          >
-            {task.description}
-          </Text>
-        )}
-
-        {/* Subtasks Progress */}
-        {totalSubtasks > 0 && (
-          <View className="mb-3">
-            <View className="flex-row items-center mb-1">
-              <CheckCircle2 size={12} color="#64748b" />
-              <Text className="text-dark-text-secondary text-xs ml-1">
-                {completedSubtasks}/{totalSubtasks} subtasks
-              </Text>
-            </View>
-            <View className="h-1.5 bg-dark-border rounded-full overflow-hidden">
-              <View
-                className="h-full bg-green-500 rounded-full"
-                style={{
-                  width: `${(completedSubtasks / totalSubtasks) * 100}%`,
-                }}
-              />
-            </View>
-          </View>
-        )}
-
-        {/* Tags */}
-        {task.tags.length > 0 && (
-          <View className="flex-row flex-wrap gap-1 mb-3">
-            {task.tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} variant="purple" size="sm">
-                {tag}
-              </Badge>
-            ))}
-            {task.tags.length > 3 && (
-              <Badge variant="default" size="sm">
-                +{task.tags.length - 3}
-              </Badge>
-            )}
-          </View>
-        )}
-
-        {/* Footer */}
-        <View className="flex-row items-center justify-between">
-          <Badge variant={priority.variant} size="sm">
-            {priority.label}
-          </Badge>
-
-          {task.dueDate && (
-            <View className="flex-row items-center">
-              <Calendar
-                size={12}
-                color={isOverdue ? '#ef4444' : '#64748b'}
-              />
-              <Text
-                className={`text-xs ml-1 ${
-                  isOverdue ? 'text-red-400' : 'text-dark-text-secondary'
-                }`}
+        <Card variant="glass" className="border-white/5">
+          <View className="flex-row justify-between items-start mb-2">
+            <View className="flex-1 mr-2">
+              <Text 
+                className="text-white text-base font-semibold"
+                style={{ fontFamily: 'Inter_600SemiBold' }}
               >
-                {new Date(task.dueDate).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                })}
+                {task.title}
               </Text>
             </View>
+            <View className={`px-2 py-1 rounded-md ${priority.bg}`}>
+              <Text 
+                className="text-[10px] font-bold uppercase"
+                style={{ color: priority.color, fontFamily: 'Inter_700Bold' }}
+              >
+                {priority.label}
+              </Text>
+            </View>
+          </View>
+
+          {task.description && (
+            <Text 
+              className="text-slate-400 text-xs mb-3 leading-4"
+              numberOfLines={2}
+              style={{ fontFamily: 'Inter_400Regular' }}
+            >
+              {task.description}
+            </Text>
           )}
-        </View>
-      </Card>
-    </TouchableOpacity>
+
+          <View className="flex-row items-center justify-between mt-1">
+            <View className="flex-row items-center space-x-3">
+              {task.dueDate && (
+                <View className="flex-row items-center opacity-70">
+                  <Calendar size={12} color={isOverdue ? '#ef4444' : '#94a3b8'} />
+                  <Text 
+                    className={`text-[11px] ml-1 ${isOverdue ? 'text-red-400' : 'text-slate-400'}`}
+                    style={{ fontFamily: 'Inter_400Regular' }}
+                  >
+                    {new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </Text>
+                </View>
+              )}
+              {task.category && (
+                <View className="flex-row items-center opacity-70">
+                  <TagIcon size={12} color="#94a3b8" />
+                  <Text 
+                    className="text-[11px] ml-1 text-slate-400"
+                    style={{ fontFamily: 'Inter_400Regular' }}
+                  >
+                    {task.category}
+                  </Text>
+                </View>
+              )}
+            </View>
+            
+            <View className="flex-row items-center opacity-50">
+              <Clock size={10} color="#94a3b8" />
+              <Text className="text-[10px] text-slate-400 ml-1">
+                {new Date(task.updatedAt).toLocaleDateString()}
+              </Text>
+            </View>
+          </View>
+        </Card>
+      </TouchableOpacity>
+    </Animated.View>
   );
 }
 
@@ -251,157 +174,127 @@ function TaskCard({ task, onEdit, onDelete, onMove }: TaskCardProps) {
 
 interface TaskModalProps {
   visible: boolean;
-  task?: KanbanTask;
-  defaultStatus?: KanbanTask['status'];
+  task?: StoredTask;
+  defaultStatus?: KanbanStatus;
   onClose: () => void;
-  onSave: (task: Partial<KanbanTask>) => void;
+  onSave: (task: Partial<StoredTask>) => void;
 }
 
 function TaskModal({ visible, task, defaultStatus = 'todo', onClose, onSave }: TaskModalProps) {
-  const [title, setTitle] = useState(task?.title || '');
-  const [description, setDescription] = useState(task?.description || '');
-  const [status, setStatus] = useState<KanbanTask['status']>(task?.status || defaultStatus);
-  const [priority, setPriority] = useState<KanbanTask['priority']>(task?.priority || 'medium');
-  const [showStatusPicker, setShowStatusPicker] = useState(false);
-  const [showPriorityPicker, setShowPriorityPicker] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [status, setStatus] = useState<KanbanStatus>(defaultStatus);
+  const [priority, setPriority] = useState<KanbanPriority>('medium');
+  const [category, setCategory] = useState('');
+
+  useEffect(() => {
+    if (visible) {
+      setTitle(task?.title || '');
+      setDescription(task?.description || '');
+      setStatus(task?.status || defaultStatus);
+      setPriority(task?.priority || 'medium');
+      setCategory(task?.category || '');
+    }
+  }, [visible, task, defaultStatus]);
 
   const handleSave = () => {
     if (!title.trim()) {
-      Alert.alert('Error', 'Please enter a title');
+      Alert.alert('Missing Title', 'Please enter a task title to continue.');
       return;
     }
-
     onSave({
       title: title.trim(),
-      description: description.trim() || undefined,
+      description: description.trim(),
       status,
       priority,
+      category: category.trim(),
     });
     onClose();
   };
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      presentationStyle="pageSheet"
-      onRequestClose={onClose}
-    >
-      <SafeAreaView className="flex-1 bg-dark-background">
-        {/* Header */}
-        <View className="flex-row items-center justify-between px-4 py-3 border-b border-dark-border">
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+      <View className="flex-1 bg-slate-950">
+        <View className="px-6 py-4 flex-row justify-between items-center border-b border-white/5">
           <TouchableOpacity onPress={onClose}>
-            <X size={24} color="#f8fafc" />
+            <Text className="text-slate-400 text-base" style={{ fontFamily: 'Inter_400Regular' }}>Cancel</Text>
           </TouchableOpacity>
-          <Text className="text-white text-lg font-semibold">
+          <Text className="text-white text-lg font-bold" style={{ fontFamily: 'Inter_700Bold' }}>
             {task ? 'Edit Task' : 'New Task'}
           </Text>
           <TouchableOpacity onPress={handleSave}>
-            <Text className="text-primary-500 text-base font-medium">Save</Text>
+            <Text className="text-primary-500 text-base font-bold" style={{ fontFamily: 'Inter_700Bold' }}>Save</Text>
           </TouchableOpacity>
         </View>
 
-        <ScrollView className="flex-1 px-4 py-6">
-          {/* Title */}
-          <View className="mb-4">
-            <Text className="text-dark-text-primary text-sm font-medium mb-2">
-              Title
+        <ScrollView className="flex-1 px-6 py-8">
+          <View className="mb-6">
+            <Text className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-2" style={{ fontFamily: 'Inter_700Bold' }}>
+              Task Title
             </Text>
             <TextInput
               value={title}
               onChangeText={setTitle}
               placeholder="What needs to be done?"
-              placeholderTextColor="#64748b"
-              className="bg-dark-surface border border-dark-border rounded-xl px-4 py-3 text-white"
+              placeholderTextColor="#475569"
+              className="bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-white text-base"
+              style={{ fontFamily: 'Inter_400Regular' }}
             />
           </View>
 
-          {/* Description */}
-          <View className="mb-4">
-            <Text className="text-dark-text-primary text-sm font-medium mb-2">
+          <View className="mb-6">
+            <Text className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-2" style={{ fontFamily: 'Inter_700Bold' }}>
               Description
             </Text>
             <TextInput
               value={description}
               onChangeText={setDescription}
-              placeholder="Add more details..."
-              placeholderTextColor="#64748b"
+              placeholder="Add some context or details..."
+              placeholderTextColor="#475569"
               multiline
               numberOfLines={4}
+              className="bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-white text-base min-h-[120px]"
+              style={{ fontFamily: 'Inter_400Regular' }}
               textAlignVertical="top"
-              className="bg-dark-surface border border-dark-border rounded-xl px-4 py-3 text-white"
             />
           </View>
 
-          {/* Status */}
-          <View className="mb-4">
-            <Text className="text-dark-text-primary text-sm font-medium mb-2">
-              Status
-            </Text>
-            <TouchableOpacity
-              onPress={() => setShowStatusPicker(!showStatusPicker)}
-              className="bg-dark-surface border border-dark-border rounded-xl px-4 py-3 flex-row items-center justify-between"
-            >
-              <Text className="text-white">
-                {COLUMNS.find((c) => c.status === status)?.title}
+          <View className="flex-row space-x-4 mb-6">
+            <View className="flex-1">
+              <Text className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-2" style={{ fontFamily: 'Inter_700Bold' }}>
+                Priority
               </Text>
-              <ChevronDown size={20} color="#94a3b8" />
-            </TouchableOpacity>
-            {showStatusPicker && (
-              <View className="mt-2 bg-dark-surface rounded-xl border border-dark-border overflow-hidden">
-                {COLUMNS.map((col) => (
+              <View className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+                {(['low', 'medium', 'high'] as KanbanPriority[]).map((p) => (
                   <TouchableOpacity
-                    key={col.id}
-                    onPress={() => {
-                      setStatus(col.status);
-                      setShowStatusPicker(false);
-                    }}
-                    className={`px-4 py-3 border-b border-dark-border ${
-                      status === col.status ? 'bg-primary-600/20' : ''
-                    }`}
+                    key={p}
+                    onPress={() => setPriority(p)}
+                    className={`px-4 py-3 items-center border-b border-white/5 ${priority === p ? 'bg-primary-500/20' : ''}`}
                   >
-                    <Text className="text-white">{col.title}</Text>
+                    <Text className={`capitalize ${priority === p ? 'text-primary-400 font-bold' : 'text-slate-400'}`}>
+                      {p}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </View>
-            )}
-          </View>
+            </View>
 
-          {/* Priority */}
-          <View className="mb-4">
-            <Text className="text-dark-text-primary text-sm font-medium mb-2">
-              Priority
-            </Text>
-            <TouchableOpacity
-              onPress={() => setShowPriorityPicker(!showPriorityPicker)}
-              className="bg-dark-surface border border-dark-border rounded-xl px-4 py-3 flex-row items-center justify-between"
-            >
-              <Text className="text-white">
-                {PRIORITY_CONFIG[priority].label}
+            <View className="flex-1">
+              <Text className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-2" style={{ fontFamily: 'Inter_700Bold' }}>
+                Category
               </Text>
-              <ChevronDown size={20} color="#94a3b8" />
-            </TouchableOpacity>
-            {showPriorityPicker && (
-              <View className="mt-2 bg-dark-surface rounded-xl border border-dark-border overflow-hidden">
-                {Object.entries(PRIORITY_CONFIG).map(([key, { label }]) => (
-                  <TouchableOpacity
-                    key={key}
-                    onPress={() => {
-                      setPriority(key as KanbanTask['priority']);
-                      setShowPriorityPicker(false);
-                    }}
-                    className={`px-4 py-3 border-b border-dark-border ${
-                      priority === key ? 'bg-primary-600/20' : ''
-                    }`}
-                  >
-                    <Text className="text-white">{label}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
+              <TextInput
+                value={category}
+                onChangeText={setCategory}
+                placeholder="Work, Life..."
+                placeholderTextColor="#475569"
+                className="bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-white text-base"
+                style={{ fontFamily: 'Inter_400Regular' }}
+              />
+            </View>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     </Modal>
   );
 }
@@ -410,13 +303,24 @@ function TaskModal({ visible, task, defaultStatus = 'todo', onClose, onSave }: T
 // MAIN SCREEN
 // ============================================================
 
-export default function KanbanScreen() {
-  const [tasks, setTasks] = useState<KanbanTask[]>(MOCK_TASKS);
-  const [selectedColumn, setSelectedColumn] = useState<KanbanColumn>(COLUMNS[1]);
+export default function KanbanBoard() {
+  const [tasks, setTasks] = useState<StoredTask[]>([]);
+  const [selectedColumn, setSelectedColumn] = useState<KanbanColumn>(COLUMNS[0]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [editingTask, setEditingTask] = useState<KanbanTask | undefined>();
+  const [editingTask, setEditingTask] = useState<StoredTask | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
 
-  const columnTasks = useMemo(
+  const loadTasks = useCallback(() => {
+    const allTasks = storage.getTasks();
+    setTasks(allTasks);
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
+
+  const filteredTasks = useMemo(
     () => tasks.filter((t) => t.status === selectedColumn.status),
     [tasks, selectedColumn]
   );
@@ -426,169 +330,135 @@ export default function KanbanScreen() {
     setModalVisible(true);
   };
 
-  const handleEditTask = useCallback((task: KanbanTask) => {
+  const handleEditTask = (task: StoredTask) => {
     setEditingTask(task);
     setModalVisible(true);
-  }, []);
+  };
 
-  const handleDeleteTask = useCallback((taskId: string) => {
-    Alert.alert(
-      'Delete Task',
-      'Are you sure you want to delete this task?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => setTasks((prev) => prev.filter((t) => t.id !== taskId)),
-        },
-      ]
-    );
-  }, []);
-
-  const handleMoveTask = useCallback((taskId: string) => {
-    const task = tasks.find((t) => t.id === taskId);
-    if (!task) return;
-
-    const options = COLUMNS.filter((c) => c.status !== task.status).map((col) => ({
-      text: `Move to ${col.title}`,
-      onPress: () => {
-        setTasks((prev) =>
-          prev.map((t) =>
-            t.id === taskId ? { ...t, status: col.status } : t
-          )
-        );
-      },
-    }));
-
-    Alert.alert('Move Task', 'Choose a column', [
-      ...options,
-      { text: 'Cancel', style: 'cancel' },
-    ]);
-  }, [tasks]);
-
-  const handleSaveTask = useCallback((taskData: Partial<KanbanTask>) => {
+  const handleSaveTask = (taskData: Partial<StoredTask>) => {
     if (editingTask) {
-      setTasks((prev) =>
-        prev.map((t) =>
-          t.id === editingTask.id
-            ? { ...t, ...taskData, updatedAt: new Date().toISOString() }
-            : t
-        )
-      );
+      storage.updateTask(editingTask.id, taskData);
     } else {
-      const newTask: KanbanTask = {
-        id: Date.now().toString(),
+      storage.saveTask({
         title: taskData.title!,
         description: taskData.description,
         status: taskData.status || selectedColumn.status,
         priority: taskData.priority || 'medium',
-        tags: taskData.tags || [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      setTasks((prev) => [...prev, newTask]);
+        category: taskData.category,
+      });
     }
-  }, [editingTask, selectedColumn]);
+    loadTasks();
+    if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  };
 
-  const renderTask = useCallback(
-    ({ item, index }: { item: KanbanTask; index: number }) => (
-      <Animated.View entering={FadeInRight.delay(index * 50)}>
-        <TaskCard
-          task={item}
-          onEdit={handleEditTask}
-          onDelete={handleDeleteTask}
-          onMove={handleMoveTask}
-        />
-      </Animated.View>
-    ),
-    [handleEditTask, handleDeleteTask, handleMoveTask]
-  );
+  const handleDeleteTask = (taskId: string) => {
+    Alert.alert('Delete Task', 'Are you sure?', [
+      { text: 'No' },
+      { text: 'Yes, Delete', style: 'destructive', onPress: () => {
+        storage.deleteTask(taskId);
+        loadTasks();
+      }}
+    ]);
+  };
+
+  const handleMoveTask = (taskId: string) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    const options = COLUMNS.map(col => ({
+      text: col.title,
+      onPress: () => {
+        storage.updateTask(taskId, { status: col.status });
+        loadTasks();
+      }
+    }));
+
+    Alert.alert('Move to Status', 'Change the current progress state:', [
+      ...options,
+      { text: 'Cancel', style: 'cancel' }
+    ]);
+  };
+
+  const renderTask = useCallback(({ item }: { item: StoredTask }) => (
+    <TaskCard 
+      task={item} 
+      onEdit={handleEditTask} 
+      onDelete={handleDeleteTask} 
+      onMove={handleMoveTask} 
+    />
+  ), [handleEditTask, handleDeleteTask, handleMoveTask]);
 
   return (
-    <SafeAreaView className="flex-1 bg-dark-background" edges={['bottom']}>
-      {/* Column Tabs */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        className="px-4 pt-4 max-h-16"
-      >
-        <View className="flex-row space-x-2 pb-3">
-          {COLUMNS.map((column) => {
-            const columnTaskCount = tasks.filter(
-              (t) => t.status === column.status
-            ).length;
-            const isSelected = selectedColumn.id === column.id;
+    <SafeAreaView className="flex-1 bg-slate-950" edges={['top']}>
+      {/* Header */}
+      <View className="px-6 py-4 flex-row justify-between items-center">
+        <View>
+          <Text className="text-2xl font-bold text-white" style={{ fontFamily: 'Inter_700Bold' }}>
+            Board
+          </Text>
+          <Text className="text-slate-500 text-xs mt-0.5" style={{ fontFamily: 'Inter_400Regular' }}>
+            {tasks.length} active initiatives
+          </Text>
+        </View>
+        <TouchableOpacity 
+          onPress={handleAddTask}
+          className="w-10 h-10 bg-primary-500 rounded-full items-center justify-center shadow-lg shadow-primary-500/40"
+        >
+          <Plus size={24} color="#ffffff" />
+        </TouchableOpacity>
+      </View>
 
+      {/* Column Selector */}
+      <View className="px-6 mb-6">
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
+          {COLUMNS.map((col) => {
+            const count = tasks.filter(t => t.status === col.status).length;
+            const active = selectedColumn.id === col.id;
             return (
               <TouchableOpacity
-                key={column.id}
-                onPress={() => setSelectedColumn(column)}
-                className={`px-4 py-2 rounded-lg flex-row items-center space-x-2 ${
-                  isSelected ? 'bg-primary-600' : 'bg-dark-surface border border-dark-border'
+                key={col.id}
+                onPress={() => setSelectedColumn(col)}
+                className={`mr-3 px-4 py-2.5 rounded-2xl flex-row items-center space-x-2 border ${
+                  active ? 'bg-primary-500/20 border-primary-500' : 'bg-white/5 border-white/5'
                 }`}
               >
-                <Text
-                  className={`text-sm font-medium ${
-                    isSelected ? 'text-white' : 'text-dark-text-secondary'
-                  }`}
+                <Text 
+                  className={`text-sm font-semibold ${active ? 'text-primary-400' : 'text-slate-400'}`}
+                  style={{ fontFamily: active ? 'Inter_600SemiBold' : 'Inter_400Regular' }}
                 >
-                  {column.title}
+                  {col.title}
                 </Text>
-                <View
-                  className={`px-1.5 py-0.5 rounded-full ${
-                    isSelected ? 'bg-white/20' : 'bg-dark-border'
-                  }`}
-                >
-                  <Text
-                    className={`text-xs font-bold ${
-                      isSelected ? 'text-white' : 'text-dark-text-secondary'
-                    }`}
-                  >
-                    {columnTaskCount}
-                  </Text>
+                <View className={`px-1.5 py-0.5 rounded-md ${active ? 'bg-primary-500' : 'bg-slate-800'}`}>
+                  <Text className="text-[10px] text-white font-bold">{count}</Text>
                 </View>
               </TouchableOpacity>
             );
           })}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
 
-      {/* Tasks List */}
-      <View className="flex-1 px-4 pt-2">
-        {columnTasks.length === 0 ? (
-          <View className="flex-1 items-center justify-center">
-            <Text className="text-dark-text-secondary text-base mb-4">
-              No tasks in {selectedColumn.title}
+      {/* Task List */}
+      <View className="flex-1 px-6">
+        {filteredTasks.length === 0 ? (
+          <View className="flex-1 items-center justify-center opacity-30">
+            <CheckCircle2 size={64} color="#94a3b8" />
+            <Text className="text-white text-lg font-bold mt-4" style={{ fontFamily: 'Inter_700Bold' }}>
+              All caught up!
             </Text>
-            <Button onPress={handleAddTask} variant="primary">
-              Add First Task
-            </Button>
+            <Text className="text-slate-400 text-sm mt-1" style={{ fontFamily: 'Inter_400Regular' }}>
+              No tasks currently in {selectedColumn.title}
+            </Text>
           </View>
         ) : (
           <FlashList
-            data={columnTasks}
+            data={filteredTasks}
             renderItem={renderTask}
-            estimatedItemSize={120}
+            estimatedItemSize={140}
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 100 }}
           />
         )}
       </View>
-
-      {/* FAB */}
-      <TouchableOpacity
-        onPress={handleAddTask}
-        className="absolute bottom-6 right-6 w-14 h-14 bg-primary-600 rounded-full items-center justify-center shadow-lg"
-        style={{
-          shadowColor: '#3b82f6',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 8,
-          elevation: 8,
-        }}
-      >
-        <Plus size={24} color="#ffffff" />
-      </TouchableOpacity>
 
       {/* Task Modal */}
       <TaskModal
@@ -601,3 +471,4 @@ export default function KanbanScreen() {
     </SafeAreaView>
   );
 }
+

@@ -84,9 +84,11 @@ export function Button({
       ) : typeof children === 'string' ? (
         <Text
           className={`font-semibold ${textSizeStyles[size]} ${textColorStyles[variant]}`}
+          style={{ fontFamily: 'Inter_600SemiBold' }}
         >
           {children}
         </Text>
+
       ) : (
         children
       )}

@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -6,8 +6,9 @@ import Animated, {
   withTiming,
   withSequence,
   Easing,
+  withSpring,
 } from 'react-native-reanimated';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 interface AudioVisualizerProps {
   isActive: boolean;
@@ -18,12 +19,12 @@ interface AudioVisualizerProps {
 export function AudioVisualizer({
   isActive,
   volume = 0.5,
-  barCount = 40,
+  barCount = 31,
 }: AudioVisualizerProps) {
-  const bars = Array.from({ length: barCount }, (_, i) => i);
+  const bars = useMemo(() => Array.from({ length: barCount }, (_, i) => i), [barCount]);
 
   return (
-    <View className="flex-row items-center justify-center h-32 gap-1">
+    <View className="flex-row items-center justify-center h-24 gap-[3px]">
       {bars.map((index) => (
         <WaveformBar
           key={index}
@@ -45,59 +46,52 @@ interface WaveformBarProps {
 }
 
 function WaveformBar({ index, isActive, volume, totalBars }: WaveformBarProps) {
-  const height = useSharedValue(4);
+  const height = useSharedValue(6);
 
-  // Calculate delay based on index for wave effect
-  const delay = (index * 30) % 800;
-
-  // Base height variation (taller in middle, shorter on edges)
-  const centerDistance = Math.abs(index - totalBars / 2) / (totalBars / 2);
-  const baseHeight = 4 + (1 - centerDistance) * 60;
-  const maxHeight = baseHeight * (0.5 + volume * 1.5);
+  // Gaussian-like curve for base height (taller in middle)
+  const x = index / (totalBars - 1);
+  const baseHeight = 6 + 60 * Math.exp(-Math.pow(x - 0.5, 2) / 0.08);
+  
+  // Real-time height based on volume
+  const targetHeight = Math.max(6, baseHeight * (0.2 + volume * 1.5));
 
   useEffect(() => {
     if (isActive) {
-      height.value = withRepeat(
-        withSequence(
-          withTiming(maxHeight, {
-            duration: 400 + Math.random() * 200,
-            easing: Easing.inOut(Easing.ease),
-          }),
-          withTiming(baseHeight * 0.3, {
-            duration: 400 + Math.random() * 200,
-            easing: Easing.inOut(Easing.ease),
-          })
-        ),
-        -1,
-        false
-      );
+      // Add some frequency-like jitter
+      const jitter = 0.8 + Math.random() * 0.4;
+      height.value = withSpring(targetHeight * jitter, {
+        damping: 15,
+        stiffness: 150,
+      });
     } else {
-      height.value = withTiming(4, { duration: 300 });
+      height.value = withTiming(6, { duration: 500, easing: Easing.bezier(0.25, 0.1, 0.25, 1) });
     }
-  }, [isActive, volume]);
+  }, [isActive, volume, targetHeight]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     height: height.value,
   }));
 
-  // Color based on position
+  // Premium gradient coloring
   const getBarColor = () => {
     const ratio = index / totalBars;
-    if (ratio < 0.33) return 'bg-blue-500';
-    if (ratio < 0.66) return 'bg-purple-500';
-    return 'bg-pink-500';
+    if (ratio < 0.2) return '#0ea5e9'; // primary-500 (sky)
+    if (ratio < 0.5) return '#3b82f6'; // blue-500
+    if (ratio < 0.8) return '#8b5cf6'; // purple-500
+    return '#ec4899'; // pink-500
   };
 
   return (
     <Animated.View
-      className={`w-1 rounded-full ${getBarColor()}`}
+      className="w-[3px] rounded-full"
       style={[
         animatedStyle,
         {
-          minHeight: 4,
-          maxHeight: maxHeight,
+          backgroundColor: getBarColor(),
+          opacity: isActive ? 1 : 0.3,
         }
       ]}
     />
   );
 }
+
