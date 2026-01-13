@@ -345,3 +345,39 @@ export const MOOD_LABELS: Record<JournalMood, string> = {
   bad: 'Bad',
 };
 
+
+// ============================================================
+// FAMILY SHARING
+// ============================================================
+
+export interface FamilyMember {
+  id: string;
+  name: string;
+  relationship: string; // e.g. "Partner", "Mother"
+  avatar?: string;
+  status: 'pending' | 'active';
+  joinedAt: Date;
+  isAdmin?: boolean;
+}
+
+export interface FamilyInvitation {
+  id: string;
+  code: string; 
+  createdBy: string;
+  expiresAt: Date;
+  status: 'active' | 'used' | 'expired';
+}
+
+export interface SharedItemWrapper {
+  id: string; // references local ID
+  type: 'journal' | 'question_answer' | 'life_chapter';
+  authorId: string;
+  authorName: string;
+  content: string; // Can be encrypted string or JSON string depending on implementation
+  timestamp: Date;
+  privacyLevel: PrivacyLevel;
+  reactions?: {
+    userId: string;
+    emoji: string;
+  }[];
+}

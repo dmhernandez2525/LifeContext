@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Audio } from 'expo-av';
-import * as Haptics from 'expo-haptics';
+import { SafeHaptics as Haptics } from '../lib/haptics';
 
 export interface RecorderState {
   status: 'idle' | 'recording' | 'paused';

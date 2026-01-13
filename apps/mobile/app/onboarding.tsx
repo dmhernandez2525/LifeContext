@@ -1,8 +1,8 @@
-import { View, Text, Pressable, TextInput } from 'react-native';
+import { View, Text, Pressable, TextInput, Platform } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as Haptics from 'expo-haptics';
+import { SafeHaptics as Haptics } from '../src/lib/haptics';
 import { useAppStore, DEFAULT_SETTINGS } from '@lcc/core';
 
 type Step = 'welcome' | 'passcode' | 'confirm' | 'complete';

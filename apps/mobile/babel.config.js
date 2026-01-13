@@ -6,7 +6,7 @@ module.exports = function (api) {
       'nativewind/babel',
     ],
     // TODO-p3: Add 'react-native-reanimated/plugin' back when using advanced animations
-    plugins: [],
+    plugins: ['react-native-reanimated/plugin'],
   };
 };
 

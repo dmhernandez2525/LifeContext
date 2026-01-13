@@ -4,7 +4,7 @@
  */
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Audio } from 'expo-av';
-import * as Haptics from 'expo-haptics';
+import { SafeHaptics as Haptics } from '../lib/haptics';
 
 // ============================================================
 // TYPES

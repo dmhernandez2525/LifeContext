@@ -19,7 +19,7 @@ config.resolver.nodeModulesPaths = [
 
 // Handle pnpm symlinks
 config.resolver.unstable_enableSymlinks = true;
-config.resolver.unstable_enablePackageExports = true;
+// config.resolver.unstable_enablePackageExports = true; // Disabled to fix Zustand import.meta issue
 
 // Ensure packages can find their dependencies
 config.resolver.extraNodeModules = {

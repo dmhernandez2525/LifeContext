@@ -1,9 +1,9 @@
 /**
- * Main application store using Zustand
+ * Main application store using custom implementation (no zustand)
  * Platform-agnostic state management for LifeContext
+ * Replaces zustand to avoid Import.meta issues in Metro/Web
  */
-import { create, StateCreator } from 'zustand';
-import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
+import { useSyncExternalStore, useCallback } from 'react';
 import type { UserSettings, Question, QuestionCategory } from '@lcc/types';
 
 // ============================================================
@@ -66,125 +66,198 @@ export const DEFAULT_SETTINGS: UserSettings = {
   autoLockTimeout: 5, // 5 minutes default
 };
 
+const INITIAL_STATE = {
+  isInitialized: false,
+  isUnlocked: false,
+  settings: null,
+  currentCategoryId: null,
+  currentQuestionId: null,
+  categories: [],
+  questions: [],
+  answeredQuestionIds: [],
+  totalRecordingTime: 0,
+};
+
 // ============================================================
-// STORE CREATOR
+// CUSTOM STORE IMPLEMENTATION
 // ============================================================
 
-type AppPersist = (
-  config: StateCreator<AppState>,
-  options: PersistOptions<AppState>
-) => StateCreator<AppState>;
+class AppStore {
+  private state: Omit<AppState, 'initialize' | 'unlock' | 'lock' | 'updateSettings' | 'setCurrentCategory' | 'setCurrentQuestion' | 'setCategories' | 'setQuestions' | 'markQuestionAnswered' | 'addRecordingTime' | 'reset'>;
+  private listeners: Set<() => void>;
+  private storage: any;
+  private storageKey: string;
 
-/**
- * Create the app store with optional custom storage adapter
- * This allows both web (localStorage) and mobile (MMKV) to use the same store
- */
-export function createAppStore(storage?: any) {
-  const persistOptions: PersistOptions<AppState> = {
-    name: 'lcc-app-store',
-    storage: storage || createJSONStorage(() => {
-      // Default to a no-op storage for SSR/non-browser environments
-      if (typeof window !== 'undefined' && window.localStorage) {
-        return localStorage;
-      }
-      return {
+  constructor(storage?: any) {
+    this.state = { ...INITIAL_STATE };
+    this.listeners = new Set();
+    this.storageKey = 'lcc-app-store';
+    
+    // Default storage (localStorage on web, customized otherwise)
+    if (storage) {
+      this.storage = storage;
+    } else if (typeof window !== 'undefined' && window.localStorage) {
+      this.storage = window.localStorage;
+    } else {
+      this.storage = {
         getItem: () => null,
         setItem: () => {},
         removeItem: () => {},
       };
-    }),
-    partialize: (state) => ({
-      isInitialized: state.isInitialized,
-      answeredQuestionIds: state.answeredQuestionIds,
-      totalRecordingTime: state.totalRecordingTime,
-    } as AppState),
+    }
+
+    this.hydrate();
+  }
+
+  private hydrate() {
+    try {
+      const data = this.storage.getItem(this.storageKey);
+      if (data) {
+        const parsed = JSON.parse(data);
+        // Only restore specific fields (partialize)
+        if (parsed) {
+          this.state.isInitialized = parsed.isInitialized ?? this.state.isInitialized;
+          this.state.answeredQuestionIds = parsed.answeredQuestionIds ?? this.state.answeredQuestionIds;
+          this.state.totalRecordingTime = parsed.totalRecordingTime ?? this.state.totalRecordingTime;
+        }
+      }
+    } catch (e) {
+      console.error('Failed to hydrate app store:', e);
+    }
+  }
+
+  private persist() {
+    try {
+      // Only persist specific fields
+      const persistedState = {
+        isInitialized: this.state.isInitialized,
+        answeredQuestionIds: this.state.answeredQuestionIds,
+        totalRecordingTime: this.state.totalRecordingTime,
+      };
+      this.storage.setItem(this.storageKey, JSON.stringify(persistedState));
+    } catch (e) {
+      console.error('Failed to persist app store:', e);
+    }
+  }
+
+  private notify() {
+    this.listeners.forEach(listener => listener());
+  }
+
+  subscribe = (listener: () => void) => {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
   };
 
-  return create<AppState>()(
-    (persist as AppPersist)(
-      (set, get) => ({
-        // Initial state
-        isInitialized: false,
-        isUnlocked: false,
-        settings: null,
-        currentCategoryId: null,
-        currentQuestionId: null,
-        categories: [],
-        questions: [],
-        answeredQuestionIds: [],
-        totalRecordingTime: 0,
+  getState = () => {
+    return {
+      ...this.state,
+      initialize: this.initialize,
+      unlock: this.unlock,
+      lock: this.lock,
+      updateSettings: this.updateSettings,
+      setCurrentCategory: this.setCurrentCategory,
+      setCurrentQuestion: this.setCurrentQuestion,
+      setCategories: this.setCategories,
+      setQuestions: this.setQuestions,
+      markQuestionAnswered: this.markQuestionAnswered,
+      addRecordingTime: this.addRecordingTime,
+      reset: this.reset,
+    } as AppState;
+  };
 
-        // Actions
-        initialize: (settings) => {
-          set({
-            isInitialized: true,
-            settings,
-          });
-        },
+  // Actions
+  initialize = (settings: UserSettings) => {
+    this.state.isInitialized = true;
+    this.state.settings = settings;
+    this.persist();
+    this.notify();
+  };
 
-        unlock: () => {
-          set({ isUnlocked: true });
-        },
+  unlock = () => {
+    this.state.isUnlocked = true;
+    this.notify();
+  };
 
-        lock: () => {
-          set({ isUnlocked: false });
-        },
+  lock = () => {
+    this.state.isUnlocked = false;
+    this.notify();
+  };
 
-        updateSettings: (newSettings) => {
-          const current = get().settings || DEFAULT_SETTINGS;
-          set({
-            settings: { ...current, ...newSettings },
-          });
-        },
+  updateSettings = (newSettings: Partial<UserSettings>) => {
+    const current = this.state.settings || DEFAULT_SETTINGS;
+    this.state.settings = { ...current, ...newSettings };
+    this.notify();
+  };
 
-        setCurrentCategory: (categoryId) => {
-          set({ currentCategoryId: categoryId });
-        },
+  setCurrentCategory = (categoryId: string | null) => {
+    this.state.currentCategoryId = categoryId;
+    this.notify();
+  };
 
-        setCurrentQuestion: (questionId) => {
-          set({ currentQuestionId: questionId });
-        },
+  setCurrentQuestion = (questionId: string | null) => {
+    this.state.currentQuestionId = questionId;
+    this.notify();
+  };
 
-        setCategories: (categories) => {
-          set({ categories });
-        },
+  setCategories = (categories: QuestionCategory[]) => {
+    this.state.categories = categories;
+    this.notify();
+  };
 
-        setQuestions: (questions) => {
-          set({ questions });
-        },
+  setQuestions = (questions: Question[]) => {
+    this.state.questions = questions;
+    this.notify();
+  };
 
-        markQuestionAnswered: (questionId) => {
-          const current = get().answeredQuestionIds;
-          if (!current.includes(questionId)) {
-            set({ answeredQuestionIds: [...current, questionId] });
-          }
-        },
+  markQuestionAnswered = (questionId: string) => {
+    if (!this.state.answeredQuestionIds.includes(questionId)) {
+      this.state.answeredQuestionIds = [...this.state.answeredQuestionIds, questionId];
+      this.persist();
+      this.notify();
+    }
+  };
 
-        addRecordingTime: (seconds) => {
-          set({ totalRecordingTime: get().totalRecordingTime + seconds });
-        },
+  addRecordingTime = (seconds: number) => {
+    this.state.totalRecordingTime += seconds;
+    this.persist();
+    this.notify();
+  };
 
-        reset: () => {
-          set({
-            isInitialized: false,
-            isUnlocked: false,
-            settings: null,
-            currentCategoryId: null,
-            currentQuestionId: null,
-            categories: [],
-            questions: [],
-            answeredQuestionIds: [],
-            totalRecordingTime: 0,
-          });
-        },
-      }),
-      persistOptions
-    )
-  );
+  reset = () => {
+    this.state = { ...INITIAL_STATE };
+    this.persist();
+    this.notify();
+  };
 }
 
-// Default store instance for web (uses localStorage)
-export const useAppStore = createAppStore();
+// Singleton instance
+let storeInstance: AppStore | null = null;
+
+export function createAppStore(storage?: any) {
+  if (!storeInstance) {
+    storeInstance = new AppStore(storage);
+  }
+  return storeInstance;
+}
+
+// React Hook
+export function useAppStore<T = AppState>(
+  selector?: (state: AppState) => T
+): T {
+  const store = createAppStore();
+  
+  const getSnapshot = useCallback(() => {
+    const state = store.getState();
+    return selector ? selector(state) : state as unknown as T;
+  }, [store, selector]);
+  
+  return useSyncExternalStore(
+    store.subscribe,
+    getSnapshot,
+    getSnapshot
+  );
+}
 
 // ============================================================
 // DERIVED HOOKS
@@ -194,7 +267,8 @@ export const useAppStore = createAppStore();
  * Hook for calculating progress metrics
  */
 export function useProgress() {
-  const { questions, answeredQuestionIds } = useAppStore();
+  const questions = useAppStore((state) => state.questions);
+  const answeredQuestionIds = useAppStore((state) => state.answeredQuestionIds);
 
   const getCategoryProgress = (categoryId: string) => {
     const categoryQuestions = questions.filter((q) => q.categoryId === categoryId);

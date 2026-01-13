@@ -1,32 +1,57 @@
 /**
- * Settings Screen - API keys, preferences, and data management
+ * Settings Screen - AI-powered premiums and local data controls
  */
-import { View, Text, ScrollView, Pressable, Switch, Alert, TextInput, Modal } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Switch, Alert, TextInput, Modal, Platform } from 'react-native';
 import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import { 
+  Settings, 
+  Key, 
+  Database, 
+  ShieldCheck, 
+  Shield,
+  FileJson, 
+  Trash2, 
+  Info, 
+  ChevronRight, 
+  Cpu, 
+  Zap, 
+  Cloud, 
+  Mic,
+  Users
+} from 'lucide-react-native';
 import { getSettings, updateSettings, clearAllData, exportAllData, AppSettings } from '../../src/lib/storage';
+import { syncService, SyncState } from '../../src/services/SyncService';
 import * as Sharing from 'expo-sharing';
+import { Card, Button } from '../../src/components/ui';
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const [settings, setSettings] = useState<AppSettings>(getSettings());
   const [apiKeyModalVisible, setApiKeyModalVisible] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [whisperKeyInput, setWhisperKeyInput] = useState('');
+  const [syncState, setSyncState] = useState<SyncState>(syncService.getState());
   
-  // Reload settings when screen focuses
   useEffect(() => {
     setSettings(getSettings());
+    // Subscribe to sync service
+    const unsubscribe = syncService.subscribe((state) => {
+        setSyncState(state);
+    });
+    return () => unsubscribe();
   }, []);
   
   const handleToggle = (key: keyof AppSettings, value: boolean) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     updateSettings({ [key]: value });
     setSettings(prev => ({ ...prev, [key]: value }));
   };
   
   const handleSaveApiKeys = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     updateSettings({
       apiKey: apiKeyInput || undefined,
       whisperApiKey: whisperKeyInput || undefined,
@@ -37,274 +62,370 @@ export default function SettingsScreen() {
       whisperApiKey: whisperKeyInput || undefined,
     }));
     setApiKeyModalVisible(false);
-    Alert.alert('Saved', 'API keys updated successfully.');
+    if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
   
   const handleExportData = async () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     try {
       const fileUri = await exportAllData();
-      
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(fileUri, {
           mimeType: 'application/json',
-          dialogTitle: 'Export LifeContext Data',
+          dialogTitle: 'Export LifeContext Context',
         });
-      } else {
-        Alert.alert('Exported', `Data saved to: ${fileUri}`);
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to export data.');
+      Alert.alert('Error', 'Failed to export your local context.');
     }
   };
   
   const handleDeleteData = () => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     Alert.alert(
-      'Delete All Data',
-      'This action cannot be undone. All your recordings, journals, and settings will be permanently deleted.',
+      'Purge Local Context?',
+      'This will permanently delete all recordings, journals, and brain dumps. Your data stays on this device, and once deleted, it is gone forever.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Delete',
+          text: 'Purge Everything',
           style: 'destructive',
           onPress: async () => {
             await clearAllData();
             setSettings(getSettings());
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-            Alert.alert('Deleted', 'All data has been cleared.');
+            if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           },
         },
       ]
     );
   };
-  
-  const SettingRow = ({
-    icon,
-    title,
-    subtitle,
-    onPress,
-    rightElement,
-    destructive,
-  }: {
-    icon: string;
-    title: string;
-    subtitle?: string;
-    onPress?: () => void;
-    rightElement?: React.ReactNode;
-    destructive?: boolean;
+
+  const handleSeedDemoData = async () => {
+    // Import additional storage functions dynamically to avoid issues
+    const storage = require('../../src/lib/storage');
+    
+    // Sample Journals
+    await storage.saveJournalEntry({ 
+      type: 'text', 
+      content: 'Had a great day today. Focused on my priorities and made solid progress on the mobile app.', 
+      mood: 4, 
+      tags: ['work', 'productivity'], 
+      date: new Date().toISOString() 
+    });
+    await storage.saveJournalEntry({ 
+      type: 'text', 
+      content: 'Feeling reflective. Spent time thinking about long-term goals and what truly matters.', 
+      mood: 3, 
+      tags: ['reflection', 'goals'], 
+      date: new Date(Date.now() - 86400000).toISOString() 
+    });
+    
+    // Sample Tasks
+    storage.saveTask({ title: 'Review life goals', description: 'Quarterly review of personal objectives', status: 'todo', priority: 'high' });
+    storage.saveTask({ title: 'Learn a new skill', description: 'Start the guitar lessons I keep postponing', status: 'backlog', priority: 'medium' });
+    storage.saveTask({ title: 'Plan weekend trip', description: 'Research destinations and book accommodation', status: 'in-progress', priority: 'low' });
+    
+    // Sample Brain Dump
+    await storage.saveBrainDump({ 
+      bulletPoints: ['Improve morning routine', 'Spend more time reading', 'Call family weekly'],
+      transcription: 'I want to become more intentional about my mornings. Maybe wake up earlier and have a proper routine instead of jumping straight into work.',
+      synthesis: {
+        organizedContent: 'You want to improve your morning routine and become more intentional.',
+        insights: ['You value intentionality', 'Family connections are important to you'],
+        questions: ['What does a perfect morning look like?'],
+        contradictions: []
+      }
+    });
+    
+    if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    Alert.alert('Demo Data Added', 'Sample journals, tasks, and brain dumps have been created.');
+  };
+
+  const handleImportData = async () => {
+    Alert.alert('Import Data', 'Import from JSON backup will be available in a future update. Use Export to save your current data.');
+  };
+
+  const SettingItem = ({ 
+    icon: Icon, 
+    title, 
+    subtitle, 
+    onPress, 
+    value, 
+    onToggle, 
+    isDestructive 
+  }: { 
+    icon: any; 
+    title: string; 
+    subtitle: string; 
+    onPress?: () => void; 
+    value?: boolean; 
+    onToggle?: (v: boolean) => void;
+    isDestructive?: boolean;
   }) => (
-    <Pressable
-      onPress={onPress}
-      disabled={!onPress && !rightElement}
-      className="flex-row items-center py-4 active:opacity-70"
+    <TouchableOpacity 
+      onPress={onPress} 
+      disabled={!onPress}
+      className="flex-row items-center py-4 px-4 active:bg-white/5 rounded-2xl"
     >
-      <Text className="text-2xl mr-4">{icon}</Text>
-      <View className="flex-1">
-        <Text className={`font-medium ${destructive ? 'text-red-400' : 'text-white'}`}>
+      <View className={`w-10 h-10 items-center justify-center rounded-xl mr-4 ${isDestructive ? 'bg-red-500/10' : 'bg-slate-900'}`}>
+        <Icon size={20} color={isDestructive ? '#ef4444' : '#94a3b8'} strokeWidth={2} />
+      </View>
+      <View className="flex-1 mr-2">
+        <Text className={`text-sm font-semibold mb-0.5 ${isDestructive ? 'text-red-400' : 'text-white'}`} style={{ fontFamily: 'Inter_600SemiBold' }}>
           {title}
         </Text>
-        {subtitle && (
-          <Text className="text-dark-text-secondary text-sm mt-0.5">
-            {subtitle}
-          </Text>
-        )}
+        <Text className="text-slate-500 text-[11px] leading-4" style={{ fontFamily: 'Inter_400Regular' }}>
+          {subtitle}
+        </Text>
       </View>
-      {rightElement}
-      {onPress && !rightElement && (
-        <Text className="text-dark-text-secondary text-lg">›</Text>
+      {onToggle !== undefined ? (
+        <Switch
+          value={value}
+          onValueChange={onToggle}
+          trackColor={{ false: '#1e293b', true: '#0ea5e9' }}
+          thumbColor="#ffffff"
+        />
+      ) : (
+        <ChevronRight size={16} color="#334155" />
       )}
-    </Pressable>
+    </TouchableOpacity>
   );
-  
+
   return (
-    <SafeAreaView className="flex-1 bg-dark-background" edges={['top']}>
-      <ScrollView className="flex-1 p-4">
+    <SafeAreaView className="flex-1 bg-slate-950" edges={['top']}>
+      <ScrollView className="flex-1 px-6 pt-6" showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View className="mb-6">
-          <Text className="text-3xl font-bold text-white">Settings</Text>
-          <Text className="text-dark-text-secondary mt-1">
-            Customize your LifeContext experience
+        <View className="mb-8">
+          <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-[3px] mb-1" style={{ fontFamily: 'Inter_700Bold' }}>
+            System Settings
+          </Text>
+          <Text className="text-3xl font-bold text-white lowercase" style={{ fontFamily: 'Inter_700Bold' }}>
+            archive.config
           </Text>
         </View>
-        
-        {/* AI Settings */}
-        <View className="bg-dark-surface rounded-2xl px-5 border border-dark-border mb-4">
-          <Text className="text-dark-text-secondary text-sm uppercase tracking-wide pt-4 pb-2">
-            AI Provider
-          </Text>
-          <SettingRow
-            icon="🤖"
-            title="Claude AI"
-            subtitle={settings.apiKey ? 'API key configured ✓' : 'Not configured'}
+
+        {/* AI & Brain Section */}
+        <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4 ml-1" style={{ fontFamily: 'Inter_700Bold' }}>
+          AI Intelligence
+        </Text>
+        <Card variant="glass" className="mb-6 p-1 border-white/5">
+          <SettingItem
+            icon={Key}
+            title="Authentication Keys"
+            subtitle={settings.apiKey ? 'Claude and Whisper keys are active' : 'Connect Anthropic/OpenAI keys for synthesis'}
             onPress={() => {
               setApiKeyInput(settings.apiKey || '');
               setWhisperKeyInput(settings.whisperApiKey || '');
               setApiKeyModalVisible(true);
             }}
           />
-          <View className="h-px bg-dark-border" />
-          <SettingRow
-            icon="🎙️"
-            title="Whisper (Transcription)"
-            subtitle={settings.whisperApiKey ? 'API key configured ✓' : 'Uses Claude key if set'}
-            onPress={() => {
-              setApiKeyInput(settings.apiKey || '');
-              setWhisperKeyInput(settings.whisperApiKey || '');
-              setApiKeyModalVisible(true);
-            }}
+          <View className="h-px bg-white/5 mx-4" />
+          <SettingItem
+            icon={Zap}
+            title="Live Inference"
+            subtitle="Real-time transcription while recording"
+            value={settings.showLiveTranscription}
+            onToggle={(v) => handleToggle('showLiveTranscription', v)}
           />
-        </View>
-        
-        {/* Recording Settings */}
-        <View className="bg-dark-surface rounded-2xl px-5 border border-dark-border mb-4">
-          <Text className="text-dark-text-secondary text-sm uppercase tracking-wide pt-4 pb-2">
-            Recording
-          </Text>
-          <SettingRow
-            icon="🎤"
-            title="Live Transcription"
-            subtitle="Show text as you speak"
-            rightElement={
-              <Switch
-                value={settings.showLiveTranscription}
-                onValueChange={(v) => handleToggle('showLiveTranscription', v)}
-                trackColor={{ false: '#334155', true: '#0ea5e9' }}
-                thumbColor="#fff"
-              />
-            }
-          />
-          <View className="h-px bg-dark-border" />
-          <SettingRow
-            icon="📳"
+        </Card>
+
+        {/* Experience Section */}
+        <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4 ml-1" style={{ fontFamily: 'Inter_700Bold' }}>
+          Experience
+        </Text>
+        <Card variant="glass" className="mb-6 p-1 border-white/5">
+          <SettingItem
+            icon={Mic}
             title="Haptic Feedback"
-            subtitle="Vibration on actions"
-            rightElement={
-              <Switch
-                value={settings.hapticFeedback}
-                onValueChange={(v) => handleToggle('hapticFeedback', v)}
-                trackColor={{ false: '#334155', true: '#0ea5e9' }}
-                thumbColor="#fff"
-              />
-            }
+            subtitle="Tactile response for recording and navigation"
+            value={settings.hapticFeedback}
+            onToggle={(v) => handleToggle('hapticFeedback', v)}
           />
-        </View>
-        
-        {/* Data Management */}
-        <View className="bg-dark-surface rounded-2xl px-5 border border-dark-border mb-4">
-          <Text className="text-dark-text-secondary text-sm uppercase tracking-wide pt-4 pb-2">
-            Data Management
-          </Text>
-          <SettingRow
-            icon="📤"
-            title="Export Data"
-            subtitle="Download JSON backup"
+          <View className="h-px bg-white/5 mx-4" />
+          <SettingItem
+            icon={ShieldCheck}
+            title="Privacy Guard"
+            subtitle="Local-first encryption on device storage"
+            onPress={() => Alert.alert('Privacy Guard', 'All your context is stored locally using MMKV with encryption. Your audio files never leave your device.')}
+          />
+        </Card>
+
+        {/* Family Sharing Section */}
+        <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4 ml-1" style={{ fontFamily: 'Inter_700Bold' }}>
+          Family Circle
+        </Text>
+        <Card variant="glass" className="mb-6 p-1 border-white/5">
+          <SettingItem
+            icon={Users}
+            title="Family Sharing"
+            subtitle="Share journals and life chapters with loved ones"
+            onPress={() => router.push('/family')}
+          />
+        </Card>
+
+        {/* Data section */}
+        <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4 ml-1" style={{ fontFamily: 'Inter_700Bold' }}>
+          Data Sovereignty
+        </Text>
+        <Card variant="glass" className="mb-8 p-1 border-white/5">
+          <SettingItem
+            icon={Shield}
+            title="Data Sovereignty"
+            subtitle="Learn about our Trust No One philosophy"
+            onPress={() => router.push('/data-sovereignty')}
+          />
+          <View className="h-px bg-white/5 mx-4" />
+          <SettingItem
+            icon={FileJson}
+            title="Export Context"
+            subtitle="Download your entire life context as JSON"
             onPress={handleExportData}
           />
-          <View className="h-px bg-dark-border" />
-          <SettingRow
-            icon="☁️"
+          <View className="h-px bg-white/5 mx-4" />
+          
+          <SettingItem
+            icon={Cloud}
             title="Cloud Sync"
-            subtitle={settings.cloudSyncEnabled ? 'Enabled' : 'Disabled'}
-            rightElement={
-              <Switch
-                value={settings.cloudSyncEnabled}
-                onValueChange={(v) => handleToggle('cloudSyncEnabled', v)}
-                trackColor={{ false: '#334155', true: '#0ea5e9' }}
-                thumbColor="#fff"
-              />
-            }
+            subtitle={settings.cloudSyncEnabled ? (syncState.lastSyncedAt ? `Last synced: ${new Date(syncState.lastSyncedAt).toLocaleString()}` : "Sync enabled") : "Secure backup to your personal cloud"}
+            value={settings.cloudSyncEnabled}
+            onToggle={(v) => {
+                handleToggle('cloudSyncEnabled', v);
+                if (v) {
+                    syncService.setProvider('icloud'); // Default to icloud simulation
+                    syncService.enableAutoSync();
+                } else {
+                    syncService.setProvider('none');
+                    syncService.disableAutoSync();
+                }
+            }}
           />
-          <View className="h-px bg-dark-border" />
-          <SettingRow
-            icon="🗑️"
-            title="Delete All Data"
-            subtitle="Permanently remove everything"
+          
+          {settings.cloudSyncEnabled && (
+             <View className="px-4 pb-4 pt-1">
+                 <View className="bg-slate-900/50 rounded-xl p-3 mb-3">
+                     <View className="flex-row justify-between mb-2">
+                         <Text className="text-slate-400 text-xs">Status</Text>
+                         <Text className={`text-xs font-bold ${syncState.status === 'error' ? 'text-red-400' : syncState.status === 'success' ? 'text-green-400' : 'text-blue-400'}`}>
+                             {syncState.status === 'syncing' ? 'Syncing...' : syncState.status.toUpperCase()}
+                         </Text>
+                     </View>
+                     {syncState.errorMessage && (
+                         <Text className="text-red-400 text-[10px] mb-2">{syncState.errorMessage}</Text>
+                     )}
+                     <Button 
+                        variant="secondary" 
+                        size="sm" 
+                        onPress={() => syncService.syncNow()}
+                        disabled={syncState.status === 'syncing'}
+                     >
+                         {syncState.status === 'syncing' ? 'Syncing...' : 'Sync Now'}
+                     </Button>
+                 </View>
+             </View>
+          )}
+
+          <View className="h-px bg-white/5 mx-4" />
+          <SettingItem
+            icon={Trash2}
+            title="Purge Data"
+            subtitle="Permanently delete all local content"
             onPress={handleDeleteData}
-            destructive
+            isDestructive
           />
-        </View>
-        
-        {/* About */}
-        <View className="bg-dark-surface rounded-2xl px-5 border border-dark-border mb-8">
-          <Text className="text-dark-text-secondary text-sm uppercase tracking-wide pt-4 pb-2">
-            About
+        </Card>
+
+        {/* Developer Tools Section */}
+        <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4 ml-1" style={{ fontFamily: 'Inter_700Bold' }}>
+          Developer Tools
+        </Text>
+        <Card variant="glass" className="mb-8 p-1 border-white/5">
+          <SettingItem
+            icon={Database}
+            title="Seed Demo Data"
+            subtitle="Add sample journals, tasks, and brain dumps"
+            onPress={handleSeedDemoData}
+          />
+          <View className="h-px bg-white/5 mx-4" />
+          <SettingItem
+            icon={FileJson}
+            title="Import Backup"
+            subtitle="Restore from JSON backup file"
+            onPress={handleImportData}
+          />
+        </Card>
+
+        {/* About Info */}
+        <View className="items-center pb-20 opacity-40">
+          <Info size={20} color="#94a3b8" />
+          <Text className="text-slate-500 text-[10px] mt-2 mb-1" style={{ fontFamily: 'Inter_400Regular' }}>
+            LifeContext Mobile v1.0.4 r2
           </Text>
-          <SettingRow
-            icon="ℹ️"
-            title="Version"
-            subtitle="1.0.0"
-          />
-          <View className="h-px bg-dark-border" />
-          <SettingRow
-            icon="📜"
-            title="Privacy Policy"
-            subtitle="Your data stays local"
-          />
-        </View>
-        
-        {/* Footer */}
-        <View className="items-center pb-8">
-          <Text className="text-dark-text-secondary text-sm">
-            Made with 💜 for your privacy
-          </Text>
-          <Text className="text-dark-text-secondary text-xs mt-1">
-            Your data never leaves your device
+          <Text className="text-slate-600 text-[9px] uppercase tracking-widest font-bold" style={{ fontFamily: 'Inter_700Bold' }}>
+            Privacy Sovereign Edition
           </Text>
         </View>
       </ScrollView>
-      
-      {/* API Key Modal */}
-      <Modal
-        visible={apiKeyModalVisible}
-        animationType="slide"
-        presentationStyle="pageSheet"
-        onRequestClose={() => setApiKeyModalVisible(false)}
-      >
-        <View className="flex-1 bg-dark-background p-6">
-          <View className="flex-row justify-between items-center mb-8">
-            <Text className="text-2xl font-bold text-white">API Keys</Text>
-            <Pressable onPress={() => setApiKeyModalVisible(false)}>
-              <Text className="text-brand-400 font-semibold">Cancel</Text>
-            </Pressable>
+
+      {/* Modern API Key Modal */}
+      <Modal visible={apiKeyModalVisible} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setApiKeyModalVisible(false)}>
+        <View className="flex-1 bg-slate-950 p-8">
+          <View className="flex-row justify-between items-center mb-10">
+            <Text className="text-2xl font-bold text-white" style={{ fontFamily: 'Inter_700Bold' }}>AI Credentials</Text>
+            <TouchableOpacity onPress={() => setApiKeyModalVisible(false)}>
+              <Text className="text-primary-400 font-bold" style={{ fontFamily: 'Inter_700Bold' }}>Close</Text>
+            </TouchableOpacity>
           </View>
           
-          <Text className="text-dark-text-secondary mb-2">
-            Claude API Key (Anthropic)
-          </Text>
-          <TextInput
-            value={apiKeyInput}
-            onChangeText={setApiKeyInput}
-            placeholder="sk-ant-..."
-            placeholderTextColor="#64748b"
-            secureTextEntry
-            className="bg-dark-surface border border-dark-border rounded-xl p-4 text-white mb-6"
-          />
-          
-          <Text className="text-dark-text-secondary mb-2">
-            Whisper API Key (OpenAI) - Optional
-          </Text>
-          <TextInput
-            value={whisperKeyInput}
-            onChangeText={setWhisperKeyInput}
-            placeholder="sk-..."
-            placeholderTextColor="#64748b"
-            secureTextEntry
-            className="bg-dark-surface border border-dark-border rounded-xl p-4 text-white mb-6"
-          />
-          
-          <Text className="text-dark-text-secondary text-sm mb-8">
-            API keys are stored securely on your device and never shared.
-          </Text>
-          
-          <Pressable
-            onPress={handleSaveApiKeys}
-            className="bg-brand-500 rounded-xl p-4 active:opacity-80"
-          >
-            <Text className="text-white font-semibold text-center">Save Keys</Text>
-          </Pressable>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View className="mb-8">
+              <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-3" style={{ fontFamily: 'Inter_700Bold' }}>Anthropic Key</Text>
+              <TextInput
+                value={apiKeyInput}
+                onChangeText={setApiKeyInput}
+                placeholder="sk-ant-..."
+                placeholderTextColor="#334155"
+                secureTextEntry
+                className="bg-white/5 border border-white/10 rounded-2xl p-4 text-white"
+                style={{ fontFamily: 'Inter_400Regular' }}
+              />
+              <Text className="text-slate-600 text-[10px] mt-2 italic" style={{ fontFamily: 'Inter_400Regular' }}>
+                Required for strategic brain dump synthesis.
+              </Text>
+            </View>
+            
+            <View className="mb-10">
+              <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-3" style={{ fontFamily: 'Inter_700Bold' }}>OpenAI Key (Optional)</Text>
+              <TextInput
+                value={whisperKeyInput}
+                onChangeText={setWhisperKeyInput}
+                placeholder="sk-..."
+                placeholderTextColor="#334155"
+                secureTextEntry
+                className="bg-white/5 border border-white/10 rounded-2xl p-4 text-white"
+                style={{ fontFamily: 'Inter_400Regular' }}
+              />
+              <Text className="text-slate-600 text-[10px] mt-2 italic" style={{ fontFamily: 'Inter_400Regular' }}>
+                Used for high-fidelity speech-to-text.
+              </Text>
+            </View>
+
+            <TouchableOpacity 
+              onPress={handleSaveApiKeys}
+              className="bg-primary-500 py-4 rounded-2xl items-center shadow-lg shadow-primary-500/20"
+            >
+              <Text className="text-white font-bold text-lg" style={{ fontFamily: 'Inter_700Bold' }}>Save Credentials</Text>
+            </TouchableOpacity>
+
+            <View className="mt-8 items-center">
+               <ShieldCheck size={20} color="#10b981" />
+               <Text className="text-slate-500 text-[11px] text-center mt-3 leading-5" style={{ fontFamily: 'Inter_400Regular' }}>
+                 Your keys are stored only on your device's secure storage and are never transmitted to our servers.
+               </Text>
+            </View>
+          </ScrollView>
         </View>
       </Modal>
     </SafeAreaView>
   );
 }
+

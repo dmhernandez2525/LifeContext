@@ -3,19 +3,87 @@
  * Uses expo-file-system for recordings and MMKV for fast key-value storage
  */
 import * as FileSystem from 'expo-file-system';
-import { MMKV } from 'react-native-mmkv';
+import { Platform } from 'react-native';
 import { generateId } from './encryption';
 
 // ============================================================
-// MMKV STORAGE (Fast key-value)
+// PLATFORM-AWARE STORAGE (MMKV on native, localStorage on web)
 // ============================================================
 
-import { Platform } from 'react-native';
+// Simple storage interface
+interface SimpleStorage {
+  getString: (key: string) => string | undefined;
+  set: (key: string, value: string) => void;
+  delete: (key: string) => void;
+  clearAll: () => void;
+}
 
-export const storage = new MMKV({
-  id: 'lcc-storage',
-  ...(Platform.OS !== 'web' ? { encryptionKey: 'lcc-encryption-key' } : {}), // Encryption only on native
-});
+// Web localStorage wrapper
+const webStorage: SimpleStorage = {
+  getString: (key: string) => {
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem(key) || undefined;
+    }
+    return undefined;
+  },
+  set: (key: string, value: string) => {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(key, value);
+    }
+  },
+  delete: (key: string) => {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(key);
+    }
+  },
+  clearAll: () => {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.clear();
+    }
+  },
+};
+
+let _storage: SimpleStorage | null = null;
+
+function getStorageInstance(): SimpleStorage {
+  if (_storage) return _storage;
+  
+  // On web, use localStorage
+  if (Platform.OS === 'web') {
+    _storage = webStorage;
+    return _storage;
+  }
+  
+  // On native, use MMKV
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { MMKV } = require('react-native-mmkv');
+    const mmkv = new MMKV({
+      id: 'lcc-storage',
+      encryptionKey: 'lcc-encryption-key',
+    });
+
+    _storage = {
+        getString: (key: string) => mmkv.getString(key),
+        set: (key: string, value: string) => mmkv.set(key, value),
+        delete: (key: string) => mmkv.delete(key), // Add delete method
+        clearAll: () => mmkv.clearAll(),
+    };
+  } catch (e) {
+    // Fallback to web storage
+    _storage = webStorage;
+  }
+  
+  return _storage as SimpleStorage;
+}
+
+// Export a proxy that lazily initializes storage
+export const storage: SimpleStorage = {
+  getString: (key: string) => getStorageInstance().getString(key),
+  set: (key: string, value: string) => getStorageInstance().set(key, value),
+  delete: (key: string) => getStorageInstance().delete(key),
+  clearAll: () => getStorageInstance().clearAll(),
+};
 
 
 // ============================================================
@@ -123,7 +191,7 @@ export async function deleteRecording(id: string): Promise<void> {
 
 export interface StoredJournalEntry {
   id: string;
-  type: 'text' | 'audio' | 'video';
+  type: 'text' | 'audio' | 'video' | 'photo';
   content: string;
   mediaUri?: string;
   duration?: number;
@@ -229,6 +297,21 @@ export function getBrainDumps(): StoredBrainDump[] {
   return data ? JSON.parse(data) : [];
 }
 
+/**
+ * Delete a brain dump
+ */
+export async function deleteBrainDump(id: string): Promise<void> {
+  const dumps = getBrainDumps();
+  const dump = dumps.find(d => d.id === id);
+  
+  if (dump?.audioUri) {
+    await FileSystem.deleteAsync(dump.audioUri, { idempotent: true });
+  }
+  
+  const updated = dumps.filter(d => d.id !== id);
+  storage.set('brainDumps', JSON.stringify(updated));
+}
+
 // ============================================================
 // TASKS (Kanban)
 // ============================================================
@@ -324,6 +407,48 @@ export function getSettings(): AppSettings {
 export function updateSettings(updates: Partial<AppSettings>): void {
   const current = getSettings();
   storage.set('settings', JSON.stringify({ ...current, ...updates }));
+}
+
+// ============================================================
+// TIMELINE EVENTS
+// ============================================================
+
+export interface TimelineEvent {
+  id: string;
+  type: 'milestone' | 'recording' | 'journal' | 'brain-dump';
+  title: string;
+  description?: string;
+  date: string;
+  createdAt: string;
+}
+
+/**
+ * Save a timeline event
+ */
+export async function saveTimelineEvent(
+  event: Omit<TimelineEvent, 'id' | 'createdAt'>
+): Promise<TimelineEvent> {
+  await ensureDirectories();
+
+  const newEvent: TimelineEvent = {
+    ...event,
+    id: generateId(),
+    createdAt: new Date().toISOString(),
+  };
+
+  const events = getTimelineEvents();
+  events.push(newEvent);
+  storage.set('timelineEvents', JSON.stringify(events));
+
+  return newEvent;
+}
+
+/**
+ * Get all timeline events
+ */
+export function getTimelineEvents(): TimelineEvent[] {
+  const data = storage.getString('timelineEvents');
+  return data ? JSON.parse(data) : [];
 }
 
 // ============================================================

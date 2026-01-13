@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAudioRecorder } from '../src/hooks/useAudioRecorder';
-import { useRecordingStore } from '../src/stores/recording-store';
+import { recordingStore } from '../src/stores/recording-store';
 
 export default function RecordingScreen() {
   const router = useRouter();
@@ -17,7 +17,8 @@ export default function RecordingScreen() {
     formatDuration
   } = useAudioRecorder();
   
-  const addRecording = useRecordingStore((state: any) => state.addRecording);
+  // Use store action directly
+  const addRecording = recordingStore.addRecording;
 
   useEffect(() => {
     // Auto-start
