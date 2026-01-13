@@ -14,6 +14,7 @@ import { generateId } from './encryption';
 interface SimpleStorage {
   getString: (key: string) => string | undefined;
   set: (key: string, value: string) => void;
+  delete: (key: string) => void;
   clearAll: () => void;
 }
 
@@ -28,6 +29,11 @@ const webStorage: SimpleStorage = {
   set: (key: string, value: string) => {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(key, value);
+    }
+  },
+  delete: (key: string) => {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(key);
     }
   },
   clearAll: () => {
@@ -52,10 +58,17 @@ function getStorageInstance(): SimpleStorage {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { MMKV } = require('react-native-mmkv');
-    _storage = new MMKV({
+    const mmkv = new MMKV({
       id: 'lcc-storage',
       encryptionKey: 'lcc-encryption-key',
     });
+
+    _storage = {
+        getString: (key: string) => mmkv.getString(key),
+        set: (key: string, value: string) => mmkv.set(key, value),
+        delete: (key: string) => mmkv.delete(key), // Add delete method
+        clearAll: () => mmkv.clearAll(),
+    };
   } catch (e) {
     // Fallback to web storage
     _storage = webStorage;
@@ -68,6 +81,7 @@ function getStorageInstance(): SimpleStorage {
 export const storage: SimpleStorage = {
   getString: (key: string) => getStorageInstance().getString(key),
   set: (key: string, value: string) => getStorageInstance().set(key, value),
+  delete: (key: string) => getStorageInstance().delete(key),
   clearAll: () => getStorageInstance().clearAll(),
 };
 
@@ -177,7 +191,7 @@ export async function deleteRecording(id: string): Promise<void> {
 
 export interface StoredJournalEntry {
   id: string;
-  type: 'text' | 'audio' | 'video';
+  type: 'text' | 'audio' | 'video' | 'photo';
   content: string;
   mediaUri?: string;
   duration?: number;

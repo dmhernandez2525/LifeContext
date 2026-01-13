@@ -32,6 +32,7 @@ import {
   MessageCircle,
   CheckCircle2,
   Play,
+  Target,
 } from 'lucide-react-native';
 import * as storage from '../../src/lib/storage';
 import { Card } from '../../src/components/ui';
@@ -478,6 +479,22 @@ export default function DashboardScreen() {
               color="#0ea5e9"
               onPress={() => router.push('/(tabs)/insights')}
               delay={500}
+            />
+            <QuickActionCard
+              icon={Target}
+              title="Life Plan"
+              subtitle="Goals & vision"
+              color="#f472b6"
+              onPress={() => router.push('/life-planning')}
+              delay={550}
+            />
+            <QuickActionCard
+              icon={Target}
+              title="Life Plan"
+              subtitle="Goals & vision"
+              color="#f472b6"
+              onPress={() => router.push('/life-planning')}
+              delay={550}
             />
           </ScrollView>
         </View>

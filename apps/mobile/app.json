@@ -47,7 +47,8 @@
           "microphonePermission": "Allow LifeContext to access your microphone for voice recordings."
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-quick-actions"
     ],
     "experiments": {
       "typedRoutes": true

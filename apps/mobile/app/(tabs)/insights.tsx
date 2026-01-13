@@ -10,9 +10,12 @@ import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
 import { useAnalysis, AnalysisPattern } from '../../src/hooks';
 import { getRecordings, getJournalEntries, getBrainDumps } from '../../src/lib/storage';
 import { Card, Button } from '../../src/components/ui';
+import { EmotionalTrends } from '../../src/components/insights/EmotionalTrends';
+import { LifeChapters } from '../../src/components/insights/LifeChapters';
 
 export default function InsightsScreen() {
   const { isLoading, patterns, error, hasApiKey, analyze } = useAnalysis();
+  // Simple trigger for re-render when focusing screen could be added later
   const [stats, setStats] = useState({ recordings: 0, journals: 0, brainDumps: 0 });
   const [hasAnalyzed, setHasAnalyzed] = useState(false);
 
@@ -49,6 +52,14 @@ export default function InsightsScreen() {
             insights.ai
           </Text>
         </View>
+
+        {/* Emotional Trends Chart */}
+        <View className="px-6 mb-6">
+            <EmotionalTrends />
+        </View>
+
+        {/* Life Chapters */}
+        <LifeChapters />
 
         {/* Stats Overview - Rocket Money Style */}
         <View className="px-6 mb-8 flex-row gap-4">

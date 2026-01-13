@@ -137,6 +137,8 @@ export default function JournalDetailScreen() {
     await storage.saveJournalEntry({
       ...entry,
       content: editedContent,
+      type: (entry.mediaType === 'voice' ? 'audio' : entry.mediaType) || 'text',
+      date: entry.createdAt,
     });
     
     setEntry({ ...entry, content: editedContent });

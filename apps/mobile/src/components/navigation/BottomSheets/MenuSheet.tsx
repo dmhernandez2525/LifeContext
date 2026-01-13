@@ -23,6 +23,7 @@ import {
   ChevronRight,
   HelpCircle,
   LucideIcon,
+  Users,
 } from 'lucide-react-native';
 
 import { BaseBottomSheet } from './BaseBottomSheet';
@@ -33,7 +34,7 @@ import { useTabBar, TabRoute } from '../../../context/TabBarContext';
 // ============================================================
 
 interface MenuItemConfig {
-  route: TabRoute;
+  route: TabRoute | string; // Allow string for raw paths
   icon: LucideIcon;
   label: string;
   description: string;
@@ -51,6 +52,13 @@ const MENU_ITEMS: MenuItemConfig[] = [
     label: 'AI Insights',
     description: 'Chat with your context',
     color: '#0ea5e9',
+  },
+  {
+    route: '/family',
+    icon: Users,
+    label: 'Family Circle',
+    description: 'Manage shared journals & chapters',
+    color: '#6366f1',
   },
   {
     route: 'questions',
@@ -74,10 +82,10 @@ const MENU_ITEMS: MenuItemConfig[] = [
     color: '#a855f7',
   },
   {
-    route: 'settings',
+    route: '/settings',
     icon: Settings,
-    label: 'Settings',
-    description: 'API keys and preferences',
+    label: 'Security',
+    description: 'App lock & privacy',
     color: '#64748b',
   },
 ];
@@ -100,11 +108,20 @@ export const MenuSheet = forwardRef<BottomSheet, MenuSheetProps>(
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
       
-      setActiveTab(item.route);
+      // Only set active tab if it's a known tab route, otherwise just navigate
+      if (!item.route.startsWith('/')) {
+        setActiveTab(item.route as TabRoute);
+      }
+      
       closeMoreMenu();
       
       // Navigate to the screen
-      router.push(`/(tabs)/${item.route}` as any);
+      // If route starts with /, treat as absolute path. Otherwise assume tab.
+      if (item.route.startsWith('/')) {
+        router.push(item.route as any);
+      } else {
+        router.push(`/(tabs)/${item.route}` as any);
+      }
       
       if (onClose) {
         onClose();
@@ -114,7 +131,7 @@ export const MenuSheet = forwardRef<BottomSheet, MenuSheetProps>(
     return (
       <BaseBottomSheet
         ref={ref}
-        snapPoints={['45%']}
+        snapPoints={['55%']}
         onDismiss={onClose}
         index={0}
       >
@@ -127,7 +144,7 @@ export const MenuSheet = forwardRef<BottomSheet, MenuSheetProps>(
               
               return (
                 <Animated.View
-                  key={item.route}
+                  key={item.label}
                   entering={FadeInRight.delay(index * 50).duration(200)}
                 >
                   <TouchableOpacity

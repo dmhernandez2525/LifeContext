@@ -16,7 +16,7 @@ import { Mic, Plus, Pencil, Sparkles, LucideIcon } from 'lucide-react-native';
 // TYPES
 // ============================================================
 
-export type TabRoute = 'index' | 'timeline' | 'journal' | 'braindump' | 'kanban' | 'settings' | 'insights' | 'record' | 'questions';
+export type TabRoute = 'index' | 'timeline' | 'journal' | 'braindump' | 'kanban' | 'settings' | 'insights' | 'record' | 'questions' | 'family';
 
 export interface FABConfig {
   icon: LucideIcon;
@@ -121,6 +121,13 @@ const createFABConfigs = (router: ReturnType<typeof useRouter>): Record<TabRoute
     glowColor: 'rgba(168, 85, 247, 0.5)',
     action: () => {},
     label: 'Recording',
+  },
+  family: {
+    icon: Plus,
+    color: '#6366f1', // Indigo
+    glowColor: 'rgba(99, 102, 241, 0.5)',
+    action: () => {}, // Opens invite sheet (can implement if context allows, or leave generic)
+    label: 'Invite',
   },
 });
 

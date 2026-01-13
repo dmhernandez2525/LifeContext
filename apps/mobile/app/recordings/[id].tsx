@@ -83,7 +83,10 @@ export default function RecordingDetailScreen() {
       const recordings = storage.getRecordings();
       const found = recordings.find((r: any) => r.id === id);
       if (found) {
-        setRecording(found as RecordingData);
+        setRecording({
+          ...found,
+          uri: found.audioUri,
+        } as unknown as RecordingData);
         setDuration(found.duration || 0);
       }
     }

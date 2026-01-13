@@ -11,7 +11,8 @@ import {
   Moon,
   BookOpen,
   Calendar,
-  Bot
+  Bot,
+  Users
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
@@ -29,6 +30,7 @@ const navItems = [
   { path: '/app/insights', icon: Bot, label: 'AI Insights' },
   { path: '/app/brain-dump', icon: Brain, label: 'Brain Dump' },
   { path: '/app/settings', icon: Settings, label: 'Settings' },
+  { path: '/app/family', icon: Users, label: 'Family Circle' },
 ];
 
 export default function AppLayout() {

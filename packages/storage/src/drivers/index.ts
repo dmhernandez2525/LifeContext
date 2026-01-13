@@ -206,7 +206,7 @@ export class S3Driver implements StorageDriver {
     }
 
     const metadata: Record<string, string> = {};
-    response.headers.forEach((value, key) => {
+    response.headers.forEach((value: string, key: string) => {
       if (key.startsWith('x-amz-meta-')) {
         metadata[key.replace('x-amz-meta-', '')] = value;
       }
