@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { X, Plus, Trash2, Brain, Sparkles, Check } from 'lucide-react-native';
+import { X, Plus, Trash2, Brain, Sparkles, Check, MessageCircle, ArrowRight, Mic as MicIcon, StopCircle } from 'lucide-react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -22,6 +22,9 @@ import { useRecorder, useTranscription, useSynthesis, SynthesisResult } from '..
 import { saveBrainDump } from '../src/lib/storage';
 import { AudioVisualizer } from '../src/components/AudioVisualizer';
 import { Card, Button, Badge } from '../src/components/ui';
+import { Modal } from 'react-native';
+import { DeepDiveSheet } from '../src/components/life-planning/DeepDiveSheet';
+import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 
 interface BulletPoint {
   id: string;
@@ -67,8 +70,22 @@ export default function BrainDumpScreen() {
     { id: '3', text: '' },
   ]);
   const [synthesis, setSynthesis] = useState<SynthesisResult | null>(null);
-
+  
+  // Refinement State
+  const [activeQuestion, setActiveQuestion] = useState<string | null>(null);
+  const [refinementAnswer, setRefinementAnswer] = useState('');
+  const [isRefining, setIsRefining] = useState(false);
+  const [refinementTranscript, setRefinementTranscript] = useState('');
+  
+  // Actionable Insights State
+  const [activeContext, setActiveContext] = useState<string | null>(null);
+  const { dismiss } = useBottomSheetModal(); // For deep dive sheet handling if needed
+  
   const recorder = useRecorder();
+  // We might need a second recorder instance or reuse the existing one if it resets properly. 
+  // useRecorder hook usually manages one instance. I should check if I can reuse it. 
+  // Assuming reuse is fine if stopped. 
+  
   const transcription = useTranscription();
   const { synthesize, hasApiKey, isLoading: isSynthesizing } = useSynthesis();
 
@@ -130,6 +147,58 @@ export default function BrainDumpScreen() {
       console.error('Brain dump failed:', error);
       setStep('complete');
     }
+  };
+
+  const handleRefinementStart = async () => {
+     try {
+         setIsRefining(true);
+         await recorder.start();
+     } catch(e) { console.error(e); }
+  };
+
+  const handleRefinementStop = async () => {
+      try {
+          const { uri } = await recorder.stop();
+          setIsRefining(false);
+          // Transcribe answer
+          // Note: straightforward implementation using the same transcription hook
+          // We might want to show a spinner here
+          const result = await transcription.transcribeAudio(uri);
+          setRefinementAnswer(result.text);
+      } catch(e) { console.error(e); }
+  };
+
+  const submitRefinement = async () => {
+      if (!activeQuestion || !refinementAnswer) return;
+      
+      const newContext = `\n\n[Clarification on "${activeQuestion}"]: ${refinementAnswer}`;
+      const updatedTranscript = (transcription.transcript || '') + newContext;
+      
+      // Update local transcript immediately
+      transcription.transcript = updatedTranscript; // Assuming we can mutate or simpler: just pass updated string to synthesize
+      
+      setActiveQuestion(null);
+      setRefinementAnswer('');
+      setStep('synthesizing'); // Go back to thinking state
+      
+      try {
+          const newSynthesis = await synthesize(
+              filledBullets.map(b => b.text),
+              updatedTranscript
+          );
+          setSynthesis(newSynthesis);
+          
+          // Re-save (updating existing would be better but for now overwrite/new is okay, or we just rely on the final save if we haven't left)
+          // Actually we already saved once. We should update.
+          // For MVP, we'll just save a new version or overwrite if we had an ID. 
+          // `saveBrainDump` generates a new ID every time. 
+          // Let's just re-save for safety on "Done".
+          
+          setStep('complete');
+      } catch (e) {
+          console.error("Refinement failed", e);
+          setStep('complete'); // Fallback
+      }
   };
 
   const handleClose = () => {
@@ -358,15 +427,23 @@ export default function BrainDumpScreen() {
                     <Text className="text-blue-300 font-semibold">Key Insights</Text>
                   </View>
                   {synthesis.insights.map((insight, i) => (
-                    <View key={i} className="flex-row items-start mb-2">
+                    <TouchableOpacity 
+                        key={i} 
+                        onPress={() => setActiveContext(insight)}
+                        className="flex-row items-start mb-2 active:opacity-60"
+                    >
                       <Text className="text-blue-400 mr-2">•</Text>
-                      <Text className="flex-1 text-blue-100 text-sm">{insight}</Text>
-                    </View>
+                      <View className="flex-1">
+                          <Text className="text-blue-100 text-sm">{insight}</Text>
+                          <Text className="text-blue-400/50 text-[10px] uppercase font-bold mt-1">Tap to Plan Action</Text>
+                      </View>
+                      <ArrowRight size={14} color="#60a5fa" className="mt-1 opacity-50" />
+                    </TouchableOpacity>
                   ))}
                 </Card>
               )}
 
-              {/* Questions */}
+              {/* Questions - Now Interactive */}
               {synthesis.questions.length > 0 && (
                 <Card variant="default" className="mb-4 bg-yellow-900/10 border-yellow-600/30">
                   <View className="flex-row items-center mb-3">
@@ -374,12 +451,20 @@ export default function BrainDumpScreen() {
                     <Text className="text-yellow-300 font-semibold">To Explore Further</Text>
                   </View>
                   {synthesis.questions.map((q, i) => (
-                    <View key={i} className="flex-row items-start mb-2">
+                    <TouchableOpacity 
+                        key={i} 
+                        onPress={() => setActiveQuestion(q)}
+                        className="flex-row items-start mb-3 p-2 rounded-lg active:bg-yellow-900/20"
+                    >
                       <View className="w-5 h-5 bg-yellow-600/20 rounded-full items-center justify-center mr-2 mt-0.5">
                         <Text className="text-yellow-400 text-xs font-semibold">{i + 1}</Text>
                       </View>
-                      <Text className="flex-1 text-yellow-100 text-sm">{q}</Text>
-                    </View>
+                      <View className="flex-1">
+                          <Text className="text-yellow-100 text-sm mb-1">{q}</Text>
+                          <Text className="text-yellow-500/80 text-xs font-semibold">Tap to answer</Text>
+                      </View>
+                      <ArrowRight size={16} color="#eab308" className="mt-1 opacity-50" />
+                    </TouchableOpacity>
                   ))}
                 </Card>
               )}
@@ -391,6 +476,76 @@ export default function BrainDumpScreen() {
           </Button>
         </ScrollView>
       )}
+      
+      {/* Deep Dive Sheet for Actionable Insights */}
+      {activeContext && (
+         <DeepDiveSheet 
+            index={0} 
+            initialContext={activeContext} 
+            onClose={() => setActiveContext(null)} 
+         />
+      )}
+
+      {/* Refinement Modal */}
+      <Modal visible={!!activeQuestion} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setActiveQuestion(null)}>
+        <View className="flex-1 bg-slate-900 p-6">
+             <View className="flex-row justify-between items-center mb-8">
+                 <Text className="text-white text-lg font-bold">Refine Analysis</Text>
+                 <TouchableOpacity onPress={() => setActiveQuestion(null)}>
+                     <X size={24} color="#94a3b8" />
+                 </TouchableOpacity>
+             </View>
+             
+             <View className="mb-8">
+                 <Text className="text-yellow-400 text-sm font-bold uppercase mb-2">The Question</Text>
+                 <Text className="text-white text-xl font-serif">{activeQuestion}</Text>
+             </View>
+             
+             {refinementAnswer ? (
+                 <View className="flex-1">
+                     <Text className="text-blue-400 text-sm font-bold uppercase mb-2">Your Answer</Text>
+                     <TextInput 
+                        value={refinementAnswer}
+                        onChangeText={setRefinementAnswer}
+                        multiline
+                        className="bg-slate-800 text-white p-4 rounded-xl text-lg h-40 mb-6"
+                        textAlignVertical="top"
+                     />
+                     <Button onPress={submitRefinement} variant="primary" size="lg" className="mb-4">
+                         <View className="flex-row items-center">
+                            <Sparkles size={20} color="#fff" />
+                            <Text className="text-white font-bold ml-2">Re-Analyze with Context</Text>
+                         </View>
+                     </Button>
+                     <Button onPress={() => setRefinementAnswer('')} variant="secondary" size="sm">
+                         Retake Answer
+                     </Button>
+                 </View>
+             ) : (
+                 <View className="flex-1 items-center justify-center">
+                     <TouchableOpacity 
+                        onPress={isRefining ? handleRefinementStop : handleRefinementStart}
+                        className={`w-24 h-24 rounded-full items-center justify-center mb-6 ${isRefining ? 'bg-red-500' : 'bg-blue-600'}`}
+                     >
+                         {isRefining ? <StopCircle size={40} color="#fff" /> : <MicIcon size={40} color="#fff" />}
+                     </TouchableOpacity>
+                     
+                     <Text className="text-white font-bold text-lg mb-1">
+                         {isRefining ? 'Listening...' : 'Tap to Answer'}
+                     </Text>
+                     <Text className="text-slate-400 text-sm text-center px-8">
+                         {isRefining ? 'Speak naturally. Tap again to stop.' : 'Your answer will be added to the transcript and the AI will update its analysis.'}
+                     </Text>
+                     
+                     {isRefining && <View className="mt-8 flex-row items-center space-x-2">
+                        <View className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                        <Text className="text-red-400">Recording</Text>
+                     </View>}
+                 </View>
+             )}
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 }

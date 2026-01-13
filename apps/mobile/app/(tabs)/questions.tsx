@@ -10,7 +10,9 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { HelpCircle, Plus, TrendingUp } from 'lucide-react-native';
 import { Card } from '../../src/components/ui';
 import { CategoriesGrid } from '../../src/components/questions/CategoriesGrid';
+import { CreateQuestionSheet } from '../../src/components/questions/CreateQuestionSheet';
 import * as questions from '../../src/lib/questions';
+import { useTabBar } from '../../src/context/TabBarContext';
 
 // ============================================================
 // MAIN COMPONENT
@@ -21,6 +23,7 @@ export default function QuestionsScreen() {
   const [categories, setCategories] = useState<questions.QuestionCategory[]>([]);
   const [progressMap, setProgressMap] = useState<Map<string, questions.CategoryProgress>>(new Map());
   const [overallProgress, setOverallProgress] = useState({ total: 0, answered: 0, percentage: 0 });
+  const [showCreateSheet, setShowCreateSheet] = useState(false);
 
   const loadData = useCallback(() => {
     const cats = questions.getCategories();
@@ -38,11 +41,19 @@ export default function QuestionsScreen() {
     loadData();
   }, [loadData]);
 
+  const { fabActionTrigger } = useTabBar();
+  
+  useEffect(() => {
+    if (fabActionTrigger > 0) {
+      handleAddQuestion();
+    }
+  }, [fabActionTrigger]);
+
   const handleAddQuestion = () => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-    // TODO: Open create question bottom sheet
+    setShowCreateSheet(true);
   };
 
   return (
@@ -144,6 +155,14 @@ export default function QuestionsScreen() {
           </TouchableOpacity>
         </Animated.View>
       </ScrollView>
+
+      <CreateQuestionSheet
+        isVisible={showCreateSheet}
+        onClose={() => setShowCreateSheet(false)}
+        onSuccess={() => {
+          loadData(); // Refresh counts
+        }}
+      />
     </SafeAreaView>
   );
 }

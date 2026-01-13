@@ -28,15 +28,19 @@ const MENU_ITEMS = [
   { route: 'questions', icon: HelpCircle, label: 'Questions', color: '#10b981' },
   { route: 'record', icon: Sparkles, label: 'Record', color: '#3b82f6' },
   { route: 'settings', icon: Settings, label: 'Settings', color: '#64748b' },
-  { route: 'search', icon: Search, label: 'Search', color: '#94a3b8' },
+  { route: '/search', icon: Search, label: 'Search', color: '#94a3b8', isExternal: true },
 ];
 
 export function WebMoreMenu({ visible, onClose }: WebMoreMenuProps) {
   const router = useRouter();
 
-  const handleItemPress = (route: string) => {
+  const handleItemPress = (route: string, isExternal?: boolean) => {
     onClose();
-    router.push(`/(tabs)/${route}` as any);
+    if (isExternal) {
+      router.push(route as any);
+    } else {
+      router.push(`/(tabs)/${route}` as any);
+    }
   };
 
   return (
@@ -63,7 +67,7 @@ export function WebMoreMenu({ visible, onClose }: WebMoreMenuProps) {
               <TouchableOpacity
                 key={item.route}
                 style={styles.menuItem}
-                onPress={() => handleItemPress(item.route)}
+                onPress={() => handleItemPress(item.route, (item as any).isExternal)}
                 activeOpacity={0.7}
               >
                 <View style={[styles.iconContainer, { backgroundColor: `${item.color}20` }]}>

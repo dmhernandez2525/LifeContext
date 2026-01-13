@@ -2,7 +2,7 @@
  * Category Detail Screen - Shows questions in a specific category
  */
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, Platform, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, FlatList, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -25,6 +25,7 @@ import {
 } from 'lucide-react-native';
 import { Card } from '../../src/components/ui';
 import * as questions from '../../src/lib/questions';
+import { Type, X } from 'lucide-react-native';
 
 // ============================================================
 // ICON MAP
@@ -51,14 +52,22 @@ interface QuestionItemProps {
   color: string;
   index: number;
   onPress: () => void;
+  onLongPress?: () => void;
 }
 
-function QuestionItem({ question, isAnswered, color, index, onPress }: QuestionItemProps) {
+function QuestionItem({ question, isAnswered, color, index, onPress, onLongPress }: QuestionItemProps) {
   const handlePress = () => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
     onPress();
+  };
+
+  const handleLongPress = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    onLongPress?.();
   };
 
   return (
@@ -67,6 +76,8 @@ function QuestionItem({ question, isAnswered, color, index, onPress }: QuestionI
     >
       <TouchableOpacity
         onPress={handlePress}
+        onLongPress={handleLongPress}
+        delayLongPress={500}
         activeOpacity={0.7}
         style={{
           flexDirection: 'row',
@@ -145,6 +156,10 @@ export default function CategoryDetailScreen() {
   const [categoryQuestions, setCategoryQuestions] = useState<questions.Question[]>([]);
   const [answeredIds, setAnsweredIds] = useState<Set<string>>(new Set());
   const [progress, setProgress] = useState({ total: 0, answered: 0, percentage: 0 });
+  const [selectedQuestion, setSelectedQuestion] = useState<questions.Question | null>(null);
+  const [answerText, setAnswerText] = useState('');
+  const [showChoiceModal, setShowChoiceModal] = useState(false);
+  const [showTextModal, setShowTextModal] = useState(false);
 
   const loadData = useCallback(() => {
     if (!slug) return;
@@ -167,11 +182,55 @@ export default function CategoryDetailScreen() {
   }, [loadData]);
 
   const handleQuestionPress = (question: questions.Question) => {
-    // Navigate to recording with question context
-    router.push({
-      pathname: '/recording',
-      params: { questionId: question.id, questionText: question.text },
-    });
+    setSelectedQuestion(question);
+    setShowChoiceModal(true);
+  };
+
+  const handleVoiceAnswer = () => {
+    setShowChoiceModal(false);
+    if (selectedQuestion) {
+      router.push({
+        pathname: '/recording',
+        params: { questionId: selectedQuestion.id, questionText: selectedQuestion.text },
+      });
+    }
+  };
+
+  const handleTextAnswerChoice = () => {
+    setShowChoiceModal(false);
+    setShowTextModal(true);
+  };
+
+  const handleSaveTextAnswer = () => {
+    if (!answerText.trim()) {
+      Alert.alert('Required', 'Please enter your answer.');
+      return;
+    }
+    if (selectedQuestion) {
+      questions.markQuestionAnswered(selectedQuestion.id);
+      loadData();
+      setShowTextModal(false);
+      setAnswerText('');
+      if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+  };
+
+  const handleMarkAsAnswered = (question: questions.Question) => {
+    Alert.alert(
+      'Mark as Answered',
+      `Mark "${question.text.slice(0, 50)}..." as answered externally?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Mark Done', 
+          onPress: () => {
+            questions.markQuestionAnswered(question.id);
+            loadData();
+            if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          }
+        }
+      ]
+    );
   };
 
   const handleAddQuestion = () => {
@@ -265,6 +324,7 @@ export default function CategoryDetailScreen() {
               color={category.color}
               index={index}
               onPress={() => handleQuestionPress(item)}
+              onLongPress={() => handleMarkAsAnswered(item)}
             />
           )}
           contentContainerStyle={{ paddingBottom: 100 }}
@@ -286,6 +346,78 @@ export default function CategoryDetailScreen() {
           }
         />
       </SafeAreaView>
+
+      {/* Choice Modal - Voice or Text */}
+      <Modal visible={showChoiceModal} transparent animationType="fade" onRequestClose={() => setShowChoiceModal(false)}>
+        <View className="flex-1 bg-black/80 justify-center items-center px-6">
+          <View className="bg-slate-900 rounded-2xl p-6 w-full max-w-sm border border-white/10">
+            <View className="flex-row justify-between items-center mb-4">
+              <Text className="text-white font-bold text-lg">Answer Method</Text>
+              <TouchableOpacity onPress={() => setShowChoiceModal(false)}>
+                <X size={20} color="#64748b" />
+              </TouchableOpacity>
+            </View>
+            <Text className="text-slate-400 text-sm mb-6">{selectedQuestion?.text}</Text>
+            
+            <TouchableOpacity 
+              onPress={handleVoiceAnswer}
+              className="flex-row items-center bg-blue-600/20 border border-blue-500/30 rounded-xl p-4 mb-3"
+            >
+              <View className="w-10 h-10 bg-blue-500/20 rounded-full items-center justify-center mr-3">
+                <Mic size={20} color="#3b82f6" />
+              </View>
+              <View className="flex-1">
+                <Text className="text-white font-semibold">Voice Recording</Text>
+                <Text className="text-slate-400 text-xs">Speak naturally, we'll transcribe</Text>
+              </View>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              onPress={handleTextAnswerChoice}
+              className="flex-row items-center bg-purple-600/20 border border-purple-500/30 rounded-xl p-4"
+            >
+              <View className="w-10 h-10 bg-purple-500/20 rounded-full items-center justify-center mr-3">
+                <Type size={20} color="#a855f7" />
+              </View>
+              <View className="flex-1">
+                <Text className="text-white font-semibold">Text Answer</Text>
+                <Text className="text-slate-400 text-xs">Type your response</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Text Answer Modal */}
+      <Modal visible={showTextModal} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setShowTextModal(false)}>
+        <View className="flex-1 bg-slate-950 p-6">
+          <View className="flex-row justify-between items-center mb-6">
+            <TouchableOpacity onPress={() => setShowTextModal(false)}>
+              <Text className="text-slate-400 font-medium">Cancel</Text>
+            </TouchableOpacity>
+            <Text className="text-white font-bold text-lg">Answer</Text>
+            <TouchableOpacity onPress={handleSaveTextAnswer}>
+              <Text className="text-blue-400 font-bold">Save</Text>
+            </TouchableOpacity>
+          </View>
+          
+          <View className="bg-slate-900/50 rounded-xl p-4 mb-6 border border-white/5">
+            <Text className="text-white font-medium text-base">{selectedQuestion?.text}</Text>
+          </View>
+          
+          <TextInput
+            value={answerText}
+            onChangeText={setAnswerText}
+            placeholder="Type your answer here..."
+            placeholderTextColor="#64748b"
+            multiline
+            autoFocus
+            className="bg-slate-900 text-white text-base p-4 rounded-xl border border-white/10 min-h-[200px]"
+            textAlignVertical="top"
+          />
+        </View>
+      </Modal>
     </>
   );
 }
+

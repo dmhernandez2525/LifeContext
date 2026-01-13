@@ -4,12 +4,14 @@
 import { View, Text, ScrollView, TouchableOpacity, Switch, Alert, TextInput, Modal, Platform } from 'react-native';
 import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { 
   Settings, 
   Key, 
   Database, 
   ShieldCheck, 
+  Shield,
   FileJson, 
   Trash2, 
   Info, 
@@ -17,20 +19,29 @@ import {
   Cpu, 
   Zap, 
   Cloud, 
-  Mic
+  Mic,
+  Users
 } from 'lucide-react-native';
 import { getSettings, updateSettings, clearAllData, exportAllData, AppSettings } from '../../src/lib/storage';
+import { syncService, SyncState } from '../../src/services/SyncService';
 import * as Sharing from 'expo-sharing';
 import { Card, Button } from '../../src/components/ui';
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const [settings, setSettings] = useState<AppSettings>(getSettings());
   const [apiKeyModalVisible, setApiKeyModalVisible] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [whisperKeyInput, setWhisperKeyInput] = useState('');
+  const [syncState, setSyncState] = useState<SyncState>(syncService.getState());
   
   useEffect(() => {
     setSettings(getSettings());
+    // Subscribe to sync service
+    const unsubscribe = syncService.subscribe((state) => {
+        setSyncState(state);
+    });
+    return () => unsubscribe();
   }, []);
   
   const handleToggle = (key: keyof AppSettings, value: boolean) => {
@@ -87,6 +98,51 @@ export default function SettingsScreen() {
         },
       ]
     );
+  };
+
+  const handleSeedDemoData = async () => {
+    // Import additional storage functions dynamically to avoid issues
+    const storage = require('../../src/lib/storage');
+    
+    // Sample Journals
+    await storage.saveJournalEntry({ 
+      type: 'text', 
+      content: 'Had a great day today. Focused on my priorities and made solid progress on the mobile app.', 
+      mood: 4, 
+      tags: ['work', 'productivity'], 
+      date: new Date().toISOString() 
+    });
+    await storage.saveJournalEntry({ 
+      type: 'text', 
+      content: 'Feeling reflective. Spent time thinking about long-term goals and what truly matters.', 
+      mood: 3, 
+      tags: ['reflection', 'goals'], 
+      date: new Date(Date.now() - 86400000).toISOString() 
+    });
+    
+    // Sample Tasks
+    storage.saveTask({ title: 'Review life goals', description: 'Quarterly review of personal objectives', status: 'todo', priority: 'high' });
+    storage.saveTask({ title: 'Learn a new skill', description: 'Start the guitar lessons I keep postponing', status: 'backlog', priority: 'medium' });
+    storage.saveTask({ title: 'Plan weekend trip', description: 'Research destinations and book accommodation', status: 'in-progress', priority: 'low' });
+    
+    // Sample Brain Dump
+    await storage.saveBrainDump({ 
+      bulletPoints: ['Improve morning routine', 'Spend more time reading', 'Call family weekly'],
+      transcription: 'I want to become more intentional about my mornings. Maybe wake up earlier and have a proper routine instead of jumping straight into work.',
+      synthesis: {
+        organizedContent: 'You want to improve your morning routine and become more intentional.',
+        insights: ['You value intentionality', 'Family connections are important to you'],
+        questions: ['What does a perfect morning look like?'],
+        contradictions: []
+      }
+    });
+    
+    if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    Alert.alert('Demo Data Added', 'Sample journals, tasks, and brain dumps have been created.');
+  };
+
+  const handleImportData = async () => {
+    Alert.alert('Import Data', 'Import from JSON backup will be available in a future update. Use Export to save your current data.');
   };
 
   const SettingItem = ({ 
@@ -194,11 +250,31 @@ export default function SettingsScreen() {
           />
         </Card>
 
+        {/* Family Sharing Section */}
+        <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4 ml-1" style={{ fontFamily: 'Inter_700Bold' }}>
+          Family Circle
+        </Text>
+        <Card variant="glass" className="mb-6 p-1 border-white/5">
+          <SettingItem
+            icon={Users}
+            title="Family Sharing"
+            subtitle="Share journals and life chapters with loved ones"
+            onPress={() => router.push('/family')}
+          />
+        </Card>
+
         {/* Data section */}
         <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4 ml-1" style={{ fontFamily: 'Inter_700Bold' }}>
           Data Sovereignty
         </Text>
         <Card variant="glass" className="mb-8 p-1 border-white/5">
+          <SettingItem
+            icon={Shield}
+            title="Data Sovereignty"
+            subtitle="Learn about our Trust No One philosophy"
+            onPress={() => router.push('/data-sovereignty')}
+          />
+          <View className="h-px bg-white/5 mx-4" />
           <SettingItem
             icon={FileJson}
             title="Export Context"
@@ -206,13 +282,48 @@ export default function SettingsScreen() {
             onPress={handleExportData}
           />
           <View className="h-px bg-white/5 mx-4" />
+          
           <SettingItem
             icon={Cloud}
             title="Cloud Sync"
-            subtitle="Secure backup to your personal cloud"
+            subtitle={settings.cloudSyncEnabled ? (syncState.lastSyncedAt ? `Last synced: ${new Date(syncState.lastSyncedAt).toLocaleString()}` : "Sync enabled") : "Secure backup to your personal cloud"}
             value={settings.cloudSyncEnabled}
-            onToggle={(v) => handleToggle('cloudSyncEnabled', v)}
+            onToggle={(v) => {
+                handleToggle('cloudSyncEnabled', v);
+                if (v) {
+                    syncService.setProvider('icloud'); // Default to icloud simulation
+                    syncService.enableAutoSync();
+                } else {
+                    syncService.setProvider('none');
+                    syncService.disableAutoSync();
+                }
+            }}
           />
+          
+          {settings.cloudSyncEnabled && (
+             <View className="px-4 pb-4 pt-1">
+                 <View className="bg-slate-900/50 rounded-xl p-3 mb-3">
+                     <View className="flex-row justify-between mb-2">
+                         <Text className="text-slate-400 text-xs">Status</Text>
+                         <Text className={`text-xs font-bold ${syncState.status === 'error' ? 'text-red-400' : syncState.status === 'success' ? 'text-green-400' : 'text-blue-400'}`}>
+                             {syncState.status === 'syncing' ? 'Syncing...' : syncState.status.toUpperCase()}
+                         </Text>
+                     </View>
+                     {syncState.errorMessage && (
+                         <Text className="text-red-400 text-[10px] mb-2">{syncState.errorMessage}</Text>
+                     )}
+                     <Button 
+                        variant="secondary" 
+                        size="sm" 
+                        onPress={() => syncService.syncNow()}
+                        disabled={syncState.status === 'syncing'}
+                     >
+                         {syncState.status === 'syncing' ? 'Syncing...' : 'Sync Now'}
+                     </Button>
+                 </View>
+             </View>
+          )}
+
           <View className="h-px bg-white/5 mx-4" />
           <SettingItem
             icon={Trash2}
@@ -220,6 +331,26 @@ export default function SettingsScreen() {
             subtitle="Permanently delete all local content"
             onPress={handleDeleteData}
             isDestructive
+          />
+        </Card>
+
+        {/* Developer Tools Section */}
+        <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4 ml-1" style={{ fontFamily: 'Inter_700Bold' }}>
+          Developer Tools
+        </Text>
+        <Card variant="glass" className="mb-8 p-1 border-white/5">
+          <SettingItem
+            icon={Database}
+            title="Seed Demo Data"
+            subtitle="Add sample journals, tasks, and brain dumps"
+            onPress={handleSeedDemoData}
+          />
+          <View className="h-px bg-white/5 mx-4" />
+          <SettingItem
+            icon={FileJson}
+            title="Import Backup"
+            subtitle="Restore from JSON backup file"
+            onPress={handleImportData}
           />
         </Card>
 

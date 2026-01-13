@@ -5,19 +5,26 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Platform }
 import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { Brain, Sparkles, TrendingUp, AlertCircle, Lightbulb, Target } from 'lucide-react-native';
+import { Brain, Sparkles, TrendingUp, AlertCircle, Lightbulb, Target, MessageSquare } from 'lucide-react-native';
 import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
 import { useAnalysis, AnalysisPattern } from '../../src/hooks';
 import { getRecordings, getJournalEntries, getBrainDumps } from '../../src/lib/storage';
 import { Card, Button } from '../../src/components/ui';
 import { EmotionalTrends } from '../../src/components/insights/EmotionalTrends';
 import { LifeChapters } from '../../src/components/insights/LifeChapters';
+import { InsightCard, DEMO_INSIGHTS } from '../../src/components/insights/InsightCard';
+import { useTabBar } from '../../src/context/TabBarContext';
+
+import { ChatInterface } from '../../src/components/insights/ChatInterface';
+
+type ViewMode = 'patterns' | 'chat';
 
 export default function InsightsScreen() {
   const { isLoading, patterns, error, hasApiKey, analyze } = useAnalysis();
   // Simple trigger for re-render when focusing screen could be added later
   const [stats, setStats] = useState({ recordings: 0, journals: 0, brainDumps: 0 });
   const [hasAnalyzed, setHasAnalyzed] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('patterns');
 
   // Load stats on mount
   useEffect(() => {
@@ -32,6 +39,14 @@ export default function InsightsScreen() {
     });
   }, []);
 
+  const { fabActionTrigger } = useTabBar();
+  
+  useEffect(() => {
+    if (fabActionTrigger > 0) {
+      setViewMode('chat');
+    }
+  }, [fabActionTrigger]);
+
   const handleAnalyze = async () => {
     if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setHasAnalyzed(true);
@@ -42,19 +57,40 @@ export default function InsightsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-slate-950" edges={['top']}>
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View className="px-6 py-6">
-          <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-[3px] mb-1" style={{ fontFamily: 'Inter_700Bold' }}>
-            Pattern Analysis
-          </Text>
-          <Text className="text-3xl font-bold text-white lowercase" style={{ fontFamily: 'Inter_700Bold' }}>
-            insights.ai
-          </Text>
+        <View className="px-6 py-4 flex-row justify-between items-end">
+          <View>
+            <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-[3px] mb-1" style={{ fontFamily: 'Inter_700Bold' }}>
+                Pattern Analysis
+            </Text>
+            <Text className="text-3xl font-bold text-white lowercase" style={{ fontFamily: 'Inter_700Bold' }}>
+                insights.{viewMode}
+            </Text>
+          </View>
+          <View className="flex-row bg-slate-900 rounded-lg p-1 border border-white/5">
+             <TouchableOpacity 
+                onPress={() => setViewMode('patterns')}
+                className={`px-3 py-2 rounded-md ${viewMode === 'patterns' ? 'bg-indigo-600' : 'bg-transparent'}`}
+             >
+                 <Sparkles size={16} color={viewMode === 'patterns' ? 'white' : '#64748b'} />
+             </TouchableOpacity>
+             <TouchableOpacity 
+                onPress={() => setViewMode('chat')}
+                className={`px-3 py-2 rounded-md ${viewMode === 'chat' ? 'bg-indigo-600' : 'bg-transparent'}`}
+             >
+                 <MessageSquare size={16} color={viewMode === 'chat' ? 'white' : '#64748b'} />
+             </TouchableOpacity>
+          </View>
         </View>
 
+      {viewMode === 'chat' ? (
+          <View className="flex-1">
+             <ChatInterface />
+          </View>
+      ) : (
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Emotional Trends Chart */}
-        <View className="px-6 mb-6">
+        <View className="px-6 mb-6 mt-4">
             <EmotionalTrends />
         </View>
 
@@ -87,6 +123,16 @@ export default function InsightsScreen() {
               Syntheses
             </Text>
           </Card>
+        </View>
+
+        {/* AI Insight Cards */}
+        <View className="px-6 mb-6">
+          <Text className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4 ml-1" style={{ fontFamily: 'Inter_700Bold' }}>
+            AI Insights
+          </Text>
+          {DEMO_INSIGHTS.map((insight, index) => (
+            <InsightCard key={insight.id} insight={insight} index={index} />
+          ))}
         </View>
 
         <View className="px-6 pb-20">
@@ -214,6 +260,7 @@ export default function InsightsScreen() {
           )}
         </View>
       </ScrollView>
+      )}
     </SafeAreaView>
   );
 }

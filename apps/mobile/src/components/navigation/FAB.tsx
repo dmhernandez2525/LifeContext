@@ -50,10 +50,10 @@ export function FAB({ onPress, isVisible = true }: FABProps) {
   // Track previous tab for rotation animation
   const prevTabRef = React.useRef(activeTab);
   
-  // Rotate icon when tab changes
+  // Rotate icon when tab changes (full 360° to return upright)
   useEffect(() => {
     if (prevTabRef.current !== activeTab) {
-      rotation.value = withSpring(rotation.value + 180, {
+      rotation.value = withSpring(rotation.value + 360, {
         damping: 15,
         stiffness: 150,
       });
@@ -95,7 +95,10 @@ export function FAB({ onPress, isVisible = true }: FABProps) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
     
-    // Execute the FAB action
+    // Trigger global FAB action event for active screens to listen to
+    useTabBar().triggerFabAction();
+
+    // Execute the FAB action (navigation etc)
     if (onPress) {
       onPress();
     } else {
@@ -114,7 +117,7 @@ export function FAB({ onPress, isVisible = true }: FABProps) {
   
   const iconStyle = useAnimatedStyle(() => ({
     transform: [
-      { rotate: `${rotation.value}deg` },
+      { rotate: '0deg' },
     ],
   }));
   
@@ -141,7 +144,7 @@ export function FAB({ onPress, isVisible = true }: FABProps) {
         end={{ x: 1, y: 1 }}
       >
         <Animated.View style={iconStyle}>
-          <IconComponent size={28} color="#ffffff" strokeWidth={2.5} />
+          <IconComponent size={22} color="#ffffff" strokeWidth={2.5} />
         </Animated.View>
       </LinearGradient>
     </AnimatedTouchableOpacity>
@@ -174,28 +177,25 @@ function adjustColor(color: string, amount: number): string {
 
 const styles = StyleSheet.create({
   container: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    position: 'absolute',
-    bottom: 8, // Elevated above tab bar
-    alignSelf: 'center',
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     zIndex: 10,
   },
   glow: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: 32,
+    borderRadius: 26,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 20,
-    elevation: 10,
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 8,
   },
   gradient: {
     flex: 1,
-    borderRadius: 32,
+    borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
 });

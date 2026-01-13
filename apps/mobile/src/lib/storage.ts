@@ -410,6 +410,48 @@ export function updateSettings(updates: Partial<AppSettings>): void {
 }
 
 // ============================================================
+// TIMELINE EVENTS
+// ============================================================
+
+export interface TimelineEvent {
+  id: string;
+  type: 'milestone' | 'recording' | 'journal' | 'brain-dump';
+  title: string;
+  description?: string;
+  date: string;
+  createdAt: string;
+}
+
+/**
+ * Save a timeline event
+ */
+export async function saveTimelineEvent(
+  event: Omit<TimelineEvent, 'id' | 'createdAt'>
+): Promise<TimelineEvent> {
+  await ensureDirectories();
+
+  const newEvent: TimelineEvent = {
+    ...event,
+    id: generateId(),
+    createdAt: new Date().toISOString(),
+  };
+
+  const events = getTimelineEvents();
+  events.push(newEvent);
+  storage.set('timelineEvents', JSON.stringify(events));
+
+  return newEvent;
+}
+
+/**
+ * Get all timeline events
+ */
+export function getTimelineEvents(): TimelineEvent[] {
+  const data = storage.getString('timelineEvents');
+  return data ? JSON.parse(data) : [];
+}
+
+// ============================================================
 // EXPORT/IMPORT
 // ============================================================
 

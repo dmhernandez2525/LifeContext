@@ -44,6 +44,10 @@ export interface TabBarContextType {
   // FAB configuration
   fabConfig: FABConfig;
   
+  // FAB action trigger - increments when FAB pressed, screens can listen
+  fabActionTrigger: number;
+  triggerFabAction: () => void;
+  
   // Badges
   badgeCounts: BadgeCounts;
   setBadgeCounts: (counts: Partial<BadgeCounts>) => void;
@@ -164,6 +168,7 @@ export function TabBarProvider({ children }: TabBarProviderProps) {
   const [activeTab, setActiveTab] = useState<TabRoute>('index');
   const [badgeCounts, setBadgeCountsState] = useState<BadgeCounts>({ journal: 0, tasks: 0 });
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const [fabActionTrigger, setFabActionTrigger] = useState(0);
   
   // FAB configs
   const fabConfigs = createFABConfigs(router);
@@ -191,6 +196,10 @@ export function TabBarProvider({ children }: TabBarProviderProps) {
   const openMoreMenu = useCallback(() => setIsMoreMenuOpen(true), []);
   const closeMoreMenu = useCallback(() => setIsMoreMenuOpen(false), []);
   
+  const triggerFabAction = useCallback(() => {
+    setFabActionTrigger(prev => prev + 1);
+  }, []);
+  
   const value: TabBarContextType = {
     isTabBarVisible,
     scrollOffset,
@@ -198,6 +207,8 @@ export function TabBarProvider({ children }: TabBarProviderProps) {
     activeTab,
     setActiveTab,
     fabConfig: fabConfigs[activeTab],
+    fabActionTrigger,
+    triggerFabAction,
     badgeCounts,
     setBadgeCounts,
     isMoreMenuOpen,

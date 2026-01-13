@@ -33,6 +33,7 @@ import {
   CheckCircle2,
   Play,
   Target,
+  Quote,
 } from 'lucide-react-native';
 import * as storage from '../../src/lib/storage';
 import { Card } from '../../src/components/ui';
@@ -436,6 +437,29 @@ export default function DashboardScreen() {
           />
         </View>
 
+        {/* Daily Quote / Thought of the Day */}
+        <Animated.View 
+          entering={FadeInDown.delay(350).springify().damping(15)}
+          className="px-6 mb-8"
+        >
+          <View className="bg-gradient-to-r from-indigo-900/40 to-purple-900/40 rounded-2xl p-5 border border-indigo-500/20">
+            <View className="flex-row items-center mb-3">
+              <View className="w-8 h-8 bg-indigo-500/20 rounded-full items-center justify-center mr-3">
+                <Quote size={16} color="#818cf8" />
+              </View>
+              <Text className="text-indigo-300 text-xs font-bold uppercase tracking-wider" style={{ fontFamily: 'Inter_700Bold' }}>
+                Thought of the Day
+              </Text>
+            </View>
+            <Text className="text-white/90 text-base leading-6" style={{ fontFamily: 'Inter_400Regular' }}>
+              "The best time to plant a tree was 20 years ago. The second best time is now."
+            </Text>
+            <Text className="text-indigo-400 text-xs mt-2" style={{ fontFamily: 'Inter_400Regular' }}>
+              — Chinese Proverb
+            </Text>
+          </View>
+        </Animated.View>
+
         {/* Quick Actions */}
         <View className="mb-8">
           <View className="px-6 flex-row justify-between items-center mb-4">
@@ -488,14 +512,7 @@ export default function DashboardScreen() {
               onPress={() => router.push('/life-planning')}
               delay={550}
             />
-            <QuickActionCard
-              icon={Target}
-              title="Life Plan"
-              subtitle="Goals & vision"
-              color="#f472b6"
-              onPress={() => router.push('/life-planning')}
-              delay={550}
-            />
+
           </ScrollView>
         </View>
 
@@ -505,7 +522,10 @@ export default function DashboardScreen() {
             <Text className="text-lg font-bold text-white" style={{ fontFamily: 'Inter_700Bold' }}>
               Recent Activity
             </Text>
-            <TouchableOpacity className="flex-row items-center">
+            <TouchableOpacity 
+              className="flex-row items-center" 
+              onPress={() => router.push('/(tabs)/timeline')}
+            >
               <Text className="text-primary-400 text-sm mr-1" style={{ fontFamily: 'Inter_600SemiBold' }}>
                 View All
               </Text>

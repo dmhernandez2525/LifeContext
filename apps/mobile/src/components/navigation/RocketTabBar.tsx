@@ -11,7 +11,7 @@
  * - Haptic feedback throughout
  */
 import React, { useCallback, useRef, useEffect } from 'react';
-import { View, TouchableOpacity, Platform, StyleSheet, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, StyleSheet, Modal } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { SafeHaptics as Haptics } from '../../lib/haptics';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
@@ -82,64 +82,40 @@ interface TabButtonProps {
 }
 
 function TabButton({ tab, isFocused, onPress, onLongPress, badge }: TabButtonProps) {
-  const scale = useSharedValue(1);
-  
-  const handlePressIn = () => {
-    scale.value = withSpring(0.9, { damping: 15, stiffness: 300 });
-  };
-  
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 15, stiffness: 200 });
-  };
-  
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: scale.value },
-      { scale: withSpring(isFocused ? 1.1 : 1, { damping: 15, stiffness: 200 }) },
-    ],
-  }));
-  
   const IconComponent = tab.icon;
   
   return (
-    <AnimatedTouchableOpacity
-      style={[styles.tabButton, animatedStyle]}
+    <TouchableOpacity
+      style={styles.tabButton}
       onPress={onPress}
       onLongPress={onLongPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
+      activeOpacity={0.7}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
       accessibilityLabel={tab.label}
     >
       <View style={styles.iconWrapper}>
         <IconComponent
-          size={22}
-          color={isFocused ? tab.activeColor : '#94a3b8'}
-          strokeWidth={isFocused ? 2.5 : 2}
+          size={24}
+          color={isFocused ? tab.activeColor : '#64748b'}
+          strokeWidth={isFocused ? 2.5 : 1.5}
         />
         
-        {/* Badge */}
-        {badge && badge > 0 && (
+        {/* Badge - only show if > 0 */}
+        {badge !== undefined && badge > 0 && (
           <View style={styles.badge}>
-            <Animated.Text 
-              entering={FadeIn.duration(200)}
-              style={styles.badgeText}
-            >
+            <Text style={styles.badgeText}>
               {badge > 99 ? '99+' : badge}
-            </Animated.Text>
+            </Text>
           </View>
         )}
       </View>
       
-      {/* Active indicator */}
+      {/* Simple dot indicator */}
       {isFocused && (
-        <Animated.View
-          entering={FadeIn.duration(200)}
-          style={[styles.activeIndicator, { backgroundColor: tab.activeColor }]}
-        />
+        <View style={[styles.activeIndicator, { backgroundColor: tab.activeColor }]} />
       )}
-    </AnimatedTouchableOpacity>
+    </TouchableOpacity>
   );
 }
 
@@ -230,7 +206,6 @@ export function RocketTabBar({ state, descriptors, navigation }: BottomTabBarPro
               tab={TABS[0]}
               isFocused={getIsFocused('index')}
               onPress={() => handleTabPress('index', getIsFocused('index'))}
-              badge={0}
             />
             <TabButton
               tab={TABS[1]}
@@ -347,14 +322,16 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   fabSpacer: {
-    width: 72, // FAB width + some padding
+    width: 56, // FAB width (52) + small padding
   },
   fabContainer: {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 20,
+    top: 0,
+    bottom: 0,
     alignItems: 'center',
+    justifyContent: 'center',
     pointerEvents: 'box-none',
   },
 });

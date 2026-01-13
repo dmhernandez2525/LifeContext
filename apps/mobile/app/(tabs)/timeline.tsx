@@ -9,9 +9,11 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlashList } from '@shopify/flash-list';
 import Animated, { FadeInRight } from 'react-native-reanimated';
+import { useTabBar } from '../../src/context/TabBarContext';
 import { Mic, BookOpen, Brain, Calendar, Clock } from 'lucide-react-native';
 import * as storage from '../../src/lib/storage';
 import { Card } from '../../src/components/ui';
+import { AddEventSheet } from '../../src/components/timeline/AddEventSheet';
 
 // ============================================================
 // TYPES
@@ -134,6 +136,14 @@ export default function TimelineScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>('month');
   const [activeFilter, setActiveFilter] = useState<'all' | 'recording' | 'journal' | 'brain-dump' | 'milestone'>('all');
+  const [showAddEvent, setShowAddEvent] = useState(false);
+  const { fabActionTrigger } = useTabBar();
+
+  useEffect(() => {
+    if (fabActionTrigger > 0) {
+      setShowAddEvent(true);
+    }
+  }, [fabActionTrigger]);
 
   const loadEvents = useCallback(async () => {
     setIsLoading(true);
@@ -379,6 +389,12 @@ export default function TimelineScreen() {
           />
         )}
       </View>
+      {/* Add Event Sheet */}
+      <AddEventSheet
+        visible={showAddEvent}
+        onClose={() => setShowAddEvent(false)}
+        onSave={loadEvents}
+      />
     </SafeAreaView>
   );
 }
