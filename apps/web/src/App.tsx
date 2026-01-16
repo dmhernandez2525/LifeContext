@@ -4,7 +4,7 @@ import { useKeyboardShortcuts } from './hooks';
 
 // Components
 import ErrorBoundary from './components/ErrorBoundary';
-import OnboardingWizard from './components/onboarding/OnboardingWizard';
+
 
 // Pages
 import LandingPage from './pages/LandingPage';
@@ -55,19 +55,14 @@ const SECURITY_STORAGE_KEY = 'lcc-security';
 export default function App() {
   const [isReady, setIsReady] = useState(false);
   const [hasAccount, setHasAccount] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     // Check if user has set up security credentials (passcode)
     const securityData = localStorage.getItem(SECURITY_STORAGE_KEY);
-    const onboardingComplete = localStorage.getItem('lcc-onboarding-complete') === 'true';
-
+    
     if (securityData) {
       // User has registered - they have an account
       setHasAccount(true);
-    } else if (!onboardingComplete) {
-      // First time visitor - show onboarding wizard
-      setShowOnboarding(true);
     }
 
     setIsReady(true);
@@ -80,20 +75,7 @@ export default function App() {
     return null; // Loading state
   }
 
-  // First-time visitors see the onboarding wizard
-  if (showOnboarding) {
-    return (
-      <Routes>
-        <Route path="/" element={
-          <OnboardingWizard
-            onComplete={() => setShowOnboarding(false)}
-            onSkip={() => setShowOnboarding(false)}
-          />
-        } />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    );
-  }
+
 
   return (
     <ErrorBoundary>

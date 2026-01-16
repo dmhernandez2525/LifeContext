@@ -18,6 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
 import AskDocsButton from '../help/AskDocsButton';
+import { useTheme } from '../ThemeProvider';
 
 // ============================================================
 // NAVIGATION DATA
@@ -214,7 +215,7 @@ export default function PublicLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isInitialized } = useAppStore();
   const navigate = useNavigate();
-  const [isDark, setIsDark] = useState(true); // Default to dark for public site initially
+  const { isDark, toggleTheme } = useTheme();
 
   // Handle scroll effect
   useEffect(() => {
@@ -224,27 +225,6 @@ export default function PublicLayout() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Handle theme toggle
-  useEffect(() => {
-    // Check system preference or saved preference
-    const savedTheme = localStorage.getItem('lcc-theme');
-    if (savedTheme) {
-      setIsDark(savedTheme === 'dark');
-      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-    } else {
-      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setIsDark(systemDark);
-      document.documentElement.classList.toggle('dark', systemDark);
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const newIsDark = !isDark;
-    setIsDark(newIsDark);
-    document.documentElement.classList.toggle('dark', newIsDark);
-    localStorage.setItem('lcc-theme', newIsDark ? 'dark' : 'light');
-  };
 
   const handleGetStarted = () => {
     if (isInitialized) {

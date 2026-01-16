@@ -3,14 +3,12 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Lock,
-  ShieldCheck,
-  ChevronRight,
   ArrowLeft,
-  Key,
   Info
 } from 'lucide-react';
 import { useAppStore } from '@/store/app-store';
 import { generateSalt, hashPasscode } from '@lcc/encryption';
+import OnboardingWizard from '@/components/onboarding/OnboardingWizard';
 
 // Storage key for security credentials
 const SECURITY_STORAGE_KEY = 'lcc-security';
@@ -27,7 +25,6 @@ export default function RegisterPage({ onRegistered }: RegisterPageProps) {
   const [confirmPasscode, setConfirmPasscode] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState(1); // 1: Info, 2: Passcode
 
   const handleInitialize = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,6 +89,23 @@ export default function RegisterPage({ onRegistered }: RegisterPageProps) {
     }
   };
 
+  const [showWizard, setShowWizard] = useState(() => {
+    return localStorage.getItem('lcc-onboarding-complete') !== 'true';
+  });
+
+  const handleWizardComplete = () => {
+    setShowWizard(false);
+  };
+
+  if (showWizard) {
+    return (
+      <OnboardingWizard
+        onComplete={handleWizardComplete}
+        onSkip={handleWizardComplete}
+      />
+    );
+  }
+
   return (
     <div className="min-h-[100dvh] bg-gray-950 text-white flex flex-col">
       {/* Header */}
@@ -104,48 +118,7 @@ export default function RegisterPage({ onRegistered }: RegisterPageProps) {
 
       <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
         <div className="max-w-2xl w-full">
-          {step === 1 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center"
-            >
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-purple-500/10 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-6 sm:mb-8">
-                <ShieldCheck className="w-8 h-8 sm:w-10 sm:h-10 text-purple-400" />
-              </div>
-              <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">Initialize Your Essence</h1>
-              <p className="text-base sm:text-xl text-gray-400 mb-8 sm:mb-12 leading-relaxed">
-                Life Context Compiler uses **Zero-Server Security**.
-                Your data never leaves your device unencrypted. To begin, you'll create a
-                Master Passcode that acts as the key to your digital legacy.
-              </p>
-
-              <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 text-left mb-8 sm:mb-12">
-                <div className="bg-white/5 border border-white/5 p-4 sm:p-6 rounded-xl sm:rounded-2xl">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-blue-500/10 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
-                    <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
-                  </div>
-                  <h3 className="font-bold mb-1 sm:mb-2 text-sm sm:text-base">Local-First Encryption</h3>
-                  <p className="text-xs sm:text-sm text-gray-500">All information is hashed on your device. We can't see it, even if we wanted to.</p>
-                </div>
-                <div className="bg-white/5 border border-white/5 p-4 sm:p-6 rounded-xl sm:rounded-2xl">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-purple-500/10 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
-                    <Key className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
-                  </div>
-                  <h3 className="font-bold mb-1 sm:mb-2 text-sm sm:text-base">Immutable Identity</h3>
-                  <p className="text-xs sm:text-sm text-gray-500">Your passcode is the salt for your data. It's the only way to unlock your context.</p>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setStep(2)}
-                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-white text-black px-8 sm:px-10 py-4 sm:py-5 rounded-xl sm:rounded-2xl font-bold text-lg sm:text-xl hover:scale-105 transition-all"
-              >
-                <span>Continue to Security Setup</span>
-                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-            </motion.div>
-          ) : (
+          {/* We will just render the passcode form directly if wizard is done. */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -207,13 +180,7 @@ export default function RegisterPage({ onRegistered }: RegisterPageProps) {
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
-                    <button
-                      type="button"
-                      onClick={() => setStep(1)}
-                      className="flex-1 px-6 sm:px-8 py-4 sm:py-5 rounded-xl sm:rounded-2xl border border-white/10 text-gray-400 font-bold hover:bg-white/5 transition-all order-2 sm:order-1 min-h-[52px]"
-                    >
-                      Back
-                    </button>
+
                     <button
                       type="submit"
                       disabled={isLoading}
@@ -232,7 +199,6 @@ export default function RegisterPage({ onRegistered }: RegisterPageProps) {
                 </form>
               </div>
             </motion.div>
-          )}
         </div>
       </main>
 

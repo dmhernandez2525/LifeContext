@@ -20,6 +20,7 @@ import { useAppStore } from '@/store/app-store';
 import LockScreen from '../security/LockScreen';
 import AskDocsButton from '../help/AskDocsButton';
 import { Target } from 'lucide-react';
+import { useTheme } from '../ThemeProvider';
 
 const navItems = [
   { path: '/app', icon: LayoutDashboard, label: 'Dashboard', exact: true },
@@ -39,17 +40,7 @@ export default function AppLayout() {
   const lock = useAppStore((state) => state.lock);
   const isUnlocked = useAppStore((state) => state.isUnlocked);
   const settings = useAppStore((state) => state.settings);
-  const updateSettings = useAppStore((state) => state.updateSettings);
-  const [isDark, setIsDark] = useState(false);
-
-  // Sync dark mode with settings and system preference
-  useEffect(() => {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const shouldBeDark = settings?.theme === 'dark' || 
-      (settings?.theme === 'system' && prefersDark);
-    setIsDark(shouldBeDark);
-    document.documentElement.classList.toggle('dark', shouldBeDark);
-  }, [settings?.theme]);
+  const { isDark, toggleTheme } = useTheme();
 
   // Auto-Lock on inactivity
   useEffect(() => {
@@ -86,10 +77,7 @@ export default function AppLayout() {
     };
   }, [isUnlocked, settings?.autoLockTimeout, lock]);
 
-  const toggleTheme = () => {
-    const newTheme = isDark ? 'light' : 'dark';
-    updateSettings({ theme: newTheme });
-  };
+
 
   // Show lock screen when not unlocked
   if (!isUnlocked) {
