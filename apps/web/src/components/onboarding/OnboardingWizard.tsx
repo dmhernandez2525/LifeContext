@@ -19,7 +19,6 @@ import {
 import { cn } from '@/lib/utils';
 import PasscodeConfirmation from '../security/PasscodeConfirmation';
 import { importData } from '@/lib/data-transfer';
-import { importData } from '@/lib/data-transfer';
 
 interface OnboardingWizardProps {
   onComplete: () => void;
@@ -41,26 +40,7 @@ export default function OnboardingWizard({ onComplete, onSkip }: OnboardingWizar
   const [passcodeConfirmed, setPasscodeConfirmed] = useState(false);
   const [dataReclamationEnabled, setDataReclamationEnabled] = useState(false);
 
-  const handleImport = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-      
-      try {
-        const text = await file.text();
-        const json = JSON.parse(text);
-        if (window.confirm(`Found backup from ${new Date(json.timestamp).toLocaleDateString()}. Restore?`)) {
-           await importData(json);
-        }
-      } catch (err) {
-        alert('Failed to import backup: ' + err);
-      }
-    };
-    input.click();
-  };
+
   
   const handleImport = () => {
     const input = document.createElement('input');

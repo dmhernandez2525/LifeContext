@@ -18,9 +18,7 @@ import {
   RefreshCw,
   LogOut,
   Users,
-  Download,
-  Upload,
-  Trash2
+  Database // Added back
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore, DEFAULT_SETTINGS } from '@/store/app-store';
@@ -87,34 +85,7 @@ export default function SettingsPage() {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const handleExport = async () => {
-    await downloadExport();
-  };
 
-  const handleImportClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const success = await uploadImport(file);
-      if (success) {
-        window.location.reload();
-      }
-    }
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const handleReset = () => {
-    if (confirm('Are you sure you want to reset all data? This cannot be undone.')) {
-      reset();
-      window.location.href = '/';
-    }
-  };
 
   return (
     <div className="max-w-2xl mx-auto space-y-8 pb-12">
@@ -409,60 +380,6 @@ export default function SettingsPage() {
         )}
       </motion.section>
 
-      {/* Data Management (New) */}
-      <motion.section
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700"
-      >
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-            <Database className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-          </div>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Data Management
-          </h2>
-        </div>
-
-        <div className="space-y-4">
-           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-             <button
-               onClick={handleExportData}
-               className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all group"
-             >
-               <Download className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400" />
-               <span className="font-medium text-gray-700 dark:text-gray-300 group-hover:text-purple-700 dark:group-hover:text-purple-300">
-                 Export Backup
-               </span>
-             </button>
-             
-             <button
-               onClick={handleImportData}
-               className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group"
-               >
-                 <Upload className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
-                 <span className="font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-300">
-                   Import Backup
-                 </span>
-               </button>
-             </div>
-             
-             <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
-                <button
-                  onClick={handleWipeData}
-                  className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                  <span className="text-sm font-medium">Reset Application (Wipe Data)</span>
-                </button>
-                <p className="text-xs text-gray-400 text-center mt-2">
-                  This will delete all local data and return you to the onboarding screen.
-                </p>
-             </div>
-          </div>
-      </motion.section>
-
       {/* Cloud Backup */}
       <motion.section
         initial={{ opacity: 0, y: 10 }}
@@ -583,77 +500,64 @@ export default function SettingsPage() {
         )}
       </motion.section>
 
-      {/* Data Management */}
+      {/* Data Management (New) */}
       <motion.section
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
         className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700"
       >
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Data Management
-        </h2>
-        
-        {exportError && (
-          <div className="flex items-center space-x-2 text-red-600 dark:text-red-400 mb-4 text-sm">
-            <AlertCircle className="w-4 h-4" />
-            <span>{exportError}</span>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+            <Database className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
-        )}
-        
-        <div className="space-y-3">
-          <button
-            onClick={handleExport}
-            disabled={isExporting}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left disabled:opacity-50"
-          >
-            {isExporting ? (
-              <Loader2 className="w-5 h-5 text-blue-600 dark:text-blue-400 animate-spin" />
-            ) : (
-              <Download className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            )}
-            <div>
-              <p className="font-medium text-gray-900 dark:text-white">Export Data</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Download encrypted backup</p>
-            </div>
-          </button>
-
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-
-          <button
-            onClick={handleImportClick}
-            disabled={isImporting}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left disabled:opacity-50"
-          >
-            {isImporting ? (
-              <Loader2 className="w-5 h-5 text-green-600 dark:text-green-400 animate-spin" />
-            ) : (
-              <Upload className="w-5 h-5 text-green-600 dark:text-green-400" />
-            )}
-            <div>
-              <p className="font-medium text-gray-900 dark:text-white">Import Data</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Restore from backup</p>
-            </div>
-          </button>
-
-          <button
-            onClick={handleReset}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg border border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
-          >
-            <Trash2 className="w-5 h-4 text-red-600 dark:text-red-400" />
-            <div>
-              <p className="font-medium text-red-600 dark:text-red-400">Reset All Data</p>
-              <p className="text-sm text-red-500 dark:text-red-500/80">Delete everything permanently</p>
-            </div>
-          </button>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Data Management
+          </h2>
         </div>
+
+        <div className="space-y-4">
+           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+             <button
+               onClick={handleExportData}
+               className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all group"
+             >
+               <Download className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400" />
+               <span className="font-medium text-gray-700 dark:text-gray-300 group-hover:text-purple-700 dark:group-hover:text-purple-300">
+                 Export Backup
+               </span>
+             </button>
+             
+             <button
+               onClick={handleImportData}
+               className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group"
+               >
+                 <Upload className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
+                 <span className="font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-300">
+                   Import Backup
+                 </span>
+               </button>
+             </div>
+             
+             <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+                <button
+                  onClick={handleWipeData}
+                  className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  <span className="text-sm font-medium">Reset Application (Wipe Data)</span>
+                </button>
+                <p className="text-xs text-gray-400 text-center mt-2">
+                  This will delete all local data and return you to the onboarding screen.
+                </p>
+             </div>
+          </div>
       </motion.section>
+
+
+
+      {/* Data Management */}
+
     </div>
   );
 }
