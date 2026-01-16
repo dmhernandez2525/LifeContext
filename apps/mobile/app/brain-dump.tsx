@@ -3,11 +3,11 @@
  * Enhanced with polished UI and animations
  */
 import { View, Text, TouchableOpacity, TextInput, ScrollView, ActivityIndicator } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { X, Plus, Trash2, Brain, Sparkles, Check, MessageCircle, ArrowRight, Mic as MicIcon, StopCircle } from 'lucide-react-native';
+import { X, Plus, Trash2, Brain, Sparkles, Check, ArrowRight, Mic as MicIcon, StopCircle } from 'lucide-react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -15,16 +15,15 @@ import Animated, {
   withSequence,
   withTiming,
   Easing,
-  FadeIn,
   FadeInDown,
 } from 'react-native-reanimated';
 import { useRecorder, useTranscription, useSynthesis, SynthesisResult } from '../src/hooks';
 import { saveBrainDump } from '../src/lib/storage';
 import { AudioVisualizer } from '../src/components/AudioVisualizer';
-import { Card, Button, Badge } from '../src/components/ui';
+import { Card, Button } from '../src/components/ui';
 import { Modal } from 'react-native';
 import { DeepDiveSheet } from '../src/components/life-planning/DeepDiveSheet';
-import { useBottomSheetModal } from '@gorhom/bottom-sheet';
+
 
 interface BulletPoint {
   id: string;
@@ -75,11 +74,10 @@ export default function BrainDumpScreen() {
   const [activeQuestion, setActiveQuestion] = useState<string | null>(null);
   const [refinementAnswer, setRefinementAnswer] = useState('');
   const [isRefining, setIsRefining] = useState(false);
-  const [refinementTranscript, setRefinementTranscript] = useState('');
   
   // Actionable Insights State
   const [activeContext, setActiveContext] = useState<string | null>(null);
-  const { dismiss } = useBottomSheetModal(); // For deep dive sheet handling if needed
+  // const { dismiss } = useBottomSheetModal(); // For deep dive sheet handling if needed
   
   const recorder = useRecorder();
   // We might need a second recorder instance or reuse the existing one if it resets properly. 
@@ -87,7 +85,7 @@ export default function BrainDumpScreen() {
   // Assuming reuse is fine if stopped. 
   
   const transcription = useTranscription();
-  const { synthesize, hasApiKey, isLoading: isSynthesizing } = useSynthesis();
+  const { synthesize, hasApiKey } = useSynthesis();
 
   const addBulletPoint = () => {
     if (Haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

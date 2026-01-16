@@ -10,8 +10,8 @@
  */
 import React, { forwardRef, useState, useCallback, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import BottomSheet from '@gorhom/bottom-sheet';
 import { SafeHaptics as Haptics } from '../../../lib/haptics';
-import { useRouter } from 'expo-router';
 import Animated, { 
   useAnimatedStyle, 
   useSharedValue, 
@@ -86,9 +86,8 @@ function AnimatedBar({ index, isRecording }: { index: number; isRecording: boole
 // MAIN COMPONENT
 // ============================================================
 
-export const QuickRecordSheet = forwardRef<any, QuickRecordSheetProps>(
+export const QuickRecordSheet = forwardRef<BottomSheet, QuickRecordSheetProps>(
   ({ onClose, questionId, questionText }, ref) => {
-    const router = useRouter();
     const { 
       start, 
       stop, 

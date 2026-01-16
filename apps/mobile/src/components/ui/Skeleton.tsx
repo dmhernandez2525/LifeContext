@@ -4,7 +4,7 @@
  * Premium shimmer placeholders for content loading states
  */
 import React, { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ViewStyle } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -18,7 +18,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 // SHIMMER ANIMATION
 // ============================================================
 
-function Shimmer({ children, style }: { children?: React.ReactNode; style?: any }) {
+function Shimmer({ children, style }: { children?: React.ReactNode; style?: ViewStyle | ViewStyle[] }) {
   const translateX = useSharedValue(-1);
 
   useEffect(() => {

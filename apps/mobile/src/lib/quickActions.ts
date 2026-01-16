@@ -48,7 +48,8 @@ export function useQuickActionRouting(router: Router) {
           if (isMounted) {
             const href = action.params?.href;
             if (href) {
-                router.push(href as any);
+                // Expo Router href can be string or object, using never to bypass strict typing for dynamic routes
+                router.push(href as never);
             }
           }
         }, 500);

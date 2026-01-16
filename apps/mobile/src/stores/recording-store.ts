@@ -46,6 +46,7 @@ function getStorageInstance(): SimpleStorage {
   }
   
   try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { MMKV } = require('react-native-mmkv');
     _storage = new MMKV();
   } catch (e) {
@@ -83,7 +84,7 @@ export interface Recording {
 const STORAGE_KEY = 'recording-storage';
 
 let recordings: Recording[] = [];
-let listeners: Set<() => void> = new Set();
+const listeners: Set<() => void> = new Set();
 let hydrated = false;
 
 function notifyListeners() {

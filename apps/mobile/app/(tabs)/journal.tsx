@@ -6,10 +6,10 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Platform, M
 import { useState, useEffect, useCallback } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { Calendar, Tag, Heart, Plus, ChevronRight, Clock, MessageSquare, Video, Mic, Type, Check } from 'lucide-react-native';
-import Animated, { FadeInDown, FadeInRight, Layout } from 'react-native-reanimated';
+import { Plus, ChevronRight, Clock, MessageSquare, Video, Type, Check } from 'lucide-react-native';
+import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
 import { saveJournalEntry, getJournalEntries, StoredJournalEntry } from '../../src/lib/storage';
-import { Card, Button, Badge } from '../../src/components/ui';
+import { Card } from '../../src/components/ui';
 import { VideoRecorder } from '../../src/components/journal/VideoRecorder';
 import { useTabBar } from '../../src/context/TabBarContext';
 
@@ -29,7 +29,7 @@ export default function JournalScreen() {
   const [mediaType, setMediaType] = useState<'text' | 'video'>('text');
   const [videoUri, setVideoUri] = useState<string | null>(null);
   
-  const [isSaving, setIsSaving] = useState(false);
+
   const [entries, setEntries] = useState<StoredJournalEntry[]>([]);
   const [showEditor, setShowEditor] = useState(false);
 
@@ -63,7 +63,7 @@ export default function JournalScreen() {
     if (mediaType === 'text' && !content.trim() && !mood) return;
     if (mediaType === 'video' && !videoUri && !mood) return;
 
-    setIsSaving(true);
+
     try {
       await saveJournalEntry({
         type: mediaType === 'video' ? 'video' : 'text',
@@ -86,8 +86,6 @@ export default function JournalScreen() {
       loadEntries();
     } catch {
       Alert.alert('Error', 'Failed to secure your journal entry locally.');
-    } finally {
-      setIsSaving(false);
     }
   };
 

@@ -1,10 +1,8 @@
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withRepeat,
   withTiming,
-  withSequence,
   Easing,
   withSpring,
 } from 'react-native-reanimated';

@@ -11,15 +11,14 @@
  * - Haptic feedback throughout
  */
 import React, { useCallback, useRef, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Platform, StyleSheet, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, StyleSheet } from 'react-native';
+import BottomSheet from '@gorhom/bottom-sheet';
 import { BlurView } from 'expo-blur';
 import { SafeHaptics as Haptics } from '../../lib/haptics';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import Animated, {
   useAnimatedStyle,
   withSpring,
-  FadeIn,
-  useSharedValue,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -35,8 +34,10 @@ import { FAB } from './FAB';
 import { WebMoreMenu } from './WebMoreMenu';
 
 // Conditionally import BottomSheet and MenuSheet only on native
-let MenuSheet: any = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let MenuSheet: React.ComponentType<any> | null = null;
 if (Platform.OS !== 'web') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   MenuSheet = require('./BottomSheets').MenuSheet;
 }
 
@@ -62,12 +63,6 @@ const TABS: TabConfig[] = [
   { route: 'journal', icon: BookOpen, label: 'Journal', activeColor: '#a855f7' },
   { route: 'more', icon: MoreHorizontal, label: 'More', activeColor: '#64748b' },
 ];
-
-// ============================================================
-// ANIMATED COMPONENTS
-// ============================================================
-
-const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 // ============================================================
 // TAB BUTTON
@@ -123,9 +118,9 @@ function TabButton({ tab, isFocused, onPress, onLongPress, badge }: TabButtonPro
 // MAIN COMPONENT
 // ============================================================
 
-export function RocketTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+export function RocketTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
-  const menuSheetRef = useRef<any>(null);
+  const menuSheetRef = useRef<BottomSheet>(null);
   const { 
     setActiveTab, 
     isTabBarVisible, 

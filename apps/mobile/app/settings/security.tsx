@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Switch, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ChevronLeft, Lock, Smartphone, ShieldCheck } from 'lucide-react-native';
+import { ChevronLeft, Lock, ShieldCheck } from 'lucide-react-native';
 import { useSecurityStore, LockTimeout } from '../../src/store/useSecurityStore';
 import * as LocalAuthentication from 'expo-local-authentication';
 

@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Modal, TextInput, Alert, Platform, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
-import { Calendar, Clock, Tag as TagIcon, X, Check } from 'lucide-react-native';
+import { Calendar } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { saveTimelineEvent } from '../../lib/storage';
 

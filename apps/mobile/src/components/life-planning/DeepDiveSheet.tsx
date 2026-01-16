@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { BaseBottomSheet } from '../navigation/BottomSheets/BaseBottomSheet';
-import { Mic, ArrowRight, StopCircle, RefreshCw, Check, X } from 'lucide-react-native';
+import { Mic, StopCircle, RefreshCw, Check } from 'lucide-react-native';
 import { Audio } from 'expo-av';
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming, withSequence } from 'react-native-reanimated';
-import { BlurView } from 'expo-blur';
 import { saveTask } from '../../lib/storage'; // Direct storage
 import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 
@@ -21,7 +20,6 @@ export function DeepDiveSheet({ index, initialContext = '', onClose }: DeepDiveS
     const [step, setStep] = useState<Step>('recording');
     const [recording, setRecording] = useState<Audio.Recording | null>(null);
     const [duration, setDuration] = useState(0);
-    const [transcript, setTranscript] = useState('');
     const [generatedTask, setGeneratedTask] = useState({ title: '', description: '', priority: 'medium' });
     
     // Animation
@@ -57,14 +55,12 @@ export function DeepDiveSheet({ index, initialContext = '', onClose }: DeepDiveS
     const stopRecording = async () => {
         if (!recording) return;
         await recording.stopAndUnloadAsync();
-        const uri = recording.getURI();
         setRecording(null);
         setStep('processing');
 
         // TODO: Integrate with Whisper API for transcription and OpenAI for task extraction
         // Demo mode: simulate AI processing with mock data
         setTimeout(() => {
-            setTranscript("I really want to start training for a marathon next year. I need to buy running shoes, find a training plan, and maybe join a local club.");
             setGeneratedTask({
                 title: 'Train for Marathon',
                 description: 'Plan and execute marathon training.\n\n- Buy running shoes\n- Find training plan\n- Join local club',
@@ -78,7 +74,7 @@ export function DeepDiveSheet({ index, initialContext = '', onClose }: DeepDiveS
         saveTask({
             title: generatedTask.title,
             description: generatedTask.description,
-            priority: generatedTask.priority as any,
+            priority: generatedTask.priority as 'low' | 'medium' | 'high',
             status: 'todo',
             category: 'Life Goal', // Default to life goal since we are in that flow
             dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // Due in 1 week

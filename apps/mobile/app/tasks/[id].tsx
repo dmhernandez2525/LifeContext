@@ -12,13 +12,10 @@ import {
   Edit3, 
   Trash2, 
   Calendar,
-  Clock,
   Flag,
   Check,
-  Square,
   Plus,
   X,
-  MoreVertical,
   CheckCircle2,
   Circle,
 } from 'lucide-react-native';
@@ -64,7 +61,7 @@ const STATUS_CONFIG = {
 const PRIORITY_CONFIG = {
   'low': { label: 'Low', color: '#64748b' },
   'medium': { label: 'Medium', color: '#f59e0b' },
-  'high': { label: 'High', color: '#ef4444' },
+  'high': { label: '#ef4444', color: '#ef4444' },
 };
 
 // ============================================================
@@ -142,7 +139,7 @@ export default function TaskDetailScreen() {
 
   const loadTask = () => {
     const tasks = storage.getTasks();
-    const found = tasks.find((t: any) => t.id === id);
+    const found = tasks.find((t) => t.id === id);
     if (found) {
       setTask(found as Task);
       setEditedTitle(found.title || '');
@@ -240,7 +237,7 @@ export default function TaskDetailScreen() {
     
     const updated = {
       ...task,
-      subtasks: [...(task.subtasks || []), subtask],
+      subtasks: [...(task.subtasks as Subtask[] || []), subtask],
       updatedAt: new Date().toISOString(),
     };
     storage.saveTask(updated);
@@ -286,8 +283,6 @@ export default function TaskDetailScreen() {
     );
   }
 
-  const statusConfig = STATUS_CONFIG[task.status];
-  const priorityConfig = PRIORITY_CONFIG[task.priority];
   const subtaskProgress = task.subtasks?.length 
     ? Math.round((task.subtasks.filter(s => s.completed).length / task.subtasks.length) * 100)
     : 0;

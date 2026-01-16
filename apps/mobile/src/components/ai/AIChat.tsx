@@ -29,7 +29,6 @@ import {
   MessageCircle,
   Lightbulb,
 } from 'lucide-react-native';
-import { Card } from '../ui';
 
 // ============================================================
 // TYPES

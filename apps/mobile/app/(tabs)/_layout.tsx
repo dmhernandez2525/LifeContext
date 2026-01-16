@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import { RocketTabBar } from '../../src/components/navigation';
 import { Sidebar } from '../../src/components/navigation/Sidebar';
-import { View, useWindowDimensions, Platform } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 
 export default function TabLayout() {
   const { width } = useWindowDimensions();

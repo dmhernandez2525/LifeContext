@@ -6,7 +6,7 @@ import { View, Text, TextInput, TouchableOpacity, FlatList, Platform } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { 
   Search as SearchIcon, 
   X, 
@@ -15,7 +15,6 @@ import {
   Brain,
   Clock,
   ChevronRight,
-  Filter,
 } from 'lucide-react-native';
 import { Card } from '../src/components/ui';
 import * as storage from '../src/lib/storage';

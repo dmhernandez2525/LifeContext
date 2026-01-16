@@ -14,6 +14,7 @@ import {
   Search,
   HelpCircle,
   X,
+  LucideIcon,
 } from 'lucide-react-native';
 
 interface WebMoreMenuProps {
@@ -21,7 +22,15 @@ interface WebMoreMenuProps {
   onClose: () => void;
 }
 
-const MENU_ITEMS = [
+interface MenuItem {
+  route: string;
+  icon: LucideIcon;
+  label: string;
+  color: string;
+  isExternal?: boolean;
+}
+
+const MENU_ITEMS: MenuItem[] = [
   { route: 'insights', icon: Sparkles, label: 'AI Insights', color: '#0ea5e9' },
   { route: 'kanban', icon: Columns, label: 'Task Board', color: '#f59e0b' },
   { route: 'braindump', icon: Brain, label: 'Brain Dump', color: '#a855f7' },
@@ -37,9 +46,9 @@ export function WebMoreMenu({ visible, onClose }: WebMoreMenuProps) {
   const handleItemPress = (route: string, isExternal?: boolean) => {
     onClose();
     if (isExternal) {
-      router.push(route as any);
+      router.push(route as never);
     } else {
-      router.push(`/(tabs)/${route}` as any);
+      router.push(`/(tabs)/${route}` as never);
     }
   };
 
@@ -67,7 +76,7 @@ export function WebMoreMenu({ visible, onClose }: WebMoreMenuProps) {
               <TouchableOpacity
                 key={item.route}
                 style={styles.menuItem}
-                onPress={() => handleItemPress(item.route, (item as any).isExternal)}
+                onPress={() => handleItemPress(item.route, item.isExternal)}
                 activeOpacity={0.7}
               >
                 <View style={[styles.iconContainer, { backgroundColor: `${item.color}20` }]}>

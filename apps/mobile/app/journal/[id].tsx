@@ -95,7 +95,7 @@ export default function JournalDetailScreen() {
   useEffect(() => {
     if (id) {
       const entries = storage.getJournalEntries();
-      const found = entries.find((e: any) => e.id === id);
+      const found = entries.find((e) => e.id === id);
       if (found) {
         setEntry(found as JournalEntry);
         setEditedContent(found.content || '');

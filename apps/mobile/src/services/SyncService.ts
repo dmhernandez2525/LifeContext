@@ -1,4 +1,4 @@
-import { storage, AppSettings, getSettings, updateSettings, exportAllData, getRecordings, getJournalEntries, getBrainDumps, getTasks } from '../lib/storage';
+import { storage, exportAllData } from '../lib/storage';
 
 // Types
 export type SyncStatus = 'idle' | 'syncing' | 'success' | 'error';
@@ -75,7 +75,7 @@ class SyncService {
 
     try {
         // 1. Export Data
-        const payload = await exportAllData(); // Returns uri currently, but we can simulate payload generation
+        await exportAllData(); // Returns uri currently, but we can simulate payload generation
         
         // 2. Simulate Network Delay (Upload)
         await new Promise(resolve => setTimeout(resolve, 2000));

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Alert, Platform, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Platform, ScrollView } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { BaseBottomSheet } from '@/components/navigation/BottomSheets/BaseBottomSheet';
-import { Tag, Edit3, Lock, Globe, Users, Check, X } from 'lucide-react-native';
+import { Tag, Edit3, Lock, Globe, Users, Check, X, LucideIcon } from 'lucide-react-native';
 
 type PrivacyLevel = 'private' | 'family' | 'public' | 'legacy';
 
@@ -15,7 +15,7 @@ interface MetadataEditSheetProps {
   onSave: (data: { title: string; tags: string[]; privacy: PrivacyLevel }) => void;
 }
 
-const PRIVACY_OPTIONS: { level: PrivacyLevel; icon: any; label: string; description: string; color: string }[] = [
+const PRIVACY_OPTIONS: { level: PrivacyLevel; icon: LucideIcon; label: string; description: string; color: string }[] = [
   { level: 'private', icon: Lock, label: 'Private', description: 'Only you', color: '#6366f1' },
   { level: 'family', icon: Users, label: 'Family', description: 'Family circle', color: '#10b981' },
   { level: 'public', icon: Globe, label: 'Public', description: 'Everyone', color: '#3b82f6' },

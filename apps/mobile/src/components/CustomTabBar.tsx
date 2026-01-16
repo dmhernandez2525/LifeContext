@@ -5,8 +5,6 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import Animated, {
   useAnimatedStyle,
   withSpring,
-  useSharedValue,
-  withTiming,
   FadeIn,
 } from 'react-native-reanimated';
 
@@ -83,7 +81,6 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
             if (!tabConfig) return null;
 
             const Icon = tabConfig.icon;
-            const scale = tabConfig.scale || 1;
             const isRecordButton = route.name === 'record';
 
             return (

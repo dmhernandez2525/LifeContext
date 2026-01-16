@@ -22,11 +22,9 @@ export default function RecordingScreen() {
 
   useEffect(() => {
     // Auto-start
-    let started = false;
     const init = async () => {
       const success = await startRecording();
       if (!success) router.back();
-      started = true;
     };
     init();
 

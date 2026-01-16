@@ -5,8 +5,6 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import Animated, { 
-  useAnimatedStyle, 
-  withSpring,
   FadeIn,
 } from 'react-native-reanimated';
 import { 

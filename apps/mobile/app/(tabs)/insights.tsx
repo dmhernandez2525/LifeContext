@@ -5,7 +5,7 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Platform }
 import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { Brain, Sparkles, TrendingUp, AlertCircle, Lightbulb, Target, MessageSquare } from 'lucide-react-native';
+import { Brain, Sparkles, TrendingUp, AlertCircle, Lightbulb, MessageSquare } from 'lucide-react-native';
 import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
 import { useAnalysis, AnalysisPattern } from '../../src/hooks';
 import { getRecordings, getJournalEntries, getBrainDumps } from '../../src/lib/storage';

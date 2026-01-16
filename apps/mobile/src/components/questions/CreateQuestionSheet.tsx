@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert, Platform, ScrollView } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { BaseBottomSheet } from '@/components/navigation/BottomSheets/BaseBottomSheet';
-import { HelpCircle, Check, X } from 'lucide-react-native';
+import { HelpCircle, X } from 'lucide-react-native';
 import * as questions from '@/lib/questions';
 
 interface CreateQuestionSheetProps {

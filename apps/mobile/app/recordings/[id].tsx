@@ -5,9 +5,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Platform, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
-import { Audio } from 'expo-av';
+import { Audio, AVPlaybackStatus } from 'expo-av';
 import * as Haptics from 'expo-haptics';
-import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { 
   ChevronLeft, 
   Play, 
@@ -81,7 +81,7 @@ export default function RecordingDetailScreen() {
   useEffect(() => {
     if (id) {
       const recordings = storage.getRecordings();
-      const found = recordings.find((r: any) => r.id === id);
+      const found = recordings.find((r) => r.id === id);
       if (found) {
         setRecording({
           ...found,
@@ -117,7 +117,7 @@ export default function RecordingDetailScreen() {
     }
   };
 
-  const onPlaybackStatusUpdate = (status: any) => {
+  const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (status.isLoaded) {
       setPosition(status.positionMillis / 1000);
       setIsPlaying(status.isPlaying);

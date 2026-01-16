@@ -14,12 +14,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { SafeHaptics as Haptics } from '../../src/lib/haptics';
 import Animated, { 
-  FadeInDown, 
+  FadeInDown,
   FadeInRight,
-  useAnimatedStyle,
   useSharedValue,
   withTiming,
-  withSpring,
 } from 'react-native-reanimated';
 import { 
   Mic, 
@@ -28,7 +26,6 @@ import {
   Sparkles, 
   Clock,
   ChevronRight,
-  TrendingUp,
   MessageCircle,
   CheckCircle2,
   Play,
@@ -107,8 +104,7 @@ function ProgressRing({ progress, size = 120 }: { progress: number; size?: numbe
   }, [progress]);
   
   const strokeWidth = 8;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
+
   
   return (
     <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
@@ -308,10 +304,8 @@ export default function DashboardScreen() {
     tasksCompleted: 0,
   });
   const [recentItems, setRecentItems] = useState<RecentItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const loadDashboardData = useCallback(async () => {
-    setIsLoading(true);
     
     try {
       // Load recordings
@@ -376,8 +370,6 @@ export default function DashboardScreen() {
 
     } catch {
       // Failed to load data - show empty state
-    } finally {
-      setIsLoading(false);
     }
   }, []);
 

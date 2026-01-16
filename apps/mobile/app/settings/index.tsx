@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Animated } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ChevronRight, Lock, HardDrive, Database, ShieldCheck, FileText, ChevronLeft } from 'lucide-react-native';
+import { ChevronRight, HardDrive, Database, ShieldCheck, FileText, ChevronLeft, LucideIcon } from 'lucide-react-native';
 
 interface SettingsItemProps {
-  icon: any;
+  icon: LucideIcon;
   title: string;
   subtitle?: string;
   color: string;
