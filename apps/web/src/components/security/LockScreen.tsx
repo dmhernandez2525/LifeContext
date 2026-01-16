@@ -9,6 +9,8 @@ import { Lock, Eye, EyeOff, AlertCircle, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
 import { hashPasscode } from '@lcc/encryption';
+import { wipeData } from '@/lib/data-transfer';
+import DangerConfirmationModal from './DangerConfirmationModal';
 
 // Storage key for security credentials (same as RegisterPage)
 const SECURITY_STORAGE_KEY = 'lcc-security';
@@ -26,6 +28,7 @@ export default function LockScreen() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasAccount, setHasAccount] = useState(true);
+  const [showResetModal, setShowResetModal] = useState(false);
   const unlock = useAppStore((state) => state.unlock);
 
   // Check if user has an account on mount
@@ -83,6 +86,15 @@ export default function LockScreen() {
 
   const handleGoToRegister = () => {
     navigate('/register');
+  };
+
+  const handleResetApp = async () => {
+    await wipeData();
+    setShowResetModal(false);
+  };
+
+  const handleResetClick = () => {
+    setShowResetModal(true);
   };
 
   // If no account exists, show a different UI prompting registration
@@ -226,6 +238,24 @@ export default function LockScreen() {
             Your data is encrypted with this passcode. If you've forgotten it,
             your data cannot be recovered.
           </p>
+          
+          <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 text-center">
+             <button
+               onClick={handleResetClick}
+               className="text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+             >
+               Forgot Passcode? Reset App
+             </button>
+          </div>
+
+          <DangerConfirmationModal
+            isOpen={showResetModal}
+            onClose={() => setShowResetModal(false)}
+            onConfirm={handleResetApp}
+            title="Emergency Reset"
+            message="If you have lost your passcode, this is the only way to regain access. This will permanently delete all encrypted data on this device."
+            confirmText="RESET"
+          />
         </motion.div>
       </div>
     </div>

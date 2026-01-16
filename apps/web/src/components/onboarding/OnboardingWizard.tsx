@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import PasscodeConfirmation from '../security/PasscodeConfirmation';
+import { importData } from '@/lib/data-transfer';
 
 interface OnboardingWizardProps {
   onComplete: () => void;
@@ -38,6 +39,30 @@ export default function OnboardingWizard({ onComplete, onSkip }: OnboardingWizar
   const [showPasscodeConfirm, setShowPasscodeConfirm] = useState(false);
   const [passcodeConfirmed, setPasscodeConfirmed] = useState(false);
   const [dataReclamationEnabled, setDataReclamationEnabled] = useState(false);
+
+
+  
+  const handleImport = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      
+      try {
+        const text = await file.text();
+        const json = JSON.parse(text);
+        if (window.confirm(`Found backup from ${new Date(json.timestamp).toLocaleDateString()}. Restore?`)) {
+           await importData(json);
+           // importData reloads page
+        }
+      } catch (err) {
+        alert('Failed to import backup: ' + err);
+      }
+    };
+    input.click();
+  };
 
   const steps: WizardStep[] = [
     {
@@ -62,6 +87,13 @@ export default function OnboardingWizard({ onComplete, onSkip }: OnboardingWizar
               </span>
             ))}
           </div>
+          
+          <button
+            onClick={handleImport}
+            className="mt-4 text-xs sm:text-sm text-gray-500 hover:text-purple-600 dark:hover:text-purple-400 underline transition-colors"
+          >
+            Already have a backup? Import Data
+          </button>
         </div>
       ),
     },

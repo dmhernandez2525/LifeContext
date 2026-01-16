@@ -5,6 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useAppStore } from '@lcc/core';
 import '../global.css';
 
 import {
@@ -31,6 +32,7 @@ export default function RootLayout() {
   });
 
   const router = useRouter(); // Must import useRouter
+  const { isInitialized } = useAppStore();
   useQuickActionRouting(router);
 
   useEffect(() => {
@@ -39,6 +41,16 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
+
+  useEffect(() => {
+    if (loaded && !isInitialized) {
+      // Small timeout to ensure navigation is ready
+      const timer = setTimeout(() => {
+        router.replace('/onboarding');
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [loaded, isInitialized]);
 
   if (!loaded && !error) {
     return null;
