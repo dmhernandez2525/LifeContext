@@ -9,6 +9,7 @@ import { Lock, Eye, EyeOff, AlertCircle, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
 import { hashPasscode } from '@lcc/encryption';
+import { wipeData } from '@/lib/data-transfer';
 
 // Storage key for security credentials (same as RegisterPage)
 const SECURITY_STORAGE_KEY = 'lcc-security';
@@ -83,6 +84,14 @@ export default function LockScreen() {
 
   const handleGoToRegister = () => {
     navigate('/register');
+  };
+
+  const handleResetApp = async () => {
+    if (window.confirm('Are you sure you want to RESET LifeContext?\n\nThis will PERMANENTLY DELETE all your local data. This cannot be undone.')) {
+      if (window.confirm('Last Warning: All your journals, questions, and settings will be lost.\n\nProceed?')) {
+        await wipeData();
+      }
+    }
   };
 
   // If no account exists, show a different UI prompting registration
@@ -226,6 +235,15 @@ export default function LockScreen() {
             Your data is encrypted with this passcode. If you've forgotten it,
             your data cannot be recovered.
           </p>
+          
+          <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 text-center">
+             <button
+               onClick={handleResetApp}
+               className="text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+             >
+               Forgot Passcode? Reset App
+             </button>
+          </div>
         </motion.div>
       </div>
     </div>

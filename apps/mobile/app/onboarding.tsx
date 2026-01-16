@@ -4,12 +4,14 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SafeHaptics as Haptics } from '../src/lib/haptics';
 import { useAppStore, DEFAULT_SETTINGS } from '@lcc/core';
+import { useSecurityStore } from '../src/store/useSecurityStore';
 
 type Step = 'welcome' | 'passcode' | 'confirm' | 'complete';
 
 export default function OnboardingScreen() {
   const router = useRouter();
   const { initialize } = useAppStore();
+  const { setPasscode: setStoredPasscode, setEnabled } = useSecurityStore();
   const [step, setStep] = useState<Step>('welcome');
   const [passcode, setPasscode] = useState('');
   const [confirmPasscode, setConfirmPasscode] = useState('');
@@ -41,6 +43,11 @@ export default function OnboardingScreen() {
         setStep('complete');
         // Initialize the app with default settings
         initialize(DEFAULT_SETTINGS);
+        
+        // Save security settings
+        setStoredPasscode(passcode);
+        setEnabled(true);
+        
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         break;
       case 'complete':
@@ -158,6 +165,16 @@ export default function OnboardingScreen() {
               Your encryption key has been created. You're ready to start
               documenting your life.
             </Text>
+
+            <View className="mb-8">
+              <Text className="text-amber-500/80 text-center text-sm mb-2 font-bold">
+                DO NOT FORGET YOUR PASSCODE!
+              </Text>
+              <Text className="text-dark-text-muted text-center text-xs px-8">
+                If you lose it, your data will be unrecoverable. 
+                We cannot reset it for you.
+              </Text>
+            </View>
 
             <View className="bg-green-900/30 rounded-xl p-4 border border-green-800 mb-8">
               <Text className="text-green-200 text-center">

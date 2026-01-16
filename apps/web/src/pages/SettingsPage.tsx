@@ -17,11 +17,15 @@ import {
   Cloud,
   RefreshCw,
   LogOut,
-  Users // Added import
+  Users,
+  Download,
+  Upload,
+  Trash2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore, DEFAULT_SETTINGS } from '@/store/app-store';
 import { useDataExport, useDemoData, useCloudSync } from '@/hooks';
+import { exportData, importData, wipeData } from '@/lib/data-transfer';
 
 export default function SettingsPage() {
   const { settings: storeSettings, updateSettings, reset } = useAppStore();
@@ -37,6 +41,38 @@ export default function SettingsPage() {
   const [whisperApiKey, setWhisperApiKey] = useState(settings.aiProvider.whisperApiKey || '');
   const [useOwnKey, setUseOwnKey] = useState(!settings.aiProvider.useDefaultKey);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleExportData = async () => {
+    await exportData();
+  };
+
+  const handleImportData = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const json = JSON.parse(text);
+        if (window.confirm(`Found backup from ${new Date(json.timestamp).toLocaleDateString()}. This will overwrite current data. Restore?`)) {
+           await importData(json);
+        }
+      } catch (err) {
+        alert('Failed to import backup: ' + err);
+      }
+    };
+    input.click();
+  };
+
+  const handleWipeData = async () => {
+     if (window.confirm('DANGER: Wipe all local data? This cannot be undone.')) {
+        if (window.confirm('Are you absolutely sure?')) {
+           await wipeData();
+        }
+     }
+  };
 
   const handleSave = () => {
     updateSettings({
@@ -371,6 +407,60 @@ export default function SettingsPage() {
             16 recordings • 6 patterns • 4 insights • ~39 minutes of content
           </p>
         )}
+      </motion.section>
+
+      {/* Data Management (New) */}
+      <motion.section
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700"
+      >
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+            <Database className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          </div>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Data Management
+          </h2>
+        </div>
+
+        <div className="space-y-4">
+           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+             <button
+               onClick={handleExportData}
+               className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all group"
+             >
+               <Download className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400" />
+               <span className="font-medium text-gray-700 dark:text-gray-300 group-hover:text-purple-700 dark:group-hover:text-purple-300">
+                 Export Backup
+               </span>
+             </button>
+             
+             <button
+               onClick={handleImportData}
+               className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group"
+               >
+                 <Upload className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
+                 <span className="font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-300">
+                   Import Backup
+                 </span>
+               </button>
+             </div>
+             
+             <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+                <button
+                  onClick={handleWipeData}
+                  className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  <span className="text-sm font-medium">Reset Application (Wipe Data)</span>
+                </button>
+                <p className="text-xs text-gray-400 text-center mt-2">
+                  This will delete all local data and return you to the onboarding screen.
+                </p>
+             </div>
+          </div>
       </motion.section>
 
       {/* Cloud Backup */}

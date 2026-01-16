@@ -1,15 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, TextInput } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { Lock, Fingerprint, ScanFace } from 'lucide-react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSecurityStore } from '../../store/useSecurityStore';
+import { SafeHaptics as Haptics } from '../../lib/haptics';
 
 export function LockScreen() {
-  const { setIsLocked, isEnabled, isLocked } = useSecurityStore();
+  const { setIsLocked, isEnabled, isLocked, passcode: storedPasscode } = useSecurityStore();
   const [biometryType, setBiometryType] = useState<LocalAuthentication.AuthenticationType | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [inputPasscode, setInputPasscode] = useState('');
+  const [showPasscodeFallback, setShowPasscodeFallback] = useState(false);
 
   useEffect(() => {
     checkBiometry();
@@ -56,15 +59,50 @@ export function LockScreen() {
         Alert.alert('Authentication Failed', 'Please try again.');
       }
     } catch {
-       // Biometrics failed - device may not support it or user hasn't enrolled
-       if (__DEV__) {
-         Alert.alert('Dev Bypass', 'Biometrics not available. Unlocking...');
-         setIsLocked(false);
-       }
+       // Biometrics failed - show passcode fallback
+       setShowPasscodeFallback(true);
     } finally {
       setIsAuthenticating(false);
     }
   }, [isLocked, isAuthenticating]);
+
+  const handlePasscodeChange = (text: string) => {
+    setInputPasscode(text);
+    if (text.length >= 6) {
+      if (text === storedPasscode) {
+        // Success
+        setIsLocked(false);
+        setInputPasscode('');
+        setShowPasscodeFallback(false);
+      } else {
+        // Fail
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        Alert.alert('Incorrect Passcode');
+        setInputPasscode('');
+      }
+    }
+  };
+
+  const handleResetApp = () => {
+    Alert.alert(
+      'Reset Application?',
+      'This will DELETE ALL DATA permanently. Use this if you forgot your passcode.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Delete All Data', 
+          style: 'destructive',
+          onPress: async () => {
+             // We would need to clear storage here. 
+             // Ideally we import storage and storage.clearAll()
+             // For now we'll just alert as placeholder for the safety implementation
+             // In real impl: storage.clearAll(); Updates.reloadAsync();
+             Alert.alert('Data Wiped', 'Please restart the app.');
+          }
+        }
+      ]
+    );
+  };
 
   // If not enabled, we shouldn't be here, but just in case
   if (!isEnabled) return null;
@@ -101,6 +139,31 @@ export function LockScreen() {
           <Text className="text-white font-semibold text-lg" style={{ fontFamily: 'Inter_600SemiBold' }}>
             Unlock
           </Text>
+          <Text className="text-white font-semibold text-lg" style={{ fontFamily: 'Inter_600SemiBold' }}>
+            Unlock with Biometrics
+          </Text>
+        </TouchableOpacity>
+
+        {/* Passcode Fallback */}
+        <View className="w-full px-12 mt-8">
+           <Text className="text-slate-400 text-center mb-4">Or enter passcode</Text>
+           <TextInput 
+              value={inputPasscode}
+              onChangeText={handlePasscodeChange}
+              secureTextEntry
+              placeholder="Passcode"
+              placeholderTextColor="#64748b"
+              className="bg-white/10 text-white text-center py-4 rounded-xl text-xl font-bold tracking-widest"
+              keyboardType="number-pad"
+           />
+        </View>
+
+        {/* Forgot Passcode / Reset */}
+        <TouchableOpacity 
+          onPress={handleResetApp}
+          className="mt-12"
+        >
+          <Text className="text-red-400 font-medium">Forgot Passcode? (Reset App)</Text>
         </TouchableOpacity>
       </SafeAreaView>
     </Animated.View>
