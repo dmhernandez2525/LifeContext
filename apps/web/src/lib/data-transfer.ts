@@ -58,14 +58,16 @@ export async function exportData(): Promise<void> {
  * Import data from a JSON backup
  * @param jsonData Parsed JSON data from backup file
  */
-export async function importData(jsonData: any): Promise<void> {
+export async function importData(jsonData: unknown): Promise<void> {
   // Basic validation
   if (!jsonData || typeof jsonData !== 'object') {
     throw new Error('Invalid backup file format');
   }
 
   // Version check (for future migration logic)
-  if (jsonData.appName !== 'LifeContextCompiler') {
+  // Version check (for future migration logic)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if ((jsonData as any).appName !== 'LifeContextCompiler') {
     throw new Error('Invalid backup file: Not a LifeContext backup');
   }
 
