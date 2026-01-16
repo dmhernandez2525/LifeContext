@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Mic, 
@@ -6,28 +6,27 @@ import {
   Moon, 
   Sun, 
   Globe,
+  Database,
   Download,
   Upload,
-  Trash2,
+  RefreshCw,
+  LogOut,
+  Users,
   Save,
   CheckCircle,
   Loader2,
   AlertCircle,
   Sparkles,
   Cloud,
-  RefreshCw,
-  LogOut,
-  Users,
-  Database // Added back
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore, DEFAULT_SETTINGS } from '@/store/app-store';
-import { useDataExport, useDemoData, useCloudSync } from '@/hooks';
+import { useDemoData, useCloudSync } from '@/hooks';
 import { exportData, importData, wipeData } from '@/lib/data-transfer';
+import DangerConfirmationModal from '@/components/security/DangerConfirmationModal';
 
 export default function SettingsPage() {
-  const { settings: storeSettings, updateSettings, reset } = useAppStore();
-  const { downloadExport, uploadImport, isExporting, isImporting, error: exportError } = useDataExport();
+  const { settings: storeSettings, updateSettings } = useAppStore();
   const { seedDemoData, isSeeding, isSeeded, progress: seedProgress } = useDemoData();
   const cloudSync = useCloudSync();
 
@@ -38,7 +37,7 @@ export default function SettingsPage() {
   const [apiKey, setApiKey] = useState(settings.aiProvider.apiKey || '');
   const [whisperApiKey, setWhisperApiKey] = useState(settings.aiProvider.whisperApiKey || '');
   const [useOwnKey, setUseOwnKey] = useState(!settings.aiProvider.useDefaultKey);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showResetModal, setShowResetModal] = useState(false);
 
   const handleExportData = async () => {
     await exportData();
@@ -65,11 +64,12 @@ export default function SettingsPage() {
   };
 
   const handleWipeData = async () => {
-     if (window.confirm('DANGER: Wipe all local data? This cannot be undone.')) {
-        if (window.confirm('Are you absolutely sure?')) {
-           await wipeData();
-        }
-     }
+    await wipeData();
+    setShowResetModal(false);
+  };
+   
+  const handleResetClick = () => {
+     setShowResetModal(true);
   };
 
   const handleSave = () => {
@@ -541,7 +541,7 @@ export default function SettingsPage() {
              
              <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
                 <button
-                  onClick={handleWipeData}
+                  onClick={handleResetClick}
                   className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                 >
                   <RefreshCw className="w-4 h-4" />
@@ -558,6 +558,14 @@ export default function SettingsPage() {
 
       {/* Data Management */}
 
+      <DangerConfirmationModal
+        isOpen={showResetModal}
+        onClose={() => setShowResetModal(false)}
+        onConfirm={handleWipeData}
+        title="Reset Application Data"
+        message="This action will permanently delete all your journals, settings, and local data from this device. You will be returned to the onboarding screen."
+        confirmText="RESET"
+      />
     </div>
   );
 }

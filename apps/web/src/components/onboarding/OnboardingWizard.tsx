@@ -87,6 +87,13 @@ export default function OnboardingWizard({ onComplete, onSkip }: OnboardingWizar
               </span>
             ))}
           </div>
+          
+          <button
+            onClick={handleImport}
+            className="mt-4 text-xs sm:text-sm text-gray-500 hover:text-purple-600 dark:hover:text-purple-400 underline transition-colors"
+          >
+            Already have a backup? Import Data
+          </button>
         </div>
       ),
     },
