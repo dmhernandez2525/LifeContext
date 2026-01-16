@@ -1,8 +1,8 @@
-
+import React from 'react';
 import QRCode from 'react-qr-code';
 import { X, Copy, Check, Users, BookOpen, Quote, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SharedItemWrapper } from '@packages/types';
+import { SharedItemWrapper } from '@lcc/types';
 import { formatDistanceToNow } from 'date-fns';
 
 // ==========================================

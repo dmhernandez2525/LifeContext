@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Users, Plus, Sparkles } from 'lucide-react';
 import { useFamilyStore } from '@/store/family-store';
 import { InviteModal, SharedFeedItem } from '@/components/family/FamilyComponents';

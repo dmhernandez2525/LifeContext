@@ -86,7 +86,7 @@ This is the **Master Execution Checklist** for the LifeContext Mobile applicatio
 
 ### 3.3 Management
 - [x] **Create Category:** Modal to add custom categories (Name, Icon, Color) - CreateCategorySheet.tsx.
-- [x] **Create Question:** Modal to add custom questions (Text, Category) - CreateQuestionSheet.tsx.
+- [x] **Create Question:** Modal to add custom questions (Text, Category) - CreateQuestionSheet.tsx - *Wired to FAB*
 - [x] **Mark as Answered:** Manual toggle via long-press with confirmation Alert.
 
 ---
@@ -141,9 +141,9 @@ This is the **Master Execution Checklist** for the LifeContext Mobile applicatio
   - [x] Add `FamilyMember` and `SharedItem` types to `@packages/types`
   - [x] Create `useFamilyStore` for managing family circle
 - [x] **Family Management UI**
-  - [x] Create `FamilyScreen.tsx` (Main Hub)
-  - [x] Implement `InviteSheet` with QR Code generation
-  - [x] Implement `JoinSheet` (Scan/Input code)
+  - [x] Create `FamilyScreen.tsx` (Main Hub) - *Implemented & Wired*
+  - [x] Implement `InviteSheet` with QR Code generation - *Implemented & Wired*
+  - [x] Implement `JoinSheet` (Scan/Input code) - *Implemented & Wired*
 - [x] **Sharing Features**
   - [x] Create `SharedFeed` component for viewing family updates
   - [x] Update Journal/Question creation to support `PrivacyLevel.FAMILY`

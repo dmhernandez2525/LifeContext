@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { FamilyMember, SharedItemWrapper, PrivacyLevel, FamilyInvitation } from '@packages/types';
+import { FamilyMember, SharedItemWrapper, PrivacyLevel, FamilyInvitation } from '@lcc/types';
 
 interface FamilyState {
   members: FamilyMember[];
