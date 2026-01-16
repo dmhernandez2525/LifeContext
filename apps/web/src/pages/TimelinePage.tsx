@@ -154,8 +154,8 @@ export default function TimelinePage() {
       timelineEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       
       setEvents(timelineEvents);
-    } catch (err) {
-      console.error('Failed to load timeline events:', err);
+    } catch {
+      // Failed to load events - show empty state
     } finally {
       setIsLoading(false);
     }

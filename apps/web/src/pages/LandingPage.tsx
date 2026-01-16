@@ -90,28 +90,28 @@ export default function LandingPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-white dark:bg-gray-950 transition-colors duration-300">
+      <section className="relative min-h-[100dvh] sm:min-h-[90vh] flex items-center overflow-hidden bg-white dark:bg-gray-950 transition-colors duration-300">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-100/40 via-blue-50/40 to-white dark:from-purple-900/20 dark:via-gray-950 dark:to-gray-950" />
-          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" 
+          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
                style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '32px 32px' }} />
           <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-white/80 to-white dark:from-gray-950/20 dark:via-gray-950/60 dark:to-gray-950" />
         </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 text-center">
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-24 pt-24 sm:pt-28 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center space-x-2 bg-purple-100 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 rounded-full px-4 py-1.5 mb-8">
+            <div className="inline-flex items-center space-x-2 bg-purple-100 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 rounded-full px-3 sm:px-4 py-1.5 mb-6 sm:mb-8">
               <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+              <span className="text-xs sm:text-sm font-medium text-purple-700 dark:text-purple-300">
                 Your Life, Compiled & Secured
               </span>
             </div>
 
-            <h1 className="text-5xl md:text-8xl font-bold tracking-tight mb-8 text-gray-900 dark:text-white">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 sm:mb-8 text-gray-900 dark:text-white leading-tight">
               The Digital Messenger of
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 dark:from-purple-400 dark:via-pink-500 dark:to-blue-500">
@@ -119,22 +119,22 @@ export default function LandingPage() {
               </span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
-              Build a comprehensive understanding of yourself. A private, voice-first journal that organizes your 
+            <p className="text-base sm:text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-8 sm:mb-12 leading-relaxed px-2">
+              Build a comprehensive understanding of yourself. A private, voice-first journal that organizes your
               life context to empower your legacy, your relationships, and your future.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
               <button
                 onClick={handleGetStarted}
-                className="group relative inline-flex items-center space-x-2 bg-gray-900 dark:bg-white text-white dark:text-black px-10 py-5 rounded-2xl font-bold text-xl transition-all hover:scale-105 active:scale-95 overflow-hidden shadow-xl shadow-purple-900/10 dark:shadow-purple-500/10"
+                className="group relative w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-gray-900 dark:bg-white text-white dark:text-black px-8 sm:px-10 py-4 sm:py-5 rounded-xl sm:rounded-2xl font-bold text-base sm:text-xl transition-all hover:scale-105 active:scale-95 overflow-hidden shadow-xl shadow-purple-900/10 dark:shadow-purple-500/10"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-10 transition-opacity" />
                 <span>{isInitialized ? 'Continue Your Journey' : 'Begin Your Compilation'}</span>
-                <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 transition-transform" />
               </button>
-              
-              <a href="#how-it-works" className="px-8 py-4 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-lg font-medium">
+
+              <a href="#how-it-works" className="px-6 sm:px-8 py-3 sm:py-4 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-base sm:text-lg font-medium">
                 How it works
               </a>
             </div>
@@ -145,10 +145,10 @@ export default function LandingPage() {
             initial={{ opacity: 0, scale: 0.95, y: 40 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8 }}
-            className="mt-20 max-w-5xl mx-auto"
+            className="mt-12 sm:mt-20 max-w-5xl mx-auto"
           >
             <VideoShowcase />
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-500 font-mono">
+            <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-500 dark:text-gray-500 font-mono px-4">
               * Actual interaction. All processing happens locally on your device.
             </p>
           </motion.div>
@@ -156,19 +156,19 @@ export default function LandingPage() {
       </section>
 
       {/* Social Proof / Stats Section */}
-      <section className="py-12 border-y border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="py-8 sm:py-12 border-y border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
             {[
               { label: 'Privacy Focus', value: '100%', sub: 'Local & Encrypted' },
               { label: 'Data Ownership', value: 'Zero', sub: 'Vendor Lock-in' },
               { label: 'AI Processing', value: 'On-Device', sub: 'Compatible' },
               { label: 'Legacy Time', value: 'Forever', sub: 'Future-Proof Format' },
             ].map((stat) => (
-              <div key={stat.label}>
-                <div className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-1">{stat.value}</div>
-                <div className="text-sm font-medium text-purple-600 dark:text-purple-400 mb-1">{stat.sub}</div>
-                <div className="text-xs text-gray-500 dark:text-gray-500 uppercase tracking-wide">{stat.label}</div>
+              <div key={stat.label} className="py-2">
+                <div className="text-xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-1">{stat.value}</div>
+                <div className="text-xs sm:text-sm font-medium text-purple-600 dark:text-purple-400 mb-1">{stat.sub}</div>
+                <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-500 uppercase tracking-wide">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -176,42 +176,42 @@ export default function LandingPage() {
       </section>
 
       {/* Trust Levels / Sharing Section */}
-      <section className="py-32 bg-white dark:bg-gray-950 relative overflow-hidden transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <section className="py-16 sm:py-32 bg-white dark:bg-gray-950 relative overflow-hidden transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-4xl md:text-6xl font-bold mb-8 text-gray-900 dark:text-white">
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold mb-4 sm:mb-8 text-gray-900 dark:text-white">
                 Share what matters.<br />
                 <span className="text-gray-400 dark:text-gray-600">Keep what's yours.</span>
               </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed">
-                Life isn't black and white. LCC allows you to segment your life context into dynamic 
-                <strong className="text-purple-600 dark:text-purple-400"> Trust Levels</strong>. Automatically generate a professional summary for 
-                a new manager, share deep philosophies with an AI coach, or keep your most 
+              <p className="text-base sm:text-xl text-gray-600 dark:text-gray-400 mb-6 sm:mb-10 leading-relaxed">
+                Life isn't black and white. LCC allows you to segment your life context into dynamic
+                <strong className="text-purple-600 dark:text-purple-400"> Trust Levels</strong>. Automatically generate a professional summary for
+                a new manager, share deep philosophies with an AI coach, or keep your most
                 private worries encrypted for only you to see.
               </p>
               
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-500/10 flex items-center justify-center flex-shrink-0">
-                    <Users className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-purple-100 dark:bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                    <Users className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Granular Trust Levels</h4>
-                    <p className="text-gray-500 dark:text-gray-500">Different contexts for partners, family, or work.</p>
+                    <h4 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Granular Trust Levels</h4>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-500">Different contexts for partners, family, or work.</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                    <Share2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                    <Share2 className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Personal Jarvis Assistant</h4>
-                    <p className="text-gray-500 dark:text-gray-500">Your data becomes a personalized engine for calendars and goals.</p>
+                    <h4 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Personal Jarvis Assistant</h4>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-500">Your data becomes a personalized engine for calendars and goals.</p>
                   </div>
                 </div>
               </div>
@@ -221,32 +221,32 @@ export default function LandingPage() {
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="relative aspect-square flex items-center justify-center"
+              className="relative aspect-square flex items-center justify-center mt-8 lg:mt-0"
             >
-              <div className="absolute inset-0 bg-purple-500/10 dark:bg-purple-500/20 blur-[120px] rounded-full" />
-              <div className="relative z-10 w-full max-w-sm aspect-square bg-gradient-to-tr from-gray-900 to-gray-800 rounded-3xl border border-white/10 shadow-2xl flex items-center justify-center p-8">
-                <div className="grid grid-cols-2 gap-4 w-full">
-                   <div className="bg-gray-800/50 rounded-xl p-4 border border-white/5">
-                      <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center mb-2">
-                        <Users className="w-4 h-4 text-green-400" />
+              <div className="absolute inset-0 bg-purple-500/10 dark:bg-purple-500/20 blur-[80px] sm:blur-[120px] rounded-full" />
+              <div className="relative z-10 w-full max-w-[280px] sm:max-w-sm aspect-square bg-gradient-to-tr from-gray-900 to-gray-800 rounded-2xl sm:rounded-3xl border border-white/10 shadow-2xl flex items-center justify-center p-4 sm:p-8 mx-auto">
+                <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full">
+                   <div className="bg-gray-800/50 rounded-lg sm:rounded-xl p-2 sm:p-4 border border-white/5">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-green-500/20 flex items-center justify-center mb-1 sm:mb-2">
+                        <Users className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
                       </div>
-                      <div className="h-2 w-16 bg-white/10 rounded mb-1" />
-                      <div className="h-2 w-10 bg-white/5 rounded" />
+                      <div className="h-1.5 sm:h-2 w-12 sm:w-16 bg-white/10 rounded mb-1" />
+                      <div className="h-1.5 sm:h-2 w-8 sm:w-10 bg-white/5 rounded" />
                    </div>
-                   <div className="bg-gray-800/50 rounded-xl p-4 border border-white/5">
-                      <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mb-2">
-                        <Lock className="w-4 h-4 text-blue-400" />
+                   <div className="bg-gray-800/50 rounded-lg sm:rounded-xl p-2 sm:p-4 border border-white/5">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-blue-500/20 flex items-center justify-center mb-1 sm:mb-2">
+                        <Lock className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400" />
                       </div>
-                      <div className="h-2 w-16 bg-white/10 rounded mb-1" />
-                      <div className="h-2 w-8 bg-white/5 rounded" />
+                      <div className="h-1.5 sm:h-2 w-12 sm:w-16 bg-white/10 rounded mb-1" />
+                      <div className="h-1.5 sm:h-2 w-6 sm:w-8 bg-white/5 rounded" />
                    </div>
-                   <div className="col-span-2 bg-gray-800/50 rounded-xl p-4 border border-white/5 flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0">
-                        <Brain className="w-5 h-5 text-purple-400" />
+                   <div className="col-span-2 bg-gray-800/50 rounded-lg sm:rounded-xl p-2 sm:p-4 border border-white/5 flex items-center gap-2 sm:gap-4">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0">
+                        <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
                       </div>
                       <div className="flex-1">
-                        <div className="h-2 w-24 bg-white/10 rounded mb-2" />
-                        <div className="h-2 w-full bg-white/5 rounded" />
+                        <div className="h-1.5 sm:h-2 w-16 sm:w-24 bg-white/10 rounded mb-1 sm:mb-2" />
+                        <div className="h-1.5 sm:h-2 w-full bg-white/5 rounded" />
                       </div>
                    </div>
                 </div>
@@ -257,14 +257,14 @@ export default function LandingPage() {
       </section>
 
       {/* Main Use Cases */}
-      <section className="py-32 bg-gray-50 dark:bg-gray-900/50 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-24">
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900 dark:text-white">Designed for Every Depth</h2>
-            <p className="text-xl text-gray-500 dark:text-gray-400">From daily productivity to generational legacy.</p>
+      <section className="py-16 sm:py-32 bg-gray-50 dark:bg-gray-900/50 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12 sm:mb-24">
+            <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-white">Designed for Every Depth</h2>
+            <p className="text-base sm:text-xl text-gray-500 dark:text-gray-400">From daily productivity to generational legacy.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12">
+          <div className="grid md:grid-cols-2 gap-6 sm:gap-12">
             {useCases.map((useCase, idx) => (
               <motion.div
                 key={useCase.title}
@@ -272,23 +272,22 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group bg-white dark:bg-gray-950/50 border border-gray-200 dark:border-white/5 rounded-3xl p-8 hover:border-purple-300 dark:hover:border-white/10 transition-all shadow-xl shadow-gray-200/50 dark:shadow-none"
+                className="group bg-white dark:bg-gray-950/50 border border-gray-200 dark:border-white/5 rounded-2xl sm:rounded-3xl p-4 sm:p-8 hover:border-purple-300 dark:hover:border-white/10 transition-all shadow-xl shadow-gray-200/50 dark:shadow-none"
               >
-                <div className="aspect-video mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center relative group-hover:scale-105 transition-transform duration-500">
+                <div className="aspect-video mb-4 sm:mb-8 overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center relative group-hover:scale-105 transition-transform duration-500">
                   <div className="absolute inset-0 bg-grid-slate-200/50 dark:bg-grid-slate-800/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
-                  {/* Dynamic Icon Composition based on index/title */}
-                  {idx === 0 && <Brain className="w-24 h-24 text-purple-500/80 drop-shadow-2xl" />}
-                  {idx === 1 && <Users className="w-24 h-24 text-blue-500/80 drop-shadow-2xl" />}
-                  {idx === 2 && <Share2 className="w-24 h-24 text-pink-500/80 drop-shadow-2xl" />}
-                  {idx === 3 && <Shield className="w-24 h-24 text-green-500/80 drop-shadow-2xl" />}
+                  {idx === 0 && <Brain className="w-16 h-16 sm:w-24 sm:h-24 text-purple-500/80 drop-shadow-2xl" />}
+                  {idx === 1 && <Users className="w-16 h-16 sm:w-24 sm:h-24 text-blue-500/80 drop-shadow-2xl" />}
+                  {idx === 2 && <Share2 className="w-16 h-16 sm:w-24 sm:h-24 text-pink-500/80 drop-shadow-2xl" />}
+                  {idx === 3 && <Shield className="w-16 h-16 sm:w-24 sm:h-24 text-green-500/80 drop-shadow-2xl" />}
                 </div>
-                <span className="text-purple-600 dark:text-purple-400 font-mono text-sm tracking-widest uppercase mb-2 block">{useCase.subtitle}</span>
-                <h3 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{useCase.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed text-lg">{useCase.description}</p>
-                <ul className="space-y-3">
+                <span className="text-purple-600 dark:text-purple-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-1 sm:mb-2 block">{useCase.subtitle}</span>
+                <h3 className="text-xl sm:text-3xl font-bold mb-2 sm:mb-4 text-gray-900 dark:text-white">{useCase.title}</h3>
+                <p className="text-sm sm:text-lg text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 leading-relaxed">{useCase.description}</p>
+                <ul className="space-y-2 sm:space-y-3">
                   {useCase.bullets.map(bullet => (
-                    <li key={bullet} className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                      <div className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                    <li key={bullet} className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base text-gray-700 dark:text-gray-300">
+                      <div className="w-1.5 h-1.5 rounded-full bg-purple-500 flex-shrink-0" />
                       {bullet}
                     </li>
                   ))}
@@ -300,66 +299,66 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-32 max-w-7xl mx-auto px-6 bg-white dark:bg-gray-950 transition-colors duration-300">
-        <div className="grid lg:grid-cols-3 gap-8">
+      <section id="how-it-works" className="py-16 sm:py-32 max-w-7xl mx-auto px-4 sm:px-6 bg-white dark:bg-gray-950 transition-colors duration-300">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
           {steps.map((step, idx) => (
-            <div key={step.title} className="relative p-8 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/5">
-              <div className="text-6xl font-bold text-gray-200 dark:text-white/5 absolute top-4 right-4">{idx + 1}</div>
-              <step.icon className="w-12 h-12 text-purple-600 dark:text-purple-500 mb-6" />
-              <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">{step.title}</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{step.description}</p>
+            <div key={step.title} className="relative p-4 sm:p-8 bg-gray-50 dark:bg-white/5 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-white/5">
+              <div className="text-4xl sm:text-6xl font-bold text-gray-200 dark:text-white/5 absolute top-3 sm:top-4 right-3 sm:right-4">{idx + 1}</div>
+              <step.icon className="w-10 h-10 sm:w-12 sm:h-12 text-purple-600 dark:text-purple-500 mb-4 sm:mb-6" />
+              <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4 text-gray-900 dark:text-white">{step.title}</h3>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">{step.description}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Privacy Deep Dive */}
-      <section className="py-32 bg-gray-900 dark:bg-black text-white relative overflow-hidden">
+      <section className="py-16 sm:py-32 bg-gray-900 dark:bg-black text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent pointer-events-none" />
-        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-          <div className="w-20 h-20 bg-purple-500/10 rounded-3xl flex items-center justify-center mx-auto mb-10 border border-purple-500/20">
-            <Lock className="w-10 h-10 text-purple-400" />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
+          <div className="w-14 h-14 sm:w-20 sm:h-20 bg-purple-500/10 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-6 sm:mb-10 border border-purple-500/20">
+            <Lock className="w-7 h-7 sm:w-10 sm:h-10 text-purple-400" />
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold mb-8">Zero Knowledge. Absolute Privacy.</h2>
-          <p className="text-xl text-gray-400 mb-12 leading-relaxed">
-            Your data is encrypted using your passcode as the salt and key. We never store your 
-            information on our servers. Even the AI fragments it processes are handled with 
+          <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold mb-4 sm:mb-8">Zero Knowledge. Absolute Privacy.</h2>
+          <p className="text-base sm:text-xl text-gray-400 mb-8 sm:mb-12 leading-relaxed">
+            Your data is encrypted using your passcode as the salt and key. We never store your
+            information on our servers. Even the AI fragments it processes are handled with
             strict privacy policies, ensuring your life context remains yours alone.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-gray-800/50 border border-white/10">
-              <div className="font-bold text-lg mb-1 flex justify-center"><Shield className="w-5 h-5 mb-1 text-green-400" /></div>
-              <div className="font-bold">Local-First</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
+            <div className="p-3 sm:p-4 rounded-lg sm:rounded-xl bg-gray-800/50 border border-white/10">
+              <div className="font-bold text-base sm:text-lg mb-1 flex justify-center"><Shield className="w-4 h-4 sm:w-5 sm:h-5 mb-1 text-green-400" /></div>
+              <div className="font-bold text-sm sm:text-base">Local-First</div>
             </div>
-            <div className="p-4 rounded-xl bg-gray-800/50 border border-white/10">
-              <div className="font-bold text-lg mb-1 flex justify-center"><Lock className="w-5 h-5 mb-1 text-blue-400" /></div>
-              <div className="font-bold">End-to-End</div>
+            <div className="p-3 sm:p-4 rounded-lg sm:rounded-xl bg-gray-800/50 border border-white/10">
+              <div className="font-bold text-base sm:text-lg mb-1 flex justify-center"><Lock className="w-4 h-4 sm:w-5 sm:h-5 mb-1 text-blue-400" /></div>
+              <div className="font-bold text-sm sm:text-base">End-to-End</div>
             </div>
-            <div className="p-4 rounded-xl bg-gray-800/50 border border-white/10">
-              <div className="font-bold text-lg mb-1 flex justify-center"><Brain className="w-5 h-5 mb-1 text-pink-400" /></div>
-              <div className="font-bold">Non-Trainable</div>
+            <div className="p-3 sm:p-4 rounded-lg sm:rounded-xl bg-gray-800/50 border border-white/10">
+              <div className="font-bold text-base sm:text-lg mb-1 flex justify-center"><Brain className="w-4 h-4 sm:w-5 sm:h-5 mb-1 text-pink-400" /></div>
+              <div className="font-bold text-sm sm:text-base">Non-Trainable</div>
             </div>
-            <div className="p-4 rounded-xl bg-gray-800/50 border border-white/10">
-              <div className="font-bold text-lg mb-1 flex justify-center"><Check className="w-5 h-5 mb-1 text-purple-400" /></div>
-              <div className="font-bold">Immutable</div>
+            <div className="p-3 sm:p-4 rounded-lg sm:rounded-xl bg-gray-800/50 border border-white/10">
+              <div className="font-bold text-base sm:text-lg mb-1 flex justify-center"><Check className="w-4 h-4 sm:w-5 sm:h-5 mb-1 text-purple-400" /></div>
+              <div className="font-bold text-sm sm:text-base">Immutable</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Feature Gallery */}
-      <section className="py-24 bg-gray-50 dark:bg-gray-900/50 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
+      <section className="py-12 sm:py-24 bg-gray-50 dark:bg-gray-900/50 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8 sm:mb-16">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-white">
               Built for Real Life
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400">
+            <p className="text-base sm:text-xl text-gray-600 dark:text-gray-400">
               A comprehensive dashboard for your entire life journey
             </p>
           </div>
-          
-          <div className="grid md:grid-cols-2 gap-8">
+
+          <div className="grid md:grid-cols-2 gap-4 sm:gap-8">
             {[
               { src: '/demos/dashboard.png', title: 'Intelligent Dashboard', desc: 'Track progress, see suggested actions, explore life areas' },
               { src: '/demos/kanban.png', title: 'Life Planning Board', desc: 'Kanban-style goal tracking with drag-and-drop' },
@@ -371,16 +370,16 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-shadow"
+                className="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-shadow"
               >
-                <img 
-                  src={demo.src} 
+                <img
+                  src={demo.src}
                   alt={demo.title}
                   className="w-full aspect-video object-cover object-top"
                 />
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-6">
-                  <h3 className="text-xl font-bold text-white mb-1">{demo.title}</h3>
-                  <p className="text-gray-300 text-sm">{demo.desc}</p>
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-4 sm:p-6">
+                  <h3 className="text-base sm:text-xl font-bold text-white mb-1">{demo.title}</h3>
+                  <p className="text-gray-300 text-xs sm:text-sm">{demo.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -389,12 +388,12 @@ export default function LandingPage() {
       </section>
 
       {/* Footer / Final CTA */}
-      <section className="py-24 bg-white dark:bg-gray-950 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Ready to compile your life?</h2>
+      <section className="py-12 sm:py-24 bg-white dark:bg-gray-950 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-900 dark:text-white">Ready to compile your life?</h2>
           <button
             onClick={handleGetStarted}
-            className="bg-purple-600 text-white px-12 py-5 rounded-2xl font-bold text-xl hover:bg-purple-700 hover:scale-105 transition-all shadow-xl shadow-purple-600/30"
+            className="w-full sm:w-auto bg-purple-600 text-white px-8 sm:px-12 py-4 sm:py-5 rounded-xl sm:rounded-2xl font-bold text-lg sm:text-xl hover:bg-purple-700 hover:scale-105 transition-all shadow-xl shadow-purple-600/30"
           >
             Get Started Now
           </button>

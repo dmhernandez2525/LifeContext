@@ -58,9 +58,11 @@ function getStorageInstance(): SimpleStorage {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { MMKV } = require('react-native-mmkv');
+    // TODO: Implement secure key derivation from user's passcode using PBKDF2
+    // The encryption key should be derived at unlock time and stored in memory only
+    // For now, MMKV encryption is disabled until proper key management is implemented
     const mmkv = new MMKV({
       id: 'lcc-storage',
-      encryptionKey: 'lcc-encryption-key',
     });
 
     _storage = {

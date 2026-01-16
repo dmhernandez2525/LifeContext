@@ -2,7 +2,7 @@
  * KanbanBoard - Drag-and-drop life planning board
  * For managing tasks and goals across life categories
  */
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, 
@@ -74,30 +74,32 @@ interface TaskCardProps {
   onDragStart: (e: React.DragEvent, taskId: string) => void;
 }
 
-function TaskCard({ task, onEdit, onDelete, onMove, onDragStart }: TaskCardProps) {
-  const [showMenu, setShowMenu] = useState(false);
-  const priority = PRIORITY_CONFIG[task.priority];
-  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'done';
-  const completedSubtasks = task.subtasks?.filter(s => s.completed).length || 0;
-  const totalSubtasks = task.subtasks?.length || 0;
+const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(
+  function TaskCard({ task, onEdit, onDelete, onMove, onDragStart }, ref) {
+    const [showMenu, setShowMenu] = useState(false);
+    const priority = PRIORITY_CONFIG[task.priority];
+    const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'done';
+    const completedSubtasks = task.subtasks?.filter(s => s.completed).length || 0;
+    const totalSubtasks = task.subtasks?.length || 0;
 
-  return (
-    <motion.div
-      layout
-      draggable
-      onDragStart={(e) => {
-        // @ts-expect-error - Framer motion event type mismatch with React DragEvent
-        onDragStart(e, task.id);
-      }}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      className={cn(
-        "bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700",
-        "hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing",
-        isOverdue && "border-red-300 dark:border-red-700"
-      )}
-    >
+    return (
+      <motion.div
+        ref={ref}
+        layout
+        draggable
+        onDragStart={(e) => {
+          // @ts-expect-error - Framer motion event type mismatch with React DragEvent
+          onDragStart(e, task.id);
+        }}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        className={cn(
+          "bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700",
+          "hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing",
+          isOverdue && "border-red-300 dark:border-red-700"
+        )}
+      >
       {/* Header */}
       <div className="flex items-start justify-between mb-2">
         <div className="flex-1">
@@ -221,8 +223,9 @@ function TaskCard({ task, onEdit, onDelete, onMove, onDragStart }: TaskCardProps
         )}
       </div>
     </motion.div>
-  );
-}
+    );
+  }
+);
 
 // ============================================================
 // COLUMN COMPONENT

@@ -156,8 +156,7 @@ export default function RecordScreen() {
       await saveRecording('quick-record', uri, duration, result.text);
 
       setSavedUri(uri);
-    } catch (error) {
-      console.error('Failed to save recording:', error);
+    } catch {
       if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     } finally {
       setIsSaving(false);

@@ -93,8 +93,8 @@ function notifyListeners() {
 function persist() {
   try {
     storage.set(STORAGE_KEY, JSON.stringify({ state: { recordings } }));
-  } catch (e) {
-    console.error('Failed to persist recordings:', e);
+  } catch {
+    // Storage write failed - data will be lost on restart
   }
 }
 
@@ -111,8 +111,9 @@ function hydrate() {
       }
     }
     hydrated = true;
-  } catch (e) {
-    console.error('Failed to hydrate recordings:', e);
+  } catch {
+    // Invalid stored data - start fresh
+    hydrated = true;
   }
 }
 
@@ -154,12 +155,11 @@ export const recordingStore = {
   syncRecordings: async () => {
     hydrate();
     const pending = recordings.filter(r => r.syncStatus === 'pending');
-    
+
     if (pending.length === 0) return;
 
-    console.log(`Syncing ${pending.length} recordings...`);
-    
-    // Simulate network delay
+    // TODO: Implement actual cloud sync API call
+    // Demo mode: simulate network delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     recordings = recordings.map(r => 

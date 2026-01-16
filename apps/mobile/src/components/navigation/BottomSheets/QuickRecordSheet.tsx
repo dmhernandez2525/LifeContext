@@ -164,8 +164,8 @@ export const QuickRecordSheet = forwardRef<any, QuickRecordSheetProps>(
             '' // No transcription yet
           );
         }
-      } catch (err) {
-        console.error('Failed to save recording:', err);
+      } catch {
+        // Save failed - recording data lost
       }
       
       setIsSaving(false);

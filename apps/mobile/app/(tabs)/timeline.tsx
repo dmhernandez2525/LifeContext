@@ -187,8 +187,8 @@ export default function TimelineScreen() {
 
       timelineEvents.sort((a, b) => b.date.getTime() - a.date.getTime());
       setEvents(timelineEvents);
-    } catch (err) {
-      console.error('Failed to load timeline events:', err);
+    } catch {
+      // Failed to load events - show empty state
     } finally {
       setIsLoading(false);
     }

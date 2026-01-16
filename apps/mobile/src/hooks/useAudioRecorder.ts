@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { Alert } from 'react-native';
 import { Audio } from 'expo-av';
 import { SafeHaptics as Haptics } from '../lib/haptics';
 
@@ -46,7 +47,11 @@ export function useAudioRecorder() {
     try {
       const { granted } = await Audio.requestPermissionsAsync();
       if (!granted) {
-        alert('Permission to access microphone is required!');
+        Alert.alert(
+          'Microphone Permission Required',
+          'Please grant microphone access in Settings to record audio.',
+          [{ text: 'OK' }]
+        );
         return false;
       }
 
@@ -72,8 +77,8 @@ export function useAudioRecorder() {
       });
       
       return true;
-    } catch (error) {
-      console.error('Failed to start recording', error);
+    } catch {
+      // Recording failed to start - permission or hardware issue
       return false;
     }
   };
@@ -86,13 +91,13 @@ export function useAudioRecorder() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await recordingRef.current.stopAndUnloadAsync();
       const uri = recordingRef.current.getURI();
-      
+
       setState(s => ({ ...s, status: 'idle', uri }));
       recordingRef.current = null;
-      
+
       return uri;
-    } catch (error) {
-      console.error('Failed to stop recording', error);
+    } catch {
+      // Recording failed to stop - likely already stopped or unloaded
       return null;
     }
   };

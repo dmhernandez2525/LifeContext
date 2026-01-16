@@ -70,42 +70,42 @@ export default function FeaturesPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="pt-32 pb-24 px-6 bg-white dark:bg-gray-950 min-h-screen transition-colors duration-300">
+    <div className="pt-20 sm:pt-28 md:pt-32 pb-16 sm:pb-20 md:pb-24 px-4 sm:px-6 bg-white dark:bg-gray-950 min-h-screen transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16 md:mb-20">
+          <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
             The Operating System for
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-400 dark:to-blue-400">
               Your Life Context
             </span>
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
             A comprehensive suite of tools designed to help you capture, understand, and leverage your personal data without compromising privacy.
           </p>
         </div>
 
         {/* Feature Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {FEATURES.map((feature) => (
-            <div 
+            <div
               key={feature.id}
               onClick={() => navigate(feature.link)}
-              className="group bg-gray-50 dark:bg-gray-900 rounded-3xl p-8 border border-gray-200 dark:border-gray-800 hover:border-purple-300 dark:hover:border-purple-500/30 transition-all cursor-pointer hover:-translate-y-1 shadow-sm hover:shadow-xl hover:shadow-purple-900/5 dark:hover:shadow-none"
+              className="group bg-gray-50 dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-gray-200 dark:border-gray-800 hover:border-purple-300 dark:hover:border-purple-500/30 transition-all cursor-pointer hover:-translate-y-1 shadow-sm hover:shadow-xl hover:shadow-purple-900/5 dark:hover:shadow-none"
             >
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${feature.bg}`}>
-                <feature.icon className={`w-7 h-7 ${feature.color}`} />
+              <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 ${feature.bg}`}>
+                <feature.icon className={`w-6 h-6 sm:w-7 sm:h-7 ${feature.color}`} />
               </div>
-              
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+
+              <h3 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                 {feature.title}
               </h3>
-              
-              <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed min-h-[4.5rem]">
+
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 leading-relaxed">
                 {feature.description}
               </p>
-              
+
               <div className="flex items-center gap-2 font-bold text-sm text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
                 <span>Learn more</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -115,12 +115,12 @@ export default function FeaturesPage() {
         </div>
 
         {/* CTA */}
-        <div className="mt-24 text-center">
-          <div className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-3xl p-12 max-w-4xl mx-auto shadow-2xl shadow-purple-900/20">
-            <h2 className="text-3xl font-bold mb-6">Ready to take control of your context?</h2>
-            <button 
+        <div className="mt-12 sm:mt-16 md:mt-24 text-center">
+          <div className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 max-w-4xl mx-auto shadow-2xl shadow-purple-900/20">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6">Ready to take control of your context?</h2>
+            <button
               onClick={() => navigate('/register')}
-              className="bg-purple-600 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-purple-500 hover:scale-105 transition-all shadow-lg shadow-purple-600/30"
+              className="w-full sm:w-auto bg-purple-600 text-white px-8 sm:px-10 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg hover:bg-purple-500 hover:scale-105 transition-all shadow-lg shadow-purple-600/30 min-h-[48px]"
             >
               Start Free Trial
             </button>

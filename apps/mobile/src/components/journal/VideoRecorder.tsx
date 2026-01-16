@@ -19,13 +19,16 @@ export function VideoRecorder({ onSave, onCancel }: VideoRecorderProps) {
     const cameraRef = useRef<CameraView>(null);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-    // No need for useVideoPlayer hook with expo-av legacy/standard component
-
+    // Request permission only once on mount
     useEffect(() => {
+        if (!permission?.granted && !permission?.canAskAgain) {
+            // Permission denied and can't ask again - user must go to settings
+            return;
+        }
         if (!permission) {
             requestPermission();
         }
-    }, [permission]);
+    }, []);
 
     if (!permission) {
         return <View className="flex-1 bg-black justify-center items-center"><ActivityIndicator /></View>;
@@ -61,8 +64,8 @@ export function VideoRecorder({ onSave, onCancel }: VideoRecorderProps) {
                     setIsRecording(false); // Ensure state is synced
                     if (timerRef.current) clearInterval(timerRef.current);
                 }
-            } catch (e) {
-                console.error("Recording failed", e);
+            } catch {
+                // Recording failed - camera or permission issue
                 setIsRecording(false);
                 if (timerRef.current) clearInterval(timerRef.current);
             }

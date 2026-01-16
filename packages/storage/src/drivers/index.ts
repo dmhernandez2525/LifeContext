@@ -538,13 +538,15 @@ export class SyncManager {
       const remoteKeys = await this.remoteDriver.list();
       const localKeys = new Set(await this.localDriver.list());
 
-      for (const key of remoteKeys) {
-        if (!localKeys.has(key)) {
-          const data = await this.remoteDriver.download(key);
-          const metadata = await this.remoteDriver.getMetadata(key);
-          await this.localDriver.upload(key, data, metadata || undefined);
-          this.status.pendingDownloads--;
-        }
+      // Find keys that need to be downloaded
+      const keysToDownload = remoteKeys.filter(key => !localKeys.has(key));
+      this.status.pendingDownloads = keysToDownload.length;
+
+      for (const key of keysToDownload) {
+        const data = await this.remoteDriver.download(key);
+        const metadata = await this.remoteDriver.getMetadata(key);
+        await this.localDriver.upload(key, data, metadata || undefined);
+        this.status.pendingDownloads--;
       }
 
       this.status.lastSync = new Date();

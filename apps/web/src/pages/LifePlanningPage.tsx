@@ -36,7 +36,7 @@ const convertToKanbanTasks = (): KanbanTask[] => {
     })),
     createdAt: task.createdAt,
     updatedAt: task.createdAt,
-    // Note: In a real implementation we would link audioRecordings here
+    // TODO: Link audioRecordings from recording store when voice notes feature is complete
   }));
 };
 
@@ -54,9 +54,7 @@ export default function LifePlanningPage() {
   const [deepDiveTranscript, setDeepDiveTranscript] = useState('');
   
   // Recording hooks
-  const recorder = useRecorder({
-    onError: (err) => console.error('Recorder error', err)
-  });
+  const recorder = useRecorder({});
   const transcription = useTranscription({
       onFinalResult: (text) => setDeepDiveTranscript(prev => prev + ' ' + text)
   });

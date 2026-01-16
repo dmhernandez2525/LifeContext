@@ -265,12 +265,12 @@ export default function PublicLayout() {
             : 'bg-transparent border-transparent py-5'
         )}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           <NavLink to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center group-hover:scale-105 transition-transform shadow-lg shadow-purple-500/20">
-              <Sparkles className="w-6 h-6 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center group-hover:scale-105 transition-transform shadow-lg shadow-purple-500/20">
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <span className="font-bold text-xl tracking-tight text-gray-900 dark:text-white">
+            <span className="font-bold text-lg sm:text-xl tracking-tight text-gray-900 dark:text-white">
               LifeContext
             </span>
           </NavLink>
@@ -303,11 +303,12 @@ export default function PublicLayout() {
           </div>
 
           {/* Mobile Menu Toggle */}
-          <div className="lg:hidden flex items-center gap-4">
+          <div className="lg:hidden flex items-center gap-2">
             <ThemeToggle isDark={isDark} toggle={toggleTheme} />
             <button
-              className="text-gray-900 dark:text-white p-2"
+              className="text-gray-900 dark:text-white p-2 -mr-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -320,27 +321,28 @@ export default function PublicLayout() {
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: '100vh' }}
+            animate={{ opacity: 1, height: '100dvh' }}
             exit={{ opacity: 0, height: 0 }}
-            className="fixed inset-0 z-40 bg-white dark:bg-gray-950 pt-24 px-6 lg:hidden overflow-y-auto"
+            className="fixed inset-0 z-40 bg-white dark:bg-gray-950 pt-20 px-4 sm:px-6 lg:hidden overflow-y-auto"
+            style={{ paddingTop: 'max(5rem, env(safe-area-inset-top) + 4rem)' }}
           >
-            <div className="flex flex-col gap-6 pb-20">
+            <div className="flex flex-col gap-4 pb-24">
               {NAV_STRUCTURE.map((item) => (
-                <div key={item.label} className="space-y-3">
+                <div key={item.label} className="space-y-2">
                   {item.children ? (
                     <>
-                      <div className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-800 pb-2">
+                      <div className="text-base font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-800 pb-2">
                         {item.label}
                       </div>
-                      <div className="pl-2 space-y-3">
+                      <div className="pl-2 space-y-1">
                         {item.children.map(child => (
                           <NavLink
                             key={child.path}
                             to={child.path}
                             onClick={() => setMobileMenuOpen(false)}
-                            className="flex items-center gap-3 text-gray-600 dark:text-gray-400 py-1"
+                            className="flex items-center gap-3 text-gray-600 dark:text-gray-400 py-3 min-h-[44px]"
                           >
-                            {child.icon && <child.icon className="w-4 h-4" />}
+                            {child.icon && <child.icon className="w-5 h-5" />}
                             <span className="font-medium">{child.label}</span>
                           </NavLink>
                         ))}
@@ -350,28 +352,28 @@ export default function PublicLayout() {
                     <NavLink
                       to={item.path}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="text-lg font-bold text-gray-900 dark:text-white block border-b border-gray-100 dark:border-gray-800 pb-2"
+                      className="text-base font-bold text-gray-900 dark:text-white block border-b border-gray-100 dark:border-gray-800 pb-2 py-2 min-h-[44px] flex items-center"
                     >
                       {item.label}
                     </NavLink>
                   )}
                 </div>
               ))}
-              
-              <div className="mt-8">
+
+              <div className="mt-6 pb-safe">
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
                     handleGetStarted();
                   }}
-                  className="w-full bg-purple-600 text-white py-4 rounded-xl font-bold text-xl mb-4 shadow-lg shadow-purple-500/30"
+                  className="w-full bg-purple-600 text-white py-4 rounded-xl font-bold text-lg mb-4 shadow-lg shadow-purple-500/30 min-h-[52px]"
                 >
                   {isInitialized ? 'Go to Dashboard' : 'Get Started Free'}
                 </button>
                 <NavLink
                   to="/app"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block w-full text-center text-gray-500 dark:text-gray-400 font-medium py-2"
+                  className="block w-full text-center text-gray-500 dark:text-gray-400 font-medium py-3 min-h-[44px]"
                 >
                   Sign In
                 </NavLink>
@@ -384,21 +386,21 @@ export default function PublicLayout() {
       <Outlet />
 
       {/* Improved Footer */}
-      <footer className="py-24 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 transition-colors">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
-            <div className="lg:col-span-2">
-              <div className="flex items-center gap-2 mb-6">
+      <footer className="py-12 sm:py-24 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-12 mb-12 sm:mb-16">
+            <div className="col-span-2 lg:col-span-2">
+              <div className="flex items-center gap-2 mb-4 sm:mb-6">
                 <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center">
                   <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <span className="font-bold text-lg text-gray-900 dark:text-white">LifeContext</span>
               </div>
-              <p className="text-gray-500 dark:text-gray-400 max-w-sm leading-relaxed mb-6">
-                The world's first private legacy compiler. We believe your life data belongs to you, 
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-sm leading-relaxed mb-4 sm:mb-6">
+                The world's first private legacy compiler. We believe your life data belongs to you,
                 on your device, encrypted with your key.
               </p>
-              <div className="flex gap-4">
+              <div className="flex gap-3 sm:gap-4">
                 {/* Social placeholders */}
                 <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400 transition-colors cursor-pointer">
                   <span className="sr-only">Twitter</span>
@@ -412,8 +414,8 @@ export default function PublicLayout() {
             </div>
             
             <div>
-              <h4 className="font-bold text-gray-900 dark:text-white mb-6">Product</h4>
-              <ul className="space-y-4 text-gray-500 dark:text-gray-400">
+              <h4 className="font-bold text-sm sm:text-base text-gray-900 dark:text-white mb-3 sm:mb-6">Product</h4>
+              <ul className="space-y-2 sm:space-y-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                 <li><NavLink to="/features" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">All Features</NavLink></li>
                 <li><NavLink to="/features/journaling" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Secure Journal</NavLink></li>
                 <li><NavLink to="/features/legacy" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Legacy Building</NavLink></li>
@@ -423,8 +425,8 @@ export default function PublicLayout() {
             </div>
 
             <div>
-              <h4 className="font-bold text-gray-900 dark:text-white mb-6">Company</h4>
-              <ul className="space-y-4 text-gray-500 dark:text-gray-400">
+              <h4 className="font-bold text-sm sm:text-base text-gray-900 dark:text-white mb-3 sm:mb-6">Company</h4>
+              <ul className="space-y-2 sm:space-y-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                 <li><NavLink to="/about" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">About Us</NavLink></li>
                 <li><NavLink to="/philosophy" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Our Philosophy</NavLink></li>
                 <li><NavLink to="/data-ownership" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Data Sovereignty</NavLink></li>
@@ -433,18 +435,18 @@ export default function PublicLayout() {
               </ul>
             </div>
 
-            <div>
-              <h4 className="font-bold text-gray-900 dark:text-white mb-6">Legal</h4>
-              <ul className="space-y-4 text-gray-500 dark:text-gray-400">
+            <div className="col-span-2 sm:col-span-1">
+              <h4 className="font-bold text-sm sm:text-base text-gray-900 dark:text-white mb-3 sm:mb-6">Legal</h4>
+              <ul className="space-y-2 sm:space-y-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                 <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Privacy Policy</a></li>
                 <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Terms of Service</a></li>
                 <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Security</a></li>
               </ul>
             </div>
           </div>
-          
-          <div className="pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500 dark:text-gray-500">
-            <p>© 2026 Life Context Compiler. Local-First Software.</p>
+
+          <div className="pt-6 sm:pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-500">
+            <p className="text-center sm:text-left">© 2026 Life Context Compiler. Local-First Software.</p>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
               <span>All Systems Operational</span>

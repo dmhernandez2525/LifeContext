@@ -112,8 +112,8 @@ export default function RecordingDetailScreen() {
         onPlaybackStatusUpdate
       );
       setSound(newSound);
-    } catch (err) {
-      console.error('Failed to load audio:', err);
+    } catch {
+      // Audio file failed to load - may be corrupted or missing
     }
   };
 

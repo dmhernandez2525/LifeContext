@@ -24,11 +24,10 @@ export const JoinSheet = ({ isVisible, onClose }: JoinSheetProps) => {
 
     setIsJoining(true);
 
-    // Simulate network delay
+    // TODO: Implement backend API call to validate invite code
+    // POST /api/family/join { code: inputCode }
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    // In real app, this would validate with backend
-    // For now, we simulate success
     const newMember: FamilyMember = {
       id: `joined-${Date.now()}`,
       name: 'You',

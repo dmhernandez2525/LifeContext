@@ -29,14 +29,10 @@ export default function QuestionsPage() {
   const { settings, markQuestionAnswered, addRecordingTime } = useAppStore();
 
   // Real audio recording
-  const recorder = useRecorder({
-    onError: (error) => console.error('Recording error:', error),
-  });
+  const recorder = useRecorder({});
 
   // Live transcription
-  const transcription = useTranscription({
-    onFinalResult: (text) => console.log('Final:', text),
-  });
+  const transcription = useTranscription({});
 
   // Persist recordings
   const { save: saveRecording } = useSaveRecording();
@@ -78,8 +74,8 @@ export default function QuestionsPage() {
       if (showTranscription && transcription.hasWebSpeech) {
         transcription.startLive();
       }
-    } catch (error) {
-      console.error('Failed to start recording:', error);
+    } catch {
+      // Recording failed to start
     }
   };
 
@@ -97,8 +93,8 @@ export default function QuestionsPage() {
       });
       setIsReviewing(true);
       setRecordingComplete(true);
-    } catch (error) {
-      console.error('Failed to stop recording:', error);
+    } catch {
+      // Recording failed to stop
     }
   };
 
@@ -118,13 +114,9 @@ export default function QuestionsPage() {
         waveformData: recordingData.waveform,
       });
       
-      if (saved) {
-        console.log('Recording saved:', saved.id, '- Duration:', Math.round(recorder.duration), 's');
-      }
-      
       setIsReviewing(false);
-    } catch (error) {
-      console.error('Failed to save recording:', error);
+    } catch {
+      // Failed to save recording
     }
   };
 
@@ -196,20 +188,20 @@ export default function QuestionsPage() {
   return (
     <div className="max-w-3xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
         <button
           onClick={() => navigate('/app')}
-          className="inline-flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+          className="inline-flex items-center space-x-1 sm:space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors min-h-[44px] -ml-2 px-2"
         >
           <ChevronLeft className="w-5 h-5" />
-          <span>Back</span>
+          <span className="text-sm sm:text-base">Back</span>
         </button>
-        
-        <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+
+        <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
           <span>{category?.icon}</span>
-          <span>{category?.name || 'Questions'}</span>
+          <span className="hidden sm:inline">{category?.name || 'Questions'}</span>
           <span>•</span>
-          <span>{currentQuestionIndex + 1} of {categoryQuestions.length}</span>
+          <span>{currentQuestionIndex + 1}/{categoryQuestions.length}</span>
         </div>
       </div>
 
@@ -218,21 +210,21 @@ export default function QuestionsPage() {
         key={currentQuestion.id}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+        className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
       >
         {/* Question */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+        <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3">
             {currentQuestion.text}
           </h2>
-          
+
           {currentQuestion.context && (
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+            <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 sm:mb-4">
               {currentQuestion.context}
             </p>
           )}
 
-          <div className="flex items-center space-x-4 text-sm">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm">
             <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400">
               <Clock className="w-4 h-4" />
               <span>~{currentQuestion.suggestedDuration} min</span>
@@ -246,7 +238,7 @@ export default function QuestionsPage() {
         </div>
 
         {/* Recording Interface */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {isReviewing ? (
             // REVIEW SCREEN
             <div className="space-y-6">
@@ -277,16 +269,16 @@ export default function QuestionsPage() {
                    </p>
                  </div>
 
-                 <div className="flex space-x-3 pt-2">
+                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
                    <button
-                     onClick={handleStartRecording} // Re-record
-                     className="flex-1 py-3 px-4 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                     onClick={handleStartRecording}
+                     className="flex-1 py-3 px-4 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors min-h-[48px] order-2 sm:order-1"
                    >
                      Discard & Re-record
                    </button>
                    <button
                      onClick={handleSaveRecording}
-                     className="flex-1 py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors shadow-sm"
+                     className="flex-1 py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors shadow-sm min-h-[48px] order-1 sm:order-2"
                    >
                      Save & Continue
                    </button>
@@ -440,17 +432,17 @@ export default function QuestionsPage() {
 
         {/* Footer */}
         {recorder.status === 'idle' && !recordingComplete && (
-          <div className="px-6 py-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between">
+          <div className="px-4 sm:px-6 py-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
               <button
                 onClick={handleSkip}
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 font-medium"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 font-medium min-h-[44px] w-full sm:w-auto"
               >
                 Skip for now
               </button>
               <button
                 onClick={handleStartRecording}
-                className="inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                className="inline-flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium transition-colors w-full sm:w-auto min-h-[48px]"
               >
                 <Mic className="w-4 h-4" />
                 <span>Start Recording</span>

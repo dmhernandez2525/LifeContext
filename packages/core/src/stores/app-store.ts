@@ -3,7 +3,7 @@
  * Platform-agnostic state management for LifeContext
  * Replaces zustand to avoid Import.meta issues in Metro/Web
  */
-import { useSyncExternalStore, useCallback } from 'react';
+import { useSyncExternalStore, useCallback, useRef } from 'react';
 import type { UserSettings, Question, QuestionCategory } from '@lcc/types';
 
 // ============================================================
@@ -87,11 +87,13 @@ class AppStore {
   private listeners: Set<() => void>;
   private storage: any;
   private storageKey: string;
+  private stateVersion: number;  // Track state changes for cache invalidation
 
   constructor(storage?: any) {
     this.state = { ...INITIAL_STATE };
     this.listeners = new Set();
     this.storageKey = 'lcc-app-store';
+    this.stateVersion = 0;
     
     // Default storage (localStorage on web, customized otherwise)
     if (storage) {
@@ -114,9 +116,10 @@ class AppStore {
       const data = this.storage.getItem(this.storageKey);
       if (data) {
         const parsed = JSON.parse(data);
-        // Only restore specific fields (partialize)
+        // Restore persisted fields
         if (parsed) {
           this.state.isInitialized = parsed.isInitialized ?? this.state.isInitialized;
+          this.state.settings = parsed.settings ?? this.state.settings;
           this.state.answeredQuestionIds = parsed.answeredQuestionIds ?? this.state.answeredQuestionIds;
           this.state.totalRecordingTime = parsed.totalRecordingTime ?? this.state.totalRecordingTime;
         }
@@ -128,9 +131,10 @@ class AppStore {
 
   private persist() {
     try {
-      // Only persist specific fields
+      // Persist important fields including settings
       const persistedState = {
         isInitialized: this.state.isInitialized,
+        settings: this.state.settings,
         answeredQuestionIds: this.state.answeredQuestionIds,
         totalRecordingTime: this.state.totalRecordingTime,
       };
@@ -141,12 +145,17 @@ class AppStore {
   }
 
   private notify() {
+    this.stateVersion++;
     this.listeners.forEach(listener => listener());
   }
 
   subscribe = (listener: () => void) => {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
+  };
+
+  getStateVersion = () => {
+    return this.stateVersion;
   };
 
   getState = () => {
@@ -187,6 +196,7 @@ class AppStore {
   updateSettings = (newSettings: Partial<UserSettings>) => {
     const current = this.state.settings || DEFAULT_SETTINGS;
     this.state.settings = { ...current, ...newSettings };
+    this.persist();
     this.notify();
   };
 
@@ -246,12 +256,39 @@ export function useAppStore<T = AppState>(
   selector?: (state: AppState) => T
 ): T {
   const store = createAppStore();
-  
+
+  // Store selector in ref to avoid recreating getSnapshot
+  const selectorRef = useRef(selector);
+  selectorRef.current = selector;
+
+  // Cache for memoizing selector results - keyed by state VERSION (not reference)
+  const cacheRef = useRef<{ version: number; result: T } | null>(null);
+
+  // getSnapshot must be stable - no dependencies that change
   const getSnapshot = useCallback(() => {
+    const currentVersion = store.getStateVersion();
+    const currentSelector = selectorRef.current;
+
+    // If version hasn't changed, return cached result
+    if (cacheRef.current && cacheRef.current.version === currentVersion) {
+      return cacheRef.current.result;
+    }
+
+    // Get fresh state and compute result
     const state = store.getState();
-    return selector ? selector(state) : state as unknown as T;
-  }, [store, selector]);
-  
+
+    if (!currentSelector) {
+      const result = state as unknown as T;
+      cacheRef.current = { version: currentVersion, result };
+      return result;
+    }
+
+    // Compute new result and cache it
+    const result = currentSelector(state);
+    cacheRef.current = { version: currentVersion, result };
+    return result;
+  }, [store]); // Only depend on store, not selector
+
   return useSyncExternalStore(
     store.subscribe,
     getSnapshot,

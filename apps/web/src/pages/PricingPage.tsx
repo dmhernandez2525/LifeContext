@@ -5,31 +5,31 @@ export default function PricingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="pt-32 pb-24 px-6 bg-white dark:bg-gray-950 min-h-screen transition-colors duration-300">
+    <div className="pt-20 sm:pt-28 md:pt-32 pb-16 sm:pb-20 md:pb-24 px-4 sm:px-6 bg-white dark:bg-gray-950 min-h-screen transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 md:mb-16">
+          <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
             Simple, Transparent Pricing
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
             Your data belongs to you. We charge for the convenience of synchronization and advanced AI features, not by selling your information.
           </p>
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto mb-16 sm:mb-20 md:mb-24">
           {/* Free Tier */}
-          <div className="bg-gray-50 dark:bg-gray-900 rounded-3xl p-8 border border-gray-200 dark:border-gray-800 relative">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Local Explorer</h3>
-            <div className="text-4xl font-bold text-gray-900 dark:text-white mb-6">Free</div>
-            <p className="text-gray-600 dark:text-gray-400 mb-8 h-12">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-gray-200 dark:border-gray-800 relative">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">Local Explorer</h3>
+            <div className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">Free</div>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 min-h-[3rem] sm:h-12">
               Perfect for getting started and compiling your personal context on a single device.
             </p>
-            
-            <button 
+
+            <button
               onClick={() => navigate('/register')}
-              className="w-full py-4 rounded-xl font-bold text-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors mb-8"
+              className="w-full py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors mb-6 sm:mb-8 min-h-[48px]"
             >
               Get Started
             </button>

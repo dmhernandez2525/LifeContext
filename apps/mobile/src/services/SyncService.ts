@@ -35,8 +35,8 @@ class SyncService {
           lastSyncedAt: parsed.lastSyncedAt,
           provider: parsed.provider || 'none',
         };
-      } catch (e) {
-        console.warn('Failed to parse saved sync state');
+      } catch {
+        // Invalid saved state - use defaults
       }
     }
   }
@@ -87,10 +87,9 @@ class SyncService {
         });
         
     } catch (error) {
-        console.error('Sync failed:', error);
-        this.updateState({ 
-            status: 'error', 
-            errorMessage: error instanceof Error ? error.message : 'Unknown sync error' 
+        this.updateState({
+            status: 'error',
+            errorMessage: error instanceof Error ? error.message : 'Unknown sync error'
         });
     } finally {
         // Reset to idle after a moment if success

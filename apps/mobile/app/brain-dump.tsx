@@ -143,8 +143,8 @@ export default function BrainDumpScreen() {
 
       setStep('complete');
       if (Haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    } catch (error) {
-      console.error('Brain dump failed:', error);
+    } catch {
+      // Brain dump failed - still show complete to allow retry
       setStep('complete');
     }
   };
@@ -153,7 +153,9 @@ export default function BrainDumpScreen() {
      try {
          setIsRefining(true);
          await recorder.start();
-     } catch(e) { console.error(e); }
+     } catch {
+         // Recording failed to start
+     }
   };
 
   const handleRefinementStop = async () => {
@@ -161,11 +163,11 @@ export default function BrainDumpScreen() {
           const { uri } = await recorder.stop();
           setIsRefining(false);
           // Transcribe answer
-          // Note: straightforward implementation using the same transcription hook
-          // We might want to show a spinner here
           const result = await transcription.transcribeAudio(uri);
           setRefinementAnswer(result.text);
-      } catch(e) { console.error(e); }
+      } catch {
+          // Transcription failed
+      }
   };
 
   const submitRefinement = async () => {
@@ -188,16 +190,13 @@ export default function BrainDumpScreen() {
           );
           setSynthesis(newSynthesis);
           
-          // Re-save (updating existing would be better but for now overwrite/new is okay, or we just rely on the final save if we haven't left)
-          // Actually we already saved once. We should update.
-          // For MVP, we'll just save a new version or overwrite if we had an ID. 
-          // `saveBrainDump` generates a new ID every time. 
-          // Let's just re-save for safety on "Done".
-          
+          // TODO: Update existing brain dump instead of creating new entry
+          // Currently saveBrainDump generates a new ID every time
+
           setStep('complete');
-      } catch (e) {
-          console.error("Refinement failed", e);
-          setStep('complete'); // Fallback
+      } catch {
+          // Refinement failed - show complete state to allow retry
+          setStep('complete');
       }
   };
 
