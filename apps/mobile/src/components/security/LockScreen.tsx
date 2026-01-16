@@ -12,7 +12,7 @@ export function LockScreen() {
   const [biometryType, setBiometryType] = useState<LocalAuthentication.AuthenticationType | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [inputPasscode, setInputPasscode] = useState('');
-  const [showPasscodeFallback, setShowPasscodeFallback] = useState(false);
+
 
   useEffect(() => {
     checkBiometry();
@@ -60,7 +60,6 @@ export function LockScreen() {
       }
     } catch {
        // Biometrics failed - show passcode fallback
-       setShowPasscodeFallback(true);
     } finally {
       setIsAuthenticating(false);
     }
@@ -73,7 +72,6 @@ export function LockScreen() {
         // Success
         setIsLocked(false);
         setInputPasscode('');
-        setShowPasscodeFallback(false);
       } else {
         // Fail
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
