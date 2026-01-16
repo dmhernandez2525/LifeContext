@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { Audio } from 'expo-av';
 import { SafeHaptics as Haptics } from '../lib/haptics';

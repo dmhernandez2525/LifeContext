@@ -1,10 +1,8 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Briefcase, Heart, MapPin, Activity, Star } from 'lucide-react-native';
+import { Briefcase, Heart, MapPin, Activity } from 'lucide-react-native';
 
-const LIFE_START_YEAR = 1990;
-const CURRENT_YEAR = new Date().getFullYear();
 
 // Enhanced chapters with mood, transitions, themes, and stats
 type MoodSummary = 'positive' | 'neutral' | 'challenging' | 'mixed';

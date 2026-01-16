@@ -1,12 +1,12 @@
+
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Alert, Share, ActivityIndicator, TextInput, Switch } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ChevronLeft, Download, ShieldAlert, Key, Share2, Upload } from 'lucide-react-native';
-import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { exportAllData } from '../../src/lib/storage';
-import { split, combine } from '../../src/lib/secretSharing';
+import { split } from '../../src/lib/secretSharing';
 import * as Clipboard from 'expo-clipboard';
 
 export default function DataSovereigntyScreen() {
@@ -15,12 +15,10 @@ export default function DataSovereigntyScreen() {
   
   // Emergency Access State
   const [emergencyEnabled, setEmergencyEnabled] = useState(false);
-  const [trustedContact, setTrustedContact] = useState('');
   
   // Shamir's Secret Sharing
   const [shares, setShares] = useState<string[]>([]);
   const [showShares, setShowShares] = useState(false);
-  const [recoveryInput, setRecoveryInput] = useState('');
   
   const handleGenerateShares = () => {
       // Mock "Master Key" - in real app this decrypts the data
@@ -60,22 +58,6 @@ export default function DataSovereigntyScreen() {
        Alert.alert('Export Failed', 'An error occurred while exporting your data.');
     } finally {
       setIsExporting(false);
-    }
-  };
-
-  const handleEmergencySetup = () => {
-    if (emergencyEnabled) {
-       Alert.alert('Revoke Access', 'Are you sure you want to revoke emergency access?', [
-           { text: 'Cancel', style: 'cancel' },
-           { text: 'Revoke', style: 'destructive', onPress: () => setEmergencyEnabled(false) }
-       ]);
-    } else {
-       if (!trustedContact.trim()) {
-           Alert.alert('Contact Required', 'Please enter a trusted contact name or email.');
-           return;
-       }
-       Alert.alert('Access Granted', `A recovery key has been generated for ${trustedContact}. Share this key securely.`);
-       setEmergencyEnabled(true);
     }
   };
 

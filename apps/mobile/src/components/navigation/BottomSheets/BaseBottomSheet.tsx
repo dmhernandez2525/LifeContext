@@ -9,6 +9,7 @@ import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetView,
   BottomSheetProps,
+  BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
 import { BlurView } from 'expo-blur';
 
@@ -37,7 +38,7 @@ export const BaseBottomSheet = forwardRef<BottomSheet, BaseBottomSheetProps>(
 
     // Backdrop component with tap-to-dismiss
     const renderBackdrop = useCallback(
-      (backdropProps: any) => (
+      (backdropProps: BottomSheetBackdropProps) => (
         <BottomSheetBackdrop
           {...backdropProps}
           disappearsOnIndex={-1}

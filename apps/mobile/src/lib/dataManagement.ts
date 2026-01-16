@@ -7,7 +7,15 @@ import { Platform } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as storage from './storage';
+import type { 
+  StoredRecording, 
+  StoredJournalEntry, 
+  StoredBrainDump, 
+  StoredTask, 
+  AppSettings 
+} from './storage';
 import * as questions from './questions';
+import type { QuestionCategory, Question, AnsweredQuestion } from './questions';
 
 // ============================================================
 // TYPES
@@ -16,14 +24,14 @@ import * as questions from './questions';
 export interface ExportData {
   version: string;
   exportedAt: string;
-  recordings: any[];
-  journalEntries: any[];
-  brainDumps: any[];
-  tasks: any[];
-  categories: any[];
-  questions: any[];
-  answeredQuestions: any[];
-  settings: any;
+  recordings: StoredRecording[];
+  journalEntries: StoredJournalEntry[];
+  brainDumps: StoredBrainDump[];
+  tasks: StoredTask[];
+  categories: QuestionCategory[];
+  questions: Question[];
+  answeredQuestions: AnsweredQuestion[];
+  settings: AppSettings;
 }
 
 export interface StorageStats {
@@ -79,6 +87,11 @@ export async function exportAllData(): Promise<string | null> {
 // IMPORT
 // ============================================================
 
+interface DocumentPickerResult {
+  canceled: boolean;
+  assets?: { uri: string; name: string }[] | null;
+}
+
 export async function importData(): Promise<{ success: boolean; message: string }> {
   // DocumentPicker not available on web
   if (Platform.OS === 'web') {
@@ -87,8 +100,9 @@ export async function importData(): Promise<{ success: boolean; message: string 
   
   try {
     // Dynamic import to avoid bundling on web
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const DocumentPicker = require('expo-document-picker');
-    const result = await DocumentPicker.getDocumentAsync({
+    const result: DocumentPickerResult = await DocumentPicker.getDocumentAsync({
       type: 'application/json',
       copyToCacheDirectory: true,
     });
@@ -113,7 +127,7 @@ export async function importData(): Promise<{ success: boolean; message: string 
       try {
         await storage.saveRecording(
           recording.questionId || '',
-          recording.audioUri || recording.uri || '',
+          recording.audioUri || '',
           recording.duration || 0,
           recording.transcriptionText
         );
@@ -146,7 +160,7 @@ export async function importData(): Promise<{ success: boolean; message: string 
     // Tasks
     for (const task of data.tasks || []) {
       try {
-        await storage.saveTask(task);
+        storage.saveTask(task);
         imported++;
       } catch {
         // Skip

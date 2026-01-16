@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export type Decade = '2020s' | '2030s' | '2040s' | '2050s' | '2060s' | '2070s+';
@@ -36,7 +36,7 @@ export function LifeTimeline({ selectedDecade, onSelectDecade }: LifeTimelinePro
         contentContainerStyle={{ paddingHorizontal: 24 }}
         className="flex-row"
       >
-        {DECADES.map((decade, index) => {
+        {DECADES.map((decade) => {
           const isSelected = selectedDecade === decade.id;
           
           return (

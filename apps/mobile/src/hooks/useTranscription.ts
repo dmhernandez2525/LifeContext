@@ -41,12 +41,12 @@ async function transcribeWithWhisper(
   apiKey: string
 ): Promise<TranscriptionResult> {
   // Read audio file as base64
-  const base64Audio = await FileSystem.readAsStringAsync(audioUri, {
+  await FileSystem.readAsStringAsync(audioUri, {
     encoding: FileSystem.EncodingType.Base64,
   });
   
   // Get file info for extension
-  const fileInfo = await FileSystem.getInfoAsync(audioUri);
+  await FileSystem.getInfoAsync(audioUri);
   const fileName = audioUri.split('/').pop() || 'recording.m4a';
   
   // Create form data

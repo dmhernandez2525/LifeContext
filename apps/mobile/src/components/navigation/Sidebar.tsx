@@ -6,17 +6,16 @@ import {
   Mic, 
   Map, 
   BookOpen, 
-  MoreHorizontal, 
   Settings, 
   Brain,
   Layout,
   Target,
   LineChart,
   HelpCircle,
-  Users
+  Users,
+  LucideIcon
 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BlurView } from 'expo-blur';
 
 export function Sidebar() {
   const router = useRouter();
@@ -29,11 +28,11 @@ export function Sidebar() {
       return pathname.includes(route);
   };
 
-  const NavItem = ({ icon: Icon, label, route, color = "#94a3b8", activeColor = "#a855f7" }: any) => {
+  const NavItem = ({ icon: Icon, label, route, color = "#94a3b8", activeColor = "#a855f7" }: { icon: LucideIcon, label: string, route: string, color?: string, activeColor?: string }) => {
     const active = isActive(route);
     return (
       <TouchableOpacity 
-        onPress={() => router.push(route)}
+        onPress={() => router.push(route as never)}
         className={`flex-row items-center p-3 mb-2 rounded-xl transition-all ${active ? 'bg-slate-800' : 'hover:bg-slate-900/50'}`}
       >
         <Icon size={20} color={active ? activeColor : color} strokeWidth={active ? 2.5 : 2} />

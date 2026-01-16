@@ -1,6 +1,6 @@
 
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { FamilyMember, SharedItemWrapper, PrivacyLevel } from '@lcc/types';
+import { FamilyMember, SharedItemWrapper } from '@lcc/types';
 import { formatDistanceToNow } from 'date-fns';
 import { Users, BookOpen, Quote, MapPin } from 'lucide-react-native';
 

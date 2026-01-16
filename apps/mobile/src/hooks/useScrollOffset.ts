@@ -25,7 +25,6 @@ export function useScrollOffset(): UseScrollOffsetReturn {
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
       const currentY = event.contentOffset.y;
-      const delta = currentY - lastScrollY.value;
       
       scrollOffset.value = currentY;
       lastScrollY.value = currentY;

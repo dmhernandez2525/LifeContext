@@ -7,7 +7,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { 
-  Settings, 
   Key, 
   Database, 
   ShieldCheck, 
@@ -16,11 +15,11 @@ import {
   Trash2, 
   Info, 
   ChevronRight, 
-  Cpu, 
   Zap, 
   Cloud, 
   Mic,
-  Users
+  Users,
+  LucideIcon
 } from 'lucide-react-native';
 import { getSettings, updateSettings, clearAllData, exportAllData, AppSettings } from '../../src/lib/storage';
 import { syncService, SyncState } from '../../src/services/SyncService';
@@ -102,6 +101,7 @@ export default function SettingsScreen() {
 
   const handleSeedDemoData = async () => {
     // Import additional storage functions dynamically to avoid issues
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const storage = require('../../src/lib/storage');
     
     // Sample Journals
@@ -154,7 +154,7 @@ export default function SettingsScreen() {
     onToggle, 
     isDestructive 
   }: { 
-    icon: any; 
+    icon: LucideIcon; 
     title: string; 
     subtitle: string; 
     onPress?: () => void; 

@@ -106,7 +106,7 @@ export default function QuestionsPage() {
       markQuestionAnswered(currentQuestion.id);
       
       // Save recording to IndexedDB with edited transcript
-      const saved = await saveRecording({
+      await saveRecording({
         questionId: currentQuestion.id,
         audioBlob: recordingData.blob,
         duration: recordingData.duration,

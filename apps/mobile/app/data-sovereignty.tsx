@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
-import { ChevronLeft, Shield, Lock, Cloud, Server, Check, X, AlertTriangle } from 'lucide-react-native';
+import { ChevronLeft, Shield, Lock, Cloud, Server, Check, AlertTriangle } from 'lucide-react-native';
 import { Card } from '../src/components/ui';
 
 const COMPARISON_DATA = [

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { getSettings, getRecordings, getJournalEntries, getBrainDumps } from '../lib/storage';
+import { getSettings, getJournalEntries, getBrainDumps } from '../lib/storage';
 
 export interface ChatMessage {
   id: string;

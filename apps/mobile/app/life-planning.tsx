@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FlashList } from '@shopify/flash-list';
+
 import * as Haptics from 'expo-haptics';
 import { Target, Plus, Brain, Sparkles, X } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -11,7 +11,7 @@ import { GoalCard } from '../src/components/life-planning/GoalCard';
 import * as storage from '../src/lib/storage';
 import { StoredTask } from '../src/lib/storage';
 import { DeepDiveSheet } from '../src/components/life-planning/DeepDiveSheet';
-import { useBottomSheetModal } from '@gorhom/bottom-sheet';
+
 
 export default function LifePlanningScreen() {
   const [selectedDecade, setSelectedDecade] = useState<Decade>('2020s');

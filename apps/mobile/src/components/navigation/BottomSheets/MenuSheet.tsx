@@ -19,7 +19,6 @@ import {
   Columns,
   Brain,
   Settings,
-  Search,
   ChevronRight,
   HelpCircle,
   LucideIcon,
@@ -118,9 +117,9 @@ export const MenuSheet = forwardRef<BottomSheet, MenuSheetProps>(
       // Navigate to the screen
       // If route starts with /, treat as absolute path. Otherwise assume tab.
       if (item.route.startsWith('/')) {
-        router.push(item.route as any);
+        router.push(item.route as never);
       } else {
-        router.push(`/(tabs)/${item.route}` as any);
+        router.push(`/(tabs)/${item.route}` as never);
       }
       
       if (onClose) {

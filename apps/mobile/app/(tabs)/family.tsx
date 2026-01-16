@@ -1,7 +1,7 @@
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Users, UserPlus } from 'lucide-react-native';
-import { Card } from '../../src/components/ui';
+
 import { useTabBar } from '../../src/context/TabBarContext';
 import { useEffect, useState } from 'react';
 import { InviteSheet } from '../../src/components/family/InviteSheet';

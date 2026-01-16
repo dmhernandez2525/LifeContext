@@ -3,10 +3,10 @@
  */
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Platform, Alert } from 'react-native';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { Mic, Square, Pause, Play, Check, AlertCircle, Trash2 } from 'lucide-react-native';
+import { Mic, Square, Pause, Play, Trash2 } from 'lucide-react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -16,7 +16,6 @@ import Animated, {
   Easing,
   FadeIn,
   FadeOut,
-  interpolate,
   withSpring,
 } from 'react-native-reanimated';
 import { useRecorder, useTranscription } from '../../src/hooks';
@@ -31,7 +30,7 @@ function formatDuration(seconds: number): string {
 }
 
 // Pulsing record button animation
-function PulsingRecordButton({ isRecording, isActive, onPress }: { isRecording: boolean; isActive: boolean; onPress: () => void }) {
+function PulsingRecordButton({ isRecording, onPress }: { isRecording: boolean; onPress: () => void }) {
   const pulseScale = useSharedValue(1);
   const ringOpacity = useSharedValue(0);
   const ringScale = useSharedValue(1);
@@ -115,7 +114,6 @@ export default function RecordScreen() {
   const recorder = useRecorder();
   const transcription = useTranscription();
   const [isSaving, setIsSaving] = useState(false);
-  const [savedUri, setSavedUri] = useState<string | null>(null);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -127,7 +125,6 @@ export default function RecordScreen() {
   }, []);
 
   const handleStart = async () => {
-    setSavedUri(null);
     transcription.clearTranscript();
     await recorder.start();
     if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -154,8 +151,6 @@ export default function RecordScreen() {
 
       // Save to storage
       await saveRecording('quick-record', uri, duration, result.text);
-
-      setSavedUri(uri);
     } catch {
       if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     } finally {
@@ -306,7 +301,7 @@ export default function RecordScreen() {
                 <Trash2 size={24} color="#ef4444" />
               </TouchableOpacity>
 
-              <PulsingRecordButton isRecording={isRecording} isActive={isActive} onPress={handleStop} />
+              <PulsingRecordButton isRecording={isRecording} onPress={handleStop} />
 
               {isRecording ? (
                 <TouchableOpacity
@@ -326,7 +321,7 @@ export default function RecordScreen() {
             </View>
           ) : (
             <View className="items-center">
-              <PulsingRecordButton isRecording={false} isActive={false} onPress={handleStart} />
+              <PulsingRecordButton isRecording={false} onPress={handleStart} />
               <Text className="text-slate-500 mt-6 font-medium uppercase tracking-widest text-[10px]" style={{ fontFamily: 'Inter_700Bold' }}>
                 Tap to Start Recording
               </Text>

@@ -6,12 +6,11 @@ import { View, Text, StyleSheet, Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   useAnimatedStyle,
-  useSharedValue,
   withSpring,
   runOnJS,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { Battery, BatteryLow, BatteryFull, BatteryMedium } from 'lucide-react-native';
+import { BatteryLow, BatteryFull, BatteryMedium } from 'lucide-react-native';
 
 // ============================================================
 // TYPES
@@ -54,7 +53,7 @@ function getEnergyLabel(value: number): string {
 
 export function EnergySlider({ value, onChange, disabled = false }: EnergySliderProps) {
   const [sliderWidth, setSliderWidth] = useState(0);
-  const translateX = useSharedValue(0);
+
   
   const color = getEnergyColor(value);
   const IconComponent = getEnergyIcon(value);

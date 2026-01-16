@@ -327,7 +327,7 @@ export default function TimelineScreen() {
           {['all', 'recording', 'journal', 'brain-dump'].map((filter) => (
             <TouchableOpacity
               key={filter}
-              onPress={() => setActiveFilter(filter as any)}
+              onPress={() => setActiveFilter(filter as typeof activeFilter)}
               className={`mr-2 px-4 py-2 rounded-full border ${
                 activeFilter === filter ? 'bg-primary-500/20 border-primary-500' : 'bg-white/5 border-white/5'
               }`}

@@ -2,8 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { Video, ResizeMode } from 'expo-av';
-import { X, RefreshCw, Check, Video as VideoIcon, StopCircle } from 'lucide-react-native';
-import * as FileSystem from 'expo-file-system';
+import { X, RefreshCw, Check } from 'lucide-react-native';
 
 interface VideoRecorderProps {
     onSave: (uri: string, duration: number) => void;

@@ -1,9 +1,8 @@
 import { View, Text, TextInput, TouchableOpacity, ScrollView, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { useState, useRef } from 'react';
-import { Send, Sparkles, User, Bot, MessageSquare } from 'lucide-react-native';
+import { Send, Sparkles, User, MessageSquare } from 'lucide-react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useChatContext, ChatMessage } from '../../hooks/useChatContext';
-import { Card } from '../ui';
 
 const SUGGESTED_PROMPTS = [
     "What are my recurring themes?",

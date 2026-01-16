@@ -8,27 +8,21 @@ import {
   TextInput,
   Alert,
   Platform,
-  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlashList } from '@shopify/flash-list';
 import * as Haptics from 'expo-haptics';
 import {
   Plus,
-  MoreVertical,
   Calendar,
   CheckCircle2,
-  Trash2,
-  Edit2,
-  X,
-  ChevronDown,
   Clock,
   Tag as TagIcon,
 } from 'lucide-react-native';
-import { Card, Button, Badge } from '../../src/components/ui';
+import { Card } from '../../src/components/ui';
 import * as storage from '../../src/lib/storage';
 import { StoredTask } from '../../src/lib/storage';
-import Animated, { FadeInDown, FadeInRight, Layout } from 'react-native-reanimated';
+import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
 
 // ============================================================
 // TYPES & CONSTANTS
@@ -308,12 +302,9 @@ export default function KanbanBoard() {
   const [selectedColumn, setSelectedColumn] = useState<KanbanColumn>(COLUMNS[0]);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTask, setEditingTask] = useState<StoredTask | undefined>();
-  const [isLoading, setIsLoading] = useState(true);
-
   const loadTasks = useCallback(() => {
     const allTasks = storage.getTasks();
     setTasks(allTasks);
-    setIsLoading(false);
   }, []);
 
   useEffect(() => {

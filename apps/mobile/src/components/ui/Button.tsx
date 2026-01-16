@@ -4,6 +4,7 @@ import {
   Text,
   ActivityIndicator,
   Platform,
+  GestureResponderEvent,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ReactNode } from 'react';
@@ -26,7 +27,7 @@ export function Button({
   className = '',
   ...props
 }: ButtonProps) {
-  const handlePress = (e: any) => {
+  const handlePress = (e: GestureResponderEvent) => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }

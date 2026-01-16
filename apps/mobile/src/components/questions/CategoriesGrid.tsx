@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Href } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import {
@@ -108,7 +108,7 @@ export function CategoriesGrid({ categories, progressMap }: CategoriesGridProps)
   const router = useRouter();
 
   const handleCategoryPress = (category: QuestionCategory) => {
-    router.push(`/questions/${category.slug}` as any);
+    router.push(`/questions/${category.slug}` as Href);
   };
 
   return (
