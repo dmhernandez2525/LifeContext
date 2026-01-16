@@ -20,19 +20,22 @@ import {
   Users // Added import
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAppStore } from '@/store/app-store';
+import { useAppStore, DEFAULT_SETTINGS } from '@/store/app-store';
 import { useDataExport, useDemoData, useCloudSync } from '@/hooks';
 
 export default function SettingsPage() {
-  const { settings, updateSettings, reset } = useAppStore();
+  const { settings: storeSettings, updateSettings, reset } = useAppStore();
   const { downloadExport, uploadImport, isExporting, isImporting, error: exportError } = useDataExport();
   const { seedDemoData, isSeeding, isSeeded, progress: seedProgress } = useDemoData();
   const cloudSync = useCloudSync();
-  
+
+  // Use store settings or defaults
+  const settings = storeSettings || DEFAULT_SETTINGS;
+
   const [saved, setSaved] = useState(false);
-  const [apiKey, setApiKey] = useState(settings?.aiProvider.apiKey || '');
-  const [whisperApiKey, setWhisperApiKey] = useState(settings?.aiProvider.whisperApiKey || '');
-  const [useOwnKey, setUseOwnKey] = useState(!settings?.aiProvider.useDefaultKey);
+  const [apiKey, setApiKey] = useState(settings.aiProvider.apiKey || '');
+  const [whisperApiKey, setWhisperApiKey] = useState(settings.aiProvider.whisperApiKey || '');
+  const [useOwnKey, setUseOwnKey] = useState(!settings.aiProvider.useDefaultKey);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSave = () => {
@@ -76,15 +79,6 @@ export default function SettingsPage() {
       window.location.href = '/';
     }
   };
-
-  // Safe loading state
-  if (!settings) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-2xl mx-auto space-y-8 pb-12">

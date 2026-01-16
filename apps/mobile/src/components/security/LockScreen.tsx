@@ -55,9 +55,8 @@ export function LockScreen() {
       } else {
         Alert.alert('Authentication Failed', 'Please try again.');
       }
-    } catch (error: any) {
-       console.error('Auth error', error);
-       // In dev or simulator without biometrics, we might want a "Development Unlock" fallback
+    } catch {
+       // Biometrics failed - device may not support it or user hasn't enrolled
        if (__DEV__) {
          Alert.alert('Dev Bypass', 'Biometrics not available. Unlocking...');
          setIsLocked(false);

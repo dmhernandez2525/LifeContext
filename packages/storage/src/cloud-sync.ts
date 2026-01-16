@@ -69,11 +69,11 @@ export class CloudSyncManager {
    * Initialize the sync manager
    */
   async initialize(config: Partial<SyncConfig>): Promise<boolean> {
-    // In production, this would:
+    // TODO: Implement full cloud sync initialization
     // 1. Load config from storage
     // 2. Initialize MSAL or Google client
     // 3. Check for existing session
-    console.log('[CloudSync] Initializing with config:', config);
+    void config; // Reserved for future implementation
     this.status.isInitialized = true;
     return true;
   }
@@ -82,22 +82,17 @@ export class CloudSyncManager {
    * Connect to a cloud provider
    */
   async connect(provider: 'onedrive' | 'google-drive'): Promise<boolean> {
-    console.log('[CloudSync] Connecting to:', provider);
-    
+    // TODO: Implement OAuth flows for cloud providers
+    // OneDrive: Use MSAL loginPopup with ONEDRIVE_CONFIG
+    // Google Drive: Use Google Identity Services with GOOGLE_DRIVE_CONFIG
+
     if (provider === 'onedrive') {
-      // Would use MSAL loginPopup
-      // const msal = new msal.PublicClientApplication(ONEDRIVE_CONFIG);
-      // const result = await msal.loginPopup({ scopes: ONEDRIVE_CONFIG.scopes });
-      // this.accessToken = result.accessToken;
-      
-      // For MVP, show not-implemented message
-      console.log('[CloudSync] OneDrive requires MSAL setup');
+      // Requires MSAL setup and Azure AD app registration
       return false;
     }
-    
+
     if (provider === 'google-drive') {
-      // Would use Google Identity Services
-      console.log('[CloudSync] Google Drive requires OAuth setup');
+      // Requires Google OAuth setup and API credentials
       return false;
     }
 
@@ -110,7 +105,6 @@ export class CloudSyncManager {
   async disconnect(): Promise<void> {
     this.accessToken = null;
     this.status.provider = undefined;
-    console.log('[CloudSync] Disconnected');
   }
 
   /**
@@ -118,24 +112,24 @@ export class CloudSyncManager {
    */
   async syncToCloud(data: Blob, filename: string): Promise<boolean> {
     if (!this.accessToken) {
-      console.error('[CloudSync] Not authenticated');
+      this.status.error = 'Not authenticated';
       return false;
     }
 
     this.status.isSyncing = true;
 
     try {
-      // OneDrive upload via Microsoft Graph
-      // PUT https://graph.microsoft.com/v1.0/me/drive/root:/LCC/{filename}:/content
+      // TODO: Implement actual cloud upload
+      // OneDrive: PUT https://graph.microsoft.com/v1.0/me/drive/root:/LCC/{filename}:/content
       // Headers: Authorization: Bearer {token}, Content-Type: application/octet-stream
-      
-      console.log(`[CloudSync] Would upload ${filename} (${data.size} bytes)`);
-      
-      // Simulated success
+
+      void data;
+      void filename;
+
+      // Demo mode: simulate successful upload
       this.status.lastSyncTime = new Date();
       return true;
-    } catch (error) {
-      console.error('[CloudSync] Upload failed:', error);
+    } catch {
       this.status.error = 'Upload failed';
       return false;
     } finally {
@@ -154,14 +148,15 @@ export class CloudSyncManager {
    * Create encrypted backup blob from IndexedDB data
    */
   async createBackup(): Promise<Blob> {
-    // This would:
+    // TODO: Implement full backup with encryption
     // 1. Export all tables from IndexedDB
     // 2. Serialize to JSON
-    // 3. Encrypt with user's key
+    // 3. Encrypt with user's derived key
     // 4. Return as blob
-    
-    const mockData = { version: 1, exportedAt: new Date().toISOString() };
-    return new Blob([JSON.stringify(mockData)], { type: 'application/json' });
+
+    // Demo mode: return metadata-only backup
+    const backupData = { version: 1, exportedAt: new Date().toISOString() };
+    return new Blob([JSON.stringify(backupData)], { type: 'application/json' });
   }
 }
 

@@ -56,9 +56,8 @@ export default function DataSovereigntyScreen() {
       } else {
         Alert.alert('Export Saved', `File saved to: ${fileUri}`);
       }
-    } catch (error) {
+    } catch {
        Alert.alert('Export Failed', 'An error occurred while exporting your data.');
-       console.error(error);
     } finally {
       setIsExporting(false);
     }

@@ -54,9 +54,9 @@ export default function LifePlanningScreen() {
     loadGoals();
   }, [loadGoals]);
 
-  // Filter goals by decade (simulated by random distribution for demo if no dates, otherwise simplified logic)
-  // In a real app, StoredTask would need a dedicated targetDate/Decade field.
-  // For this parity demo, we'll show all goals but visually filter or just show all for now.
+  // Filter goals by selected decade
+  // TODO: Add targetDecade field to StoredTask type for proper decade-based filtering
+  // Currently showing all goals regardless of selected decade
   const filteredGoals = useMemo(() => {
     return goals; 
   }, [goals, selectedDecade]);

@@ -1,9 +1,19 @@
 
 import { View, Text, TouchableOpacity, Share } from 'react-native';
+import { useMemo } from 'react';
 import QRCode from 'react-native-qrcode-svg';
 import * as Clipboard from 'expo-clipboard';
 import { BaseBottomSheet } from '@/components/navigation/BottomSheets/BaseBottomSheet';
 import { Copy, Share as ShareIcon, X } from 'lucide-react-native';
+
+// Generate a random invite code
+function generateInviteCode(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude confusable chars (0,O,1,I)
+  const segments = [4, 4, 4];
+  return segments
+    .map(len => Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join(''))
+    .join('-');
+}
 
 interface InviteSheetProps {
   isVisible: boolean;
@@ -11,12 +21,15 @@ interface InviteSheetProps {
   inviteCode?: string;
 }
 
-export const InviteSheet = ({ isVisible, onClose, inviteCode = 'LCC-FAMILY-X7K9-2026' }: InviteSheetProps) => {
+export const InviteSheet = ({ isVisible, onClose, inviteCode: providedCode }: InviteSheetProps) => {
+  // TODO: Replace with server-generated codes stored per user/family circle
+  // For now, generate a random code per session (should be persisted and validated server-side)
+  const inviteCode = useMemo(() => providedCode || generateInviteCode(), [providedCode]);
   const inviteLink = `https://lifecontext.app/join/family/${inviteCode}`;
 
   const handleCopy = async () => {
     await Clipboard.setStringAsync(inviteLink);
-    // In a real app, show a toast here
+    // TODO: Show toast notification confirming copy
   };
 
   const handleShare = async () => {
@@ -24,8 +37,8 @@ export const InviteSheet = ({ isVisible, onClose, inviteCode = 'LCC-FAMILY-X7K9-
       await Share.share({
         message: `Join my LifeContext Family Circle to see my journals and life chapters: ${inviteLink}`,
       });
-    } catch (error) {
-      console.log(error);
+    } catch {
+      // Share was cancelled or failed - no action needed
     }
   };
 

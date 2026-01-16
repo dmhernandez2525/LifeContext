@@ -136,8 +136,8 @@ export function combine(shares: string[]): string | null {
         }
 
         return Array.from(secret).map(b => b.toString(16).padStart(2, '0')).join('');
-    } catch (e) {
-        console.error("Failed to combine shares", e);
+    } catch {
+        // Invalid shares or insufficient shares for reconstruction
         return null;
     }
 }

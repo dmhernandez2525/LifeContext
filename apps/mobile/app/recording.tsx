@@ -47,8 +47,7 @@ export default function RecordingScreen() {
         tags: ['quick-record'],
         syncStatus: 'pending'
       });
-      // Navigate to list or dashboard
-      console.log('Saved to', uri);
+      // Navigate back to list
       router.back();
     }
   };

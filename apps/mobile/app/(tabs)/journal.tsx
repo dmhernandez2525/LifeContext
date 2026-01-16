@@ -84,8 +84,7 @@ export default function JournalScreen() {
 
       // Reload entries
       loadEntries();
-    } catch (error) {
-      console.error('Failed to save journal entry:', error);
+    } catch {
       Alert.alert('Error', 'Failed to secure your journal entry locally.');
     } finally {
       setIsSaving(false);

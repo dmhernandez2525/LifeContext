@@ -77,7 +77,7 @@ export const SharedFeedItem = ({ item }: { item: SharedItemWrapper }) => {
       {/* Header */}
       <View className="flex-row items-center p-4 pb-2">
         <View className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 mr-3 items-center justify-center overflow-hidden">
-             {/* Note: In a real app we'd look up the avatar from the store using authorId */}
+             {/* TODO: Look up avatar from family store using item.authorId */}
              <Users size={14} color="#a1a1aa" />
         </View>
         <View className="flex-1">
@@ -100,13 +100,13 @@ export const SharedFeedItem = ({ item }: { item: SharedItemWrapper }) => {
         </Text>
       </View>
 
-      {/* Footer / Reactions (Placeholder) */}
+      {/* Footer */}
       <View className="px-4 py-3 bg-zinc-50 dark:bg-zinc-800/50 flex-row items-center justify-between">
         <Text className="text-xs text-zinc-400 font-medium">
           Only visible to Family
         </Text>
         <TouchableOpacity>
-           {/* Reaction Button Placeholder */}
+           {/* TODO: Add reaction functionality */}
         </TouchableOpacity>
       </View>
     </View>

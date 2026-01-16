@@ -60,10 +60,10 @@ export function DeepDiveSheet({ index, initialContext = '', onClose }: DeepDiveS
         const uri = recording.getURI();
         setRecording(null);
         setStep('processing');
-        
-        // Mock AI Processing
+
+        // TODO: Integrate with Whisper API for transcription and OpenAI for task extraction
+        // Demo mode: simulate AI processing with mock data
         setTimeout(() => {
-            // Simulate transcription and analysis
             setTranscript("I really want to start training for a marathon next year. I need to buy running shoes, find a training plan, and maybe join a local club.");
             setGeneratedTask({
                 title: 'Train for Marathon',

@@ -68,8 +68,7 @@ export default function BrainDumpScreen() {
         setSynthesis(mockSynthesisResult);
         setStage('synthesis');
         if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      } catch (error) {
-        console.error('Failed to save brain dump:', error);
+      } catch {
         Alert.alert('Error', 'Failed to secure your brain dump locally.');
         setStage('dump');
       }

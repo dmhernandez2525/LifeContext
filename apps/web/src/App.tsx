@@ -49,43 +49,49 @@ import PublicLayout from './components/layout/PublicLayout';
 
 
 
+// Storage key for security credentials (same as RegisterPage/LockScreen)
+const SECURITY_STORAGE_KEY = 'lcc-security';
+
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isLocked, _setIsLocked] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [onboardingComplete, setOnboardingComplete] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const [hasAccount, setHasAccount] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('lcc-onboarding-complete');
-    if (stored === 'true') {
-      setOnboardingComplete(true);
-      setIsAuthenticated(true);
+    // Check if user has set up security credentials (passcode)
+    const securityData = localStorage.getItem(SECURITY_STORAGE_KEY);
+    const onboardingComplete = localStorage.getItem('lcc-onboarding-complete') === 'true';
+
+    if (securityData) {
+      // User has registered - they have an account
+      setHasAccount(true);
+    } else if (!onboardingComplete) {
+      // First time visitor - show onboarding wizard
+      setShowOnboarding(true);
     }
-    setIsInitialized(true);
+
+    setIsReady(true);
   }, []);
 
   // Enable global keyboard shortcuts
   useKeyboardShortcuts();
 
-  if (!isInitialized) {
-      return null; // Or a loading spinner
+  if (!isReady) {
+    return null; // Loading state
   }
 
-  if (!isAuthenticated && !isLocked) {
+  // First-time visitors see the onboarding wizard
+  if (showOnboarding) {
     return (
-      <>
-
-        <Routes>
-          <Route path="/" element={
-            <OnboardingWizard 
-              onComplete={() => setIsAuthenticated(true)} 
-              onSkip={() => setIsAuthenticated(true)}
-            />
-          } />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </>
+      <Routes>
+        <Route path="/" element={
+          <OnboardingWizard
+            onComplete={() => setShowOnboarding(false)}
+            onSkip={() => setShowOnboarding(false)}
+          />
+        } />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     );
   }
 
@@ -116,32 +122,24 @@ export default function App() {
             <Route path="/emergency-access" element={<EmergencyAccessPage />} />
           </Route>
 
-          {/* Onboarding for first-time users */}
-          <Route 
-            path="/onboarding" 
+          {/* Onboarding page (alternative to wizard) */}
+          <Route path="/onboarding" element={<OnboardingPage />} />
+
+          {/* Registration - set up passcode */}
+          <Route
+            path="/register"
             element={
-              onboardingComplete && isInitialized 
-                ? <Navigate to="/app" replace /> 
-                : <OnboardingPage />
-            } 
+              hasAccount
+                ? <Navigate to="/app" replace />
+                : <RegisterPage onRegistered={() => setHasAccount(true)} />
+            }
           />
 
-          <Route 
-            path="/register" 
-            element={
-              isInitialized 
-                ? <Navigate to="/app" replace /> 
-                : !onboardingComplete 
-                  ? <Navigate to="/onboarding" replace />
-                  : <RegisterPage />
-            } 
-          />
-
-          {/* App routes (require initialization) */}
+          {/* App routes (require account) */}
           <Route
             path="/app"
             element={
-              isInitialized ? <AppLayout /> : <Navigate to="/register" replace />
+              hasAccount ? <AppLayout /> : <Navigate to="/register" replace />
             }
           >
             <Route index element={<DashboardPage />} />

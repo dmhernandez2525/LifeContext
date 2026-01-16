@@ -50,19 +50,15 @@ export default function DataReclamationPage() {
     // History API (browser-supported, requires permission)
     try {
       setStatus(prev => ({ ...prev, history: 'collecting' }));
-      
-      // Note: In real implementation, you'd use Chrome Extension APIs
-      // For web-only approach, we can only access limited data
-      // await navigator.permissions?.query({ name: 'browsing-topics' as any });
-      
-      // Simulated for MVP - in production, use chrome.history API
+
+      // TODO: Implement Chrome Extension for full history access (chrome.history API)
+      // Web-only approach is limited - currently using demo data
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       setData(prev => ({ ...prev, historyCount: 15234 }));
       setStatus(prev => ({ ...prev, history: 'complete' }));
-    } catch (error) {
+    } catch {
       setStatus(prev => ({ ...prev, history: 'error' }));
-      console.error('History collection failed:', error);
     }
 
     // Cookies (document.cookie for this domain only)

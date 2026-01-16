@@ -373,9 +373,9 @@ export default function DashboardScreen() {
       // Sort by date and take top 5
       allItems.sort((a, b) => b.date.getTime() - a.date.getTime());
       setRecentItems(allItems.slice(0, 5));
-      
-    } catch (err) {
-      console.error('Failed to load dashboard data:', err);
+
+    } catch {
+      // Failed to load data - show empty state
     } finally {
       setIsLoading(false);
     }

@@ -40,8 +40,8 @@ export function useStorageStats() {
         }
       }
       return total;
-    } catch (error) {
-      console.warn('Error reading directory size:', error);
+    } catch {
+      // Directory doesn't exist or access error - return 0
       return 0;
     }
   };
@@ -63,8 +63,8 @@ export function useStorageStats() {
         totalSize: recordings + journals + exports,
         isLoading: false,
       });
-    } catch (error) {
-        console.error('Failed to calculate storage stats', error);
+    } catch {
+        // Failed to calculate stats - keep previous values
         setStats(prev => ({ ...prev, isLoading: false }));
     }
   }, []);

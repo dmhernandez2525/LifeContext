@@ -36,14 +36,14 @@ export default function DashboardPage() {
     : DEFAULT_CATEGORIES.map((c, i) => ({ ...c, id: `cat-${i}` }));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
             Dashboard
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             Continue building your life story
           </p>
         </div>
@@ -51,21 +51,21 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700"
+          className="bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-5 border border-gray-200 dark:border-gray-700"
         >
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" />
             </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="min-w-0">
+              <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
                 {overallProgress.percentage}%
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">
                 Overall Progress
               </p>
             </div>
@@ -76,17 +76,17 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700"
+          className="bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-5 border border-gray-200 dark:border-gray-700"
         >
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-              <Clock className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
+              <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
             </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="min-w-0">
+              <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
                 {formatDuration(totalRecordingTime)}
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">
                 Recording Time
               </p>
             </div>
@@ -97,17 +97,17 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700"
+          className="bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-5 border border-gray-200 dark:border-gray-700 col-span-2 sm:col-span-1"
         >
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-              <Mic className="w-5 h-5 text-green-600 dark:text-green-400" />
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
+              <Mic className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
             </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="min-w-0">
+              <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
                 {overallProgress.answeredQuestions}
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">
                 Questions Answered
               </p>
             </div>
@@ -120,20 +120,20 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white"
+        className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-4 sm:p-6 text-white"
       >
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <h2 className="text-xl font-semibold mb-1">
+            <h2 className="text-lg sm:text-xl font-semibold mb-1">
               Ready to continue?
             </h2>
-            <p className="text-white/80">
+            <p className="text-sm sm:text-base text-white/80">
               Pick up where you left off or start a new category
             </p>
           </div>
           <Link
             to="/app/questions"
-            className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 rounded-lg px-4 py-2.5 font-medium transition-colors"
+            className="flex items-center justify-center space-x-2 bg-white/20 hover:bg-white/30 rounded-lg px-4 py-2.5 font-medium transition-colors min-h-[44px] w-full sm:w-auto"
           >
             <Play className="w-5 h-5" />
             <span>Continue</span>
@@ -146,13 +146,13 @@ export default function DashboardPage() {
 
       {/* Categories */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
           Categories
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {displayCategories.slice(0, 9).map((category, index) => {
             const progress = getCategoryProgress(category.id);
-            
+
             return (
               <motion.div
                 key={category.id}
@@ -162,23 +162,23 @@ export default function DashboardPage() {
               >
                 <Link
                   to={`/app/questions/${category.slug}`}
-                  className="block bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700 transition-colors group"
+                  className="block bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700 transition-colors group min-h-[88px]"
                 >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-3">
-                      <span className="text-2xl">{category.icon}</span>
-                      <div>
-                        <h3 className="font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  <div className="flex items-start justify-between mb-2 sm:mb-3">
+                    <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                      <span className="text-xl sm:text-2xl flex-shrink-0">{category.icon}</span>
+                      <div className="min-w-0">
+                        <h3 className="font-medium text-sm sm:text-base text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
                           {category.name}
                         </h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                           {progress.answered}/{progress.total || '?'} answered
                         </p>
                       </div>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" />
                   </div>
-                  
+
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
                     <div
                       className="bg-gradient-to-r from-blue-500 to-purple-500 h-1.5 rounded-full transition-all"
@@ -198,15 +198,15 @@ export default function DashboardPage() {
           >
             <button
               onClick={() => setShowCreateCategory(true)}
-              className="w-full h-full min-h-[120px] bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-5 border-2 border-dashed border-blue-300 dark:border-blue-700 hover:border-blue-400 dark:hover:border-blue-600 transition-colors group flex flex-col items-center justify-center"
+              className="w-full h-full min-h-[88px] sm:min-h-[120px] bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-4 sm:p-5 border-2 border-dashed border-blue-300 dark:border-blue-700 hover:border-blue-400 dark:hover:border-blue-600 transition-colors group flex flex-col items-center justify-center"
             >
-              <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                <Plus className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
               </div>
-              <p className="font-medium text-blue-600 dark:text-blue-400">
+              <p className="font-medium text-sm sm:text-base text-blue-600 dark:text-blue-400">
                 Create Category
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Add your own topics
               </p>
             </button>
@@ -226,7 +226,7 @@ export default function DashboardPage() {
 
       {/* Recent Recordings */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
           Recent Recordings
         </h2>
         {recordingsLoading ? (

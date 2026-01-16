@@ -1,9 +1,10 @@
 /**
  * Browser-compatible Shamir's Secret Sharing implementation
- * Uses a simple XOR-based approach for demonstration.
- * 
- * NOTE: This is a SIMPLIFIED implementation for MVP.
- * For production, consider: @stablelib/secret-sharing or implement full Lagrange interpolation.
+ *
+ * TODO: Replace with proper cryptographic implementation
+ * This is a SIMPLIFIED version that embeds the secret in each share for demo purposes.
+ * For production, use @stablelib/secret-sharing or implement full GF(256) Lagrange interpolation.
+ * See /apps/mobile/src/lib/secretSharing.ts for a proper implementation.
  */
 
 export interface KeyShare {

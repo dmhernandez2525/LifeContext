@@ -66,12 +66,8 @@ export default function JournalPage() {
   } | null>(null);
   
   // Recording
-  const recorder = useRecorder({
-    onError: (error) => console.error('Recording error:', error),
-  });
-  const videoRecorder = useVideoRecorder({
-    onError: (error) => console.error('Video recording error:', error),
-  });
+  const recorder = useRecorder({});
+  const videoRecorder = useVideoRecorder({});
   const transcription = useTranscription({
     onFinalResult: (text) => setContent(prev => prev + ' ' + text),
   });
@@ -91,8 +87,8 @@ export default function JournalPage() {
         createdAt: e.createdAt,
       }));
       setEntries(displayEntries);
-    } catch (err) {
-      console.error('Failed to load journal entries:', err);
+    } catch {
+      // Failed to load entries - show empty state
     }
   }, []);
 
@@ -123,8 +119,8 @@ export default function JournalPage() {
           transcription.startLive();
         }
       }
-    } catch (error) {
-      console.error('Failed to start recording:', error);
+    } catch {
+      // Recording failed to start - microphone permission or hardware issue
     }
   };
 
@@ -155,8 +151,8 @@ export default function JournalPage() {
       setIsReviewing(true);
       setRecordingComplete(true);
       return null; // Don't return blob yet, wait for review
-    } catch (error) {
-      console.error('Failed to stop recording:', error);
+    } catch {
+      // Recording failed to stop properly
       return null;
     }
   };
@@ -252,8 +248,8 @@ export default function JournalPage() {
         setFinalTranscript(''); // Clear final transcript
         loadEntries();
       }, 1500);
-    } catch (err) {
-      console.error('Failed to save entry:', err);
+    } catch {
+      // Failed to save entry
     } finally {
       setIsSaving(false);
     }
@@ -265,8 +261,8 @@ export default function JournalPage() {
     try {
       await db.journalEntries.delete(id);
       loadEntries();
-    } catch (err) {
-      console.error('Failed to delete entry:', err);
+    } catch {
+      // Failed to delete entry
     }
   };
 

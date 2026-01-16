@@ -99,28 +99,35 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Mobile header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-3 sm:px-4"
+        style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))', paddingBottom: '0.75rem' }}
+      >
         <div className="flex items-center justify-between">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="p-2.5 -ml-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            aria-label="Open menu"
           >
             <Menu className="w-5 h-5" />
           </button>
-          <h1 className="text-lg font-semibold">Life Context</h1>
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-            title={isDark ? 'Light mode' : 'Dark mode'}
-          >
-            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
-          <button
-            onClick={lock}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Lock className="w-5 h-5" />
-          </button>
+          <h1 className="text-base sm:text-lg font-semibold truncate px-2">Life Context</h1>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 min-w-[44px] min-h-[44px] flex items-center justify-center"
+              title={isDark ? 'Light mode' : 'Dark mode'}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+            <button
+              onClick={lock}
+              className="p-2.5 -mr-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 min-w-[44px] min-h-[44px] flex items-center justify-center"
+              aria-label="Lock app"
+            >
+              <Lock className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -142,7 +149,9 @@ export default function AppLayout() {
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between px-4 py-5 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between px-4 py-4 sm:py-5 border-b border-gray-200 dark:border-gray-700"
+            style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
+          >
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                 <span className="text-white font-bold text-sm">LC</span>
@@ -151,14 +160,15 @@ export default function AppLayout() {
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="lg:hidden p-2 -mr-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 min-w-[44px] min-h-[44px] flex items-center justify-center"
+              aria-label="Close menu"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-3 py-4 space-y-1">
+          <nav className="flex-1 px-3 py-3 sm:py-4 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
               const isActive = item.exact
                 ? location.pathname === item.path
@@ -170,13 +180,13 @@ export default function AppLayout() {
                   to={item.path}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
-                    'flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors',
+                    'flex items-center space-x-3 px-3 py-3 sm:py-2.5 rounded-lg transition-colors min-h-[44px]',
                     isActive
                       ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
                       : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   )}
                 >
-                  <item.icon className="w-5 h-5" />
+                  <item.icon className="w-5 h-5 flex-shrink-0" />
                   <span className="font-medium">{item.label}</span>
                 </NavLink>
               );
@@ -184,10 +194,12 @@ export default function AppLayout() {
           </nav>
 
           {/* Footer */}
-          <div className="px-3 py-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="px-3 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700"
+            style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
+          >
             <button
               onClick={lock}
-              className="flex items-center space-x-3 w-full px-3 py-2.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="flex items-center space-x-3 w-full px-3 py-3 sm:py-2.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[44px]"
             >
               <Lock className="w-5 h-5" />
               <span className="font-medium">Lock</span>
@@ -197,8 +209,8 @@ export default function AppLayout() {
       </aside>
 
       {/* Main content */}
-      <main className="lg:ml-64 min-h-screen pt-16 lg:pt-0">
-        <div className="p-4 lg:p-8">
+      <main className="lg:ml-64 min-h-screen min-h-[100dvh] pt-[60px] lg:pt-0">
+        <div className="p-3 sm:p-4 lg:p-8 pb-safe">
           <Outlet />
         </div>
       </main>

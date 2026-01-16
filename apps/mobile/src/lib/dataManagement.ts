@@ -69,8 +69,8 @@ export async function exportAllData(): Promise<string | null> {
     }
 
     return filePath;
-  } catch (error) {
-    console.error('Export failed:', error);
+  } catch {
+    // Export failed - file system or sharing error
     return null;
   }
 }
@@ -153,12 +153,12 @@ export async function importData(): Promise<{ success: boolean; message: string 
       }
     }
 
-    return { 
-      success: true, 
-      message: `Successfully imported ${imported} items` 
+    return {
+      success: true,
+      message: `Successfully imported ${imported} items`
     };
-  } catch (error) {
-    console.error('Import failed:', error);
+  } catch {
+    // Import failed - invalid file or parse error
     return { success: false, message: 'Failed to import data' };
   }
 }
@@ -209,8 +209,7 @@ export async function deleteAllRecordings(): Promise<boolean> {
       await storage.deleteRecording(recording.id);
     }
     return true;
-  } catch (error) {
-    console.error('Failed to delete recordings:', error);
+  } catch {
     return false;
   }
 }
@@ -222,8 +221,7 @@ export async function deleteAllJournals(): Promise<boolean> {
       await storage.deleteJournalEntry(journal.id);
     }
     return true;
-  } catch (error) {
-    console.error('Failed to delete journals:', error);
+  } catch {
     return false;
   }
 }
@@ -235,8 +233,7 @@ export async function deleteAllBrainDumps(): Promise<boolean> {
       await storage.deleteBrainDump(dump.id);
     }
     return true;
-  } catch (error) {
-    console.error('Failed to delete brain dumps:', error);
+  } catch {
     return false;
   }
 }
@@ -246,15 +243,14 @@ export async function deleteAllData(): Promise<boolean> {
     await deleteAllRecordings();
     await deleteAllJournals();
     await deleteAllBrainDumps();
-    
+
     const tasks = storage.getTasks();
     for (const task of tasks) {
       storage.deleteTask(task.id);
     }
-    
+
     return true;
-  } catch (error) {
-    console.error('Failed to delete all data:', error);
+  } catch {
     return false;
   }
 }

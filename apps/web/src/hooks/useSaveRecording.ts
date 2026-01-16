@@ -1,6 +1,8 @@
 /**
- * useSaveRecording - Simple hook to save recordings to IndexedDB
- * Does not require encryption key (for MVP - in production, encrypt transcripts)
+ * useSaveRecording - Hook to save recordings to IndexedDB
+ *
+ * TODO: Implement proper AES-256-GCM encryption for transcripts
+ * Currently using base64 encoding as placeholder - see security.ts for encryption utilities
  */
 import { useCallback, useState } from 'react';
 import { saveRecording, type StoredRecording } from '@lcc/storage';
@@ -31,8 +33,8 @@ export function useSaveRecording() {
         duration: data.duration,
         audioBlob: data.audioBlob,
         waveformData: JSON.stringify(data.waveformData || []),
-        // For MVP, store transcript as pseudo-encrypted placeholder
-        // In production, this would be properly encrypted with the user's key
+        // TODO: Encrypt transcript with user's derived key using AES-256-GCM
+        // Currently using base64 encoding as placeholder
         transcriptionText: data.transcript ? {
           version: 1,
           algorithm: 'AES-256-GCM' as const,
@@ -49,7 +51,6 @@ export function useSaveRecording() {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to save recording';
       setError(message);
-      console.error('Save recording error:', err);
       return null;
     } finally {
       setIsSaving(false);
