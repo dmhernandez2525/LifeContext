@@ -3,7 +3,7 @@ version: "1"
 
 services:
   - type: web
-    name: life-context-web
+    name: life-context-site
     runtime: static
     buildCommand: |
       npm install -g pnpm@9.15.0
