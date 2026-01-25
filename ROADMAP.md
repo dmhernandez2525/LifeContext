@@ -138,6 +138,78 @@ Create the world's most comprehensive, private, and intelligent life documentati
 
 ---
 
+---
+
+## v1.0.0 - Conversational Brain Dump (PersonaPlex Integration) 🎤
+
+### Overview
+
+Integrate NVIDIA's PersonaPlex full duplex AI to enable natural, conversational brain dumps. Instead of speaking into a void and waiting for AI synthesis later, users will have a real-time conversation that guides, prompts, and acknowledges them as they speak.
+
+### What is PersonaPlex?
+
+PersonaPlex is NVIDIA's open-source **full duplex** conversational AI:
+- **Full Duplex**: Listens and speaks simultaneously
+- **Back-channeling**: Says "uh-huh", "got it", "that sounds tough" while you speak
+- **Near-zero latency**: <500ms response time
+- **Open source**: Apache 2.0 license
+
+### Current Brain Dump Experience
+```
+User speaks → [silence] → Transcription → [wait] → AI synthesis later
+```
+
+### With PersonaPlex
+```
+User: "I've been feeling really stressed about work lately..."
+PersonaPlex: "Uh-huh..." [continues listening]
+User: "...and I don't know if I should talk to my manager about it"
+PersonaPlex: "That sounds frustrating. What specifically about work is stressing you out?"
+User: "Mostly the deadlines, they keep moving them up"
+PersonaPlex: "Unrealistic deadlines can be really challenging. Have you experienced this before?"
+User: "Yeah, actually, now that you mention it..."
+[continues conversation, eventually synthesizes into journal entry]
+```
+
+### Features
+
+| Feature | Description |
+|---------|-------------|
+| **Active Listening** | Back-channeling ("uh-huh", "right", "that's interesting") |
+| **Guided Prompts** | Asks follow-up questions to draw out details |
+| **Mood Detection** | Recognizes emotional tone and responds empathetically |
+| **Natural Interruption** | User can change topic mid-thought |
+| **Smart Categorization** | Suggests categories as you speak ("This sounds like it could go under Career...") |
+| **Memory Prompts** | "You mentioned something similar last week..." |
+
+### Implementation Milestones
+
+| Milestone | Description | Effort |
+|-----------|-------------|--------|
+| M1 | PersonaPlex server deployment | 1 week |
+| M2 | Audio stream integration with web app | 1 week |
+| M3 | Conversational agent prompt engineering | 1 week |
+| M4 | Integration with existing transcription pipeline | 1 week |
+| M5 | Mobile app support | 2 weeks |
+| M6 | Testing and refinement | 1 week |
+
+### Privacy Considerations
+
+- PersonaPlex runs 100% locally on user's machine
+- No cloud processing - maintains LifeContext's privacy-first architecture
+- Compatible with existing AES-256-GCM encryption
+- Audio never leaves the device
+
+### Hardware Requirements
+
+| Component | Minimum | Recommended |
+|-----------|---------|-------------|
+| VRAM | 24GB | 32GB+ |
+| RAM | 32GB | 64GB |
+| GPU | Apple M2 Pro | M2 Max |
+
+---
+
 ## Long-term Vision 🔮
 
 ### AI Insights Engine
