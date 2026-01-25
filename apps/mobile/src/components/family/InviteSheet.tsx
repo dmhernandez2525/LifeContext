@@ -1,10 +1,11 @@
 
-import { View, Text, TouchableOpacity, Share } from 'react-native';
-import { useMemo } from 'react';
+import { View, Text, TouchableOpacity, Share, Platform } from 'react-native';
+import { useMemo, useState, useCallback } from 'react';
 import QRCode from 'react-native-qrcode-svg';
 import * as Clipboard from 'expo-clipboard';
+import * as Haptics from 'expo-haptics';
 import { BaseBottomSheet } from '@/components/navigation/BottomSheets/BaseBottomSheet';
-import { Copy, Share as ShareIcon, X } from 'lucide-react-native';
+import { Copy, Check, Share as ShareIcon, X } from 'lucide-react-native';
 
 // Generate a random invite code
 function generateInviteCode(): string {
@@ -26,11 +27,17 @@ export const InviteSheet = ({ isVisible, onClose, inviteCode: providedCode }: In
   // For now, generate a random code per session (should be persisted and validated server-side)
   const inviteCode = useMemo(() => providedCode || generateInviteCode(), [providedCode]);
   const inviteLink = `https://lifecontext.app/join/family/${inviteCode}`;
+  const [copied, setCopied] = useState(false);
 
-  const handleCopy = async () => {
+  const handleCopy = useCallback(async () => {
     await Clipboard.setStringAsync(inviteLink);
-    // TODO: Show toast notification confirming copy
-  };
+    setCopied(true);
+    if (Platform.OS !== 'web') {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+    // Reset after 2 seconds
+    setTimeout(() => setCopied(false), 2000);
+  }, [inviteLink]);
 
   const handleShare = async () => {
     try {
@@ -84,14 +91,25 @@ export const InviteSheet = ({ isVisible, onClose, inviteCode: providedCode }: In
 
         {/* Action Buttons */}
         <View className="flex-row gap-4 mb-6">
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={handleCopy}
-            className="flex-1 flex-row items-center justify-center bg-gray-100 dark:bg-zinc-800 h-14 rounded-2xl"
+            className={`flex-1 flex-row items-center justify-center h-14 rounded-2xl ${copied ? 'bg-green-100 dark:bg-green-900/30' : 'bg-gray-100 dark:bg-zinc-800'}`}
           >
-            <Copy size={20} color="#71717a" className="mr-2" />
-            <Text className="font-semibold text-gray-700 dark:text-gray-300">
-              Copy Link
-            </Text>
+            {copied ? (
+              <>
+                <Check size={20} color="#22c55e" className="mr-2" />
+                <Text className="font-semibold text-green-600 dark:text-green-400">
+                  Copied!
+                </Text>
+              </>
+            ) : (
+              <>
+                <Copy size={20} color="#71717a" className="mr-2" />
+                <Text className="font-semibold text-gray-700 dark:text-gray-300">
+                  Copy Link
+                </Text>
+              </>
+            )}
           </TouchableOpacity>
 
           <TouchableOpacity 
