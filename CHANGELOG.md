@@ -5,6 +5,21 @@ All notable changes to the Life Context Compiler project will be documented in t
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+#### F5.1 Onboarding Refinement
+- Refactored onboarding into modular components under `apps/web/src/components/onboarding/`
+- Added skip confirmation dialog before onboarding can be bypassed
+- Added intent-based personalized onboarding paths for journaling, therapy, and legacy use cases
+- Added quick-start mode for minimal onboarding setup
+- Added onboarding progress persistence and resume support via localStorage draft state
+- Added onboarding analytics session tracking with completion, skip, drop-off, and per-step timing data
+- Added contextual per-step help tooltip explaining why each setup choice matters
+- Added onboarding summary step that reflects configured options before entering the app
+- Added stronger onboarding E2E coverage for skip confirmation, progress persistence, personalized paths, and completion analytics
+
 ## [0.4.1] - 2026-01-12
 
 ### Added
