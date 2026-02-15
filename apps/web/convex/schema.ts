@@ -65,4 +65,56 @@ export default defineSchema({
   })
     .index('by_status', ['status'])
     .index('by_priority', ['priority']),
+
+  // Voice-docs conversations for in-app help assistant
+  voiceDocConversations: defineTable({
+    sessionId: v.string(),
+    userId: v.optional(v.string()),
+    appSection: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_session', ['sessionId'])
+    .index('by_updated', ['updatedAt']),
+
+  voiceDocMessages: defineTable({
+    conversationId: v.id('voiceDocConversations'),
+    role: v.string(), // 'user' | 'assistant' | 'system'
+    content: v.string(),
+    appSection: v.string(),
+    cacheHit: v.optional(v.boolean()),
+    createdAt: v.number(),
+  })
+    .index('by_conversation', ['conversationId'])
+    .index('by_created', ['createdAt']),
+
+  voiceDocCache: defineTable({
+    cacheKey: v.string(),
+    response: v.string(),
+    appSection: v.string(),
+    createdAt: v.number(),
+    expiresAt: v.number(),
+  })
+    .index('by_cache_key', ['cacheKey'])
+    .index('by_expires', ['expiresAt']),
+
+  voiceDocQuestionAnalytics: defineTable({
+    normalizedQuestion: v.string(),
+    appSection: v.string(),
+    count: v.number(),
+    firstAskedAt: v.number(),
+    lastAskedAt: v.number(),
+  })
+    .index('by_question', ['normalizedQuestion'])
+    .index('by_count', ['count']),
+
+  voiceDocRateLimits: defineTable({
+    sessionId: v.string(),
+    windowStart: v.number(),
+    requestCount: v.number(),
+    blockedUntil: v.optional(v.number()),
+    updatedAt: v.number(),
+  })
+    .index('by_session', ['sessionId'])
+    .index('by_updated', ['updatedAt']),
 });
