@@ -95,6 +95,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F8.3 Data Broker Opt-Out
+- Added data broker database with 10 major brokers (Spokeo, Whitepages, BeenVerified, Intelius, PeopleFinders, Acxiom, LexisNexis, Epsilon, Oracle, TruthFinder)
+- Added BrokerCard component with expandable opt-out instructions, difficulty badges, and data type chips
+- Added OptOutProgress component with exposure level indicator and difficulty breakdown
+- Added DataBrokerOptOutPage with category filtering, sort controls, and three-column layout
+- Added brokerOptOuts tracking and markBrokerOptOut action to data reclamation store
+- Registered /app/data-broker-optout route
+
 #### F8.2 GDPR Automation
 - Added deadline tracking library with per-platform deadlines (30/45 days) and overdue detection
 - Added ComplianceDashboard component with compliance rate, avg response time, and status breakdown

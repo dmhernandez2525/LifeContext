@@ -43,7 +43,8 @@ interface DataReclamationState {
   
   // Data Broker
   brokerProfiles: DataBrokerProfile[];
-  
+  brokerOptOuts: string[]; // broker names that have been opted out
+
   // Actions
   addBrowserHistory: (items: BrowserHistoryItem[]) => void;
   setCookieDomains: (domains: string[]) => void;
@@ -52,6 +53,7 @@ interface DataReclamationState {
   updateGDPRStatus: (id: string, status: GDPRRequest['status']) => void;
   markGDPRReceived: (id: string) => void;
   addBrokerProfile: (profile: DataBrokerProfile) => void;
+  markBrokerOptOut: (brokerName: string) => void;
   clearAllData: () => void;
 }
 
@@ -63,6 +65,7 @@ export const useDataReclamationStore = create<DataReclamationState>()(
       bookmarks: [],
       gdprRequests: [],
       brokerProfiles: [],
+      brokerOptOuts: [],
 
       addBrowserHistory: (items) =>
         set((state) => ({
@@ -97,6 +100,13 @@ export const useDataReclamationStore = create<DataReclamationState>()(
           brokerProfiles: [...state.brokerProfiles, profile],
         })),
 
+      markBrokerOptOut: (brokerName) =>
+        set((state) => ({
+          brokerOptOuts: state.brokerOptOuts.includes(brokerName)
+            ? state.brokerOptOuts
+            : [...state.brokerOptOuts, brokerName],
+        })),
+
       clearAllData: () =>
         set({
           browserHistory: [],
@@ -104,6 +114,7 @@ export const useDataReclamationStore = create<DataReclamationState>()(
           bookmarks: [],
           gdprRequests: [],
           brokerProfiles: [],
+          brokerOptOuts: [],
         }),
     }),
     {
