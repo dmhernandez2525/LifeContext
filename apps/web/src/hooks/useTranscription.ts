@@ -156,21 +156,25 @@ export function useTranscription(options: UseTranscriptionOptions = {}): UseTran
     }
 
     try {
-      // @ts-expect-error - Browser API not fully typed
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      
+      const win = window as unknown as Record<string, unknown>;
+      const SpeechRecognitionCtor = (win.SpeechRecognition ?? win.webkitSpeechRecognition) as (new () => SpeechRecognitionInstance) | undefined;
+      if (!SpeechRecognitionCtor) {
+        setError('Web Speech API not available');
+        return;
+      }
+      const recognition = new SpeechRecognitionCtor();
+
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.lang = 'en-US';
 
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
+      recognition.onresult = (event) => {
         let interim = '';
-        
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const result = event.results[i];
-          const text = result[0].transcript;
-          
+          const text = result[0]?.transcript ?? '';
+
           if (result.isFinal) {
             setTranscript(prev => prev + text + ' ');
             options.onFinalResult?.(text);
@@ -178,16 +182,17 @@ export function useTranscription(options: UseTranscriptionOptions = {}): UseTran
             interim += text;
           }
         }
-        
+
         setInterimTranscript(interim);
         if (interim) {
           options.onInterimResult?.(interim);
         }
       };
 
-      recognition.onerror = (event: { error: string }) => {
-        const err = new Error(event.error);
-        setError(event.error);
+      recognition.onerror = (event) => {
+        const errorMessage = event.error;
+        const err = new Error(errorMessage);
+        setError(errorMessage);
         options.onError?.(err);
       };
 

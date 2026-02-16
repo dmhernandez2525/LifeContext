@@ -2,6 +2,7 @@ import * as QuickActions from 'expo-quick-actions';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import { Router } from 'expo-router';
+import { useSecurityStore } from '../store/useSecurityStore';
 
 /**
  * Configure dynamic quick actions for the home screen
@@ -31,6 +32,12 @@ export function configureQuickActions() {
       id: 'journal',
       params: { href: '/(tabs)/journal' },
     },
+    {
+      title: 'Lock Now',
+      subtitle: 'Secure the app immediately',
+      icon: 'lock',
+      id: 'lock_now',
+    },
   ]);
 }
 
@@ -38,10 +45,17 @@ export function configureQuickActions() {
  * Handle quick action selection
  */
 export function useQuickActionRouting(router: Router) {
+  const lockNow = useSecurityStore((state) => state.lockNow);
+
   useEffect(() => {
     let isMounted = true;
 
     const handleAction = (action: QuickActions.Action) => {
+      if (action?.id === 'lock_now') {
+        lockNow();
+        return;
+      }
+
       if (action?.params?.href) {
         // Small delay to ensure navigation is ready
         setTimeout(() => {
@@ -71,5 +85,5 @@ export function useQuickActionRouting(router: Router) {
       isMounted = false;
       subscription.remove();
     };
-  }, [router]);
+  }, [lockNow, router]);
 }

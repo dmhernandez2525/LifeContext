@@ -96,9 +96,9 @@ export const buildOnboardingSteps = (
 
   const ids: OnboardingStepId[] = [...intro, ...middle, 'summary'];
 
-  const normalizedIds =
+  const normalizedIds: OnboardingStepId[] =
     variant === 'streamlined' && mode === 'full' && !ids.includes('extension')
-      ? [...ids.slice(0, -1), 'extension', 'summary']
+      ? [...ids.slice(0, -1), 'extension' as const, 'summary' as const]
       : ids;
 
   return normalizedIds.map((id) => ({

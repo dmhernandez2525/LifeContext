@@ -31,11 +31,9 @@ interface SpeechRecognitionLike extends EventTarget {
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
 
-declare global {
-  interface Window {
-    SpeechRecognition?: SpeechRecognitionConstructor;
-    webkitSpeechRecognition?: SpeechRecognitionConstructor;
-  }
+interface WindowWithSpeech {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
 }
 
 interface StartListeningOptions {
@@ -57,7 +55,8 @@ const getRecognitionConstructor = (): SpeechRecognitionConstructor | null => {
     return null;
   }
 
-  return window.SpeechRecognition ?? window.webkitSpeechRecognition ?? null;
+  const win = window as WindowWithSpeech;
+  return win.SpeechRecognition ?? win.webkitSpeechRecognition ?? null;
 };
 
 export const useSpeechRecognition = (): UseSpeechRecognitionResult => {
