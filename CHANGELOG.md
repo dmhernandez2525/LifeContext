@@ -95,6 +95,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F10.3 Journey Import
+- Added Journey app JSON export parser with numeric mood mapping and dual format support (object/array)
+- Added JourneyImport component with drag-and-drop upload reusing shared ImportPreview
+- Activated Journey tab in ImportPage with full import flow
+
 #### F10.2 Day One Import
 - Added Day One JSON export parser with entry validation, mood inference, and location/weather extraction
 - Added shared import types and import handler with IndexedDB storage and deduplication via source tags

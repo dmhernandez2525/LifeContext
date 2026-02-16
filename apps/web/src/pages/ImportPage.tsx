@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, BookOpen, Info } from 'lucide-react';
-import { DayOneImport } from '@/components/import';
+import { DayOneImport, JourneyImport } from '@/components/import';
 import { importEntries } from '@/lib/importers/importHandler';
 import type { ParsedEntry, ImportResult, ImportSource } from '@/lib/importers/types';
 import { SOURCE_LABELS } from '@/lib/importers/types';
@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 
 const SOURCES: { id: ImportSource; description: string; available: boolean }[] = [
   { id: 'dayone', description: 'Import from Day One JSON export', available: true },
-  { id: 'journey', description: 'Import from Journey app export', available: false },
+  { id: 'journey', description: 'Import from Journey app export', available: true },
   { id: 'apple-notes', description: 'Import from Apple Notes export', available: false },
 ];
 
@@ -76,7 +76,7 @@ export default function ImportPage() {
       {/* Active importer */}
       <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
         {activeSource === 'dayone' && <DayOneImport onImport={handleImport} />}
-        {activeSource === 'journey' && <ComingSoon name="Journey" />}
+        {activeSource === 'journey' && <JourneyImport onImport={handleImport} />}
         {activeSource === 'apple-notes' && <ComingSoon name="Apple Notes" />}
       </div>
     </motion.div>
