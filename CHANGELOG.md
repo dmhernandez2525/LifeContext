@@ -43,6 +43,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added "Lock Now" home screen quick action via expo-quick-actions integration
 - Added full security settings page with biometric toggle, timeout selector, session list, and activity log
 
+#### F6.2 Mobile Dashboard
+- Refactored monolithic 583-line dashboard into 14 modular components, each under 300 lines
+- Added daily summary card displaying today's mood, energy level, and entry count
+- Added 7-day streak heatmap with per-day entry counts and mood indicator dots
+- Added life score widget with five progress-bar dimensions (Reflection, Expression, Goals, Wellbeing, Consistency)
+- Added customizable card layout via useDashboardStore with visibility toggling and reordering
+- Added pull-to-refresh with haptic feedback via RefreshControl integration
+- Added daily rotating thought-of-the-day and suggested prompt cards
+- Added deep linking from dashboard cards to recording, journal, brain dump, insights, and timeline screens
+
 ## [0.4.1] - 2026-01-12
 
 ### Added
