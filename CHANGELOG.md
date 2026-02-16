@@ -95,6 +95,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F11.3 Photo Integration
+- Added photo manager library with metadata extraction, date grouping, monthly counts, and file validation
+- Added photo store with batch upload, caption editing, tagging, and journal entry linking
+- Added PhotoGrid with date-grouped responsive gallery and click-to-expand detail modal with captioning
+- Added PhotoUploader with drag-and-drop multi-file upload at `/app/photos`
+
 #### F11.2 Location Context
 - Added location context library with Haversine distance, place proximity detection, and visit summaries
 - Added location store with entry tracking, saved places management, and visit counting
