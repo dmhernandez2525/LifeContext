@@ -164,7 +164,7 @@ export default function SearchBar({
   };
 
   return (
-    <div ref={containerRef} className={cn("relative", className)}>
+    <div ref={containerRef} className={cn("relative", className)} data-help-search="global">
       <div className={cn(
         "relative flex items-center",
         compact ? "w-40 md:w-64" : "w-full"

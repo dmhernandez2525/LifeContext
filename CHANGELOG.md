@@ -28,6 +28,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added HTTP endpoints for voice-docs respond, summarize, and popular-question queries
 - Wired web Ask Docs assistant to use the backend service layer with section-aware context payloads
 
+#### F5.3 Voice-Docs Navigation
+- Added command parsing and route targeting for natural language navigation in Ask Docs
+- Added contextual help suggestions and breadcrumb-aware help context labels
+- Added guided walkthrough overlays with spotlighted UI steps and quick-action triggers
+- Added deep-link search command routing for settings, journal, and question jump targets
+- Added command palette access for fast page navigation with fuzzy target filtering
+- Added persistent help history panel with replay and clear actions
+- Added section-based feature discovery prompts for first-time help interactions
+- Added E2E coverage for navigation commands, contextual suggestions, walkthrough progression, deep-link routing, and keyboard shortcut opening
+
 ## [0.4.1] - 2026-01-12
 
 ### Added

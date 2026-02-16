@@ -166,6 +166,7 @@ export default function AppLayout() {
                 <NavLink
                   key={item.path}
                   to={item.path}
+                  data-help-nav={item.path}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
                     'flex items-center space-x-3 px-3 py-3 sm:py-2.5 rounded-lg transition-colors min-h-[44px]',
