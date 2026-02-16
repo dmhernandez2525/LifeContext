@@ -95,6 +95,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F9.3 Key Rotation
+- Added key rotation library with salt regeneration, passcode re-hashing, and re-encryption helpers
+- Added KeyRotationPanel with rotation status indicator, configurable reminder interval, and passcode-verified rotation flow
+- Added isRotationDue and getRotationAge utilities for rotation schedule tracking
+
 #### F9.2 Duress Password
 - Added duress mode library with session-scoped activation and decoy journal entries, stats, and brain dumps
 - Added DuressSetup component with password configuration, validation against real passcode, and disable option
