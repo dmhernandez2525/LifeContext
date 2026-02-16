@@ -95,6 +95,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F8.4 Chrome Extension Enhancement
+- Added settings panel with configurable history lookback (1/3/5/10 years) and per-data-type export toggles
+- Added auto-export scheduling via Chrome Alarms API with daily, weekly, and monthly intervals
+- Added settings persistence via chrome.storage.local with defaults applied on install
+- Added last-export timestamp display on popup open
+- Refactored background.js message listener to handler lookup table pattern
+- Bumped extension version to 1.1.0 with alarms permission
+
 #### F8.3 Data Broker Opt-Out
 - Added data broker database with 10 major brokers (Spokeo, Whitepages, BeenVerified, Intelius, PeopleFinders, Acxiom, LexisNexis, Epsilon, Oracle, TruthFinder)
 - Added BrokerCard component with expandable opt-out instructions, difficulty badges, and data type chips
