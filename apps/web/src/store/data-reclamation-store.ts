@@ -46,6 +46,8 @@ interface DataReclamationState {
   
   // Actions
   addBrowserHistory: (items: BrowserHistoryItem[]) => void;
+  setCookieDomains: (domains: string[]) => void;
+  setBookmarks: (bookmarks: Array<{ url: string; title: string; folder?: string }>) => void;
   addGDPRRequest: (request: GDPRRequest) => void;
   updateGDPRStatus: (id: string, status: GDPRRequest['status']) => void;
   addBrokerProfile: (profile: DataBrokerProfile) => void;
@@ -65,6 +67,10 @@ export const useDataReclamationStore = create<DataReclamationState>()(
         set((state) => ({
           browserHistory: [...state.browserHistory, ...items],
         })),
+
+      setCookieDomains: (domains) => set({ cookieDomains: domains }),
+
+      setBookmarks: (bookmarks) => set({ bookmarks }),
 
       addGDPRRequest: (request) =>
         set((state) => ({
