@@ -95,6 +95,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F12.1 Conversational Interface
+- Added PersonaPlex AI engine with context-aware system prompts and local pattern-matching responses
+- Added chat store with conversation management, auto-titling, and message persistence
+- Added ChatMessageBubble with role-specific styling, ChatInput with auto-resize textarea
+- Added ConversationList sidebar and PersonaPlexPage at `/app/persona-plex`
+
 #### F11.4 On This Day
 - Added "On This Day" memory engine matching journals, photos, and health data by month/day across years
 - Added OnThisDayCard with type-specific styling, year labels, photo thumbnails, and mood badges
