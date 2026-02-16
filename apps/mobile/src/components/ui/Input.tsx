@@ -62,6 +62,8 @@ export function Input({
           `}
           placeholderTextColor="#94a3b8"
           style={{ fontFamily: 'Inter_400Regular' }}
+          accessibilityLabel={label || props.placeholder}
+          accessibilityState={error ? { disabled: false } : undefined}
           {...props}
         />
 
@@ -73,9 +75,10 @@ export function Input({
       </View>
 
       {error && (
-        <Text 
+        <Text
           className="text-red-400 text-sm mt-1"
           style={{ fontFamily: 'Inter_400Regular' }}
+          accessibilityRole="alert"
         >
           {error}
         </Text>

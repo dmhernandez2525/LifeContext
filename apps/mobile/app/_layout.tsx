@@ -18,6 +18,7 @@ import { SpaceMono_400Regular } from '@expo-google-fonts/space-mono';
 
 import { TabBarProvider } from '../src/context/TabBarContext';
 import { AppLockProvider } from '../src/components/security/AppLockProvider';
+import { OfflineBanner } from '../src/components/ui/OfflineBanner';
 import { configureQuickActions, useQuickActionRouting } from '../src/lib/quickActions';
 
 // Keep the splash screen visible while we initialize
@@ -64,6 +65,7 @@ export default function RootLayout() {
           <AppLockProvider>
             <TabBarProvider>
               <StatusBar style="light" />
+              <OfflineBanner />
               <Stack
                 screenOptions={{
                   headerStyle: {
