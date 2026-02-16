@@ -88,6 +88,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added full-text search across feature titles and descriptions
 - Added comment system with optional author name and character limits
 
+#### F7.3 Voting System
+- Added multi-mode sorting: Hot, Trending, Top, Newest, and Controversial with toggle controls
+- Added hot score algorithm combining vote ratio, volume, and recency with gravity decay
+- Added trending velocity algorithm based on vote rate per day over a 7-day window
+- Added vote analytics dashboard with approval rate, category breakdown, and total counts
+- Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
+
 ## [0.4.1] - 2026-01-12
 
 ### Added

@@ -3,19 +3,30 @@
  * Uses modular components and local fallback hook for demo mode.
  */
 import { useState, useMemo } from 'react';
-import { Lightbulb, Filter, Search } from 'lucide-react';
+import { Lightbulb, Filter, Search, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLocalFeatureRequests } from '@/hooks/useConvexFeatures';
 import { FeatureCard, SubmitFeatureModal, FeatureDetailModal } from '@/components/features';
+import { VoteLeaderboard } from '@/components/features/VoteLeaderboard';
 import type { Comment } from '@/components/features';
+import { sortFeatures, type SortMode } from '@/lib/featureScoring';
 
 const CATEGORIES = ['all', 'feature', 'integration', 'ui', 'bug', 'other'];
 const STATUSES = ['all', 'pending', 'planned', 'in_progress', 'completed'];
+const SORT_OPTIONS: { value: SortMode; label: string }[] = [
+  { value: 'hot', label: 'Hot' },
+  { value: 'trending', label: 'Trending' },
+  { value: 'top', label: 'Top' },
+  { value: 'newest', label: 'Newest' },
+  { value: 'controversial', label: 'Controversial' },
+];
 
 export default function FeatureRequestPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortMode, setSortMode] = useState<SortMode>('hot');
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [selectedFeatureId, setSelectedFeatureId] = useState<string | null>(null);
   const [localComments, setLocalComments] = useState<Record<string, Comment[]>>({});
@@ -28,13 +39,16 @@ export default function FeatureRequestPage() {
   } = useLocalFeatureRequests({ status: selectedStatus, category: selectedCategory });
 
   const filteredFeatures = useMemo(() => {
-    if (!searchQuery.trim()) return features;
-    const lower = searchQuery.toLowerCase();
-    return features.filter(f =>
-      f.title.toLowerCase().includes(lower) ||
-      f.description.toLowerCase().includes(lower)
-    );
-  }, [features, searchQuery]);
+    let result = features;
+    if (searchQuery.trim()) {
+      const lower = searchQuery.toLowerCase();
+      result = result.filter(f =>
+        f.title.toLowerCase().includes(lower) ||
+        f.description.toLowerCase().includes(lower)
+      );
+    }
+    return sortFeatures(result, sortMode);
+  }, [features, searchQuery, sortMode]);
 
   const selectedFeature = useMemo(
     () => features.find(f => f._id === selectedFeatureId) ?? null,
@@ -84,14 +98,35 @@ export default function FeatureRequestPage() {
             />
           </div>
 
-          <button
-            onClick={() => setShowSubmitModal(true)}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-xl font-medium flex items-center gap-2"
-          >
-            <Lightbulb className="w-4 h-4" />
-            Submit Idea
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowLeaderboard(!showLeaderboard)}
+              className={cn(
+                "px-4 py-2 rounded-xl font-medium flex items-center gap-2 border",
+                showLeaderboard
+                  ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-700"
+                  : "border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+              )}
+            >
+              <BarChart3 className="w-4 h-4" />
+              Stats
+            </button>
+            <button
+              onClick={() => setShowSubmitModal(true)}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-xl font-medium flex items-center gap-2"
+            >
+              <Lightbulb className="w-4 h-4" />
+              Submit Idea
+            </button>
+          </div>
         </div>
+
+        {/* Leaderboard */}
+        {showLeaderboard && (
+          <div className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
+            <VoteLeaderboard features={features} onSelectFeature={setSelectedFeatureId} />
+          </div>
+        )}
 
         {/* Category Filter */}
         <div className="flex flex-wrap gap-2 mb-4">
@@ -132,10 +167,28 @@ export default function FeatureRequestPage() {
           ))}
         </div>
 
-        {/* Results count */}
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          {filteredFeatures.length} feature{filteredFeatures.length !== 1 ? 's' : ''} found
-        </p>
+        {/* Sort and Results */}
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {filteredFeatures.length} feature{filteredFeatures.length !== 1 ? 's' : ''} found
+          </p>
+          <div className="flex gap-1 bg-white dark:bg-gray-800 rounded-lg p-1">
+            {SORT_OPTIONS.map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => setSortMode(opt.value)}
+                className={cn(
+                  "px-3 py-1 rounded-md text-xs font-medium transition-colors",
+                  sortMode === opt.value
+                    ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
+                    : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Feature List */}
         <div className="space-y-4">
