@@ -38,6 +38,7 @@ import FeatureRequestPage from './pages/FeatureRequestPage';
 import PublicRoadmapPage from './pages/PublicRoadmapPage';
 import DataBrokerOptOutPage from './pages/DataBrokerOptOutPage';
 import ImportPage from './pages/ImportPage';
+import HealthPage from './pages/HealthPage';
 import DataReclamationMarketingPage from './pages/DataReclamationMarketingPage';
 import HelpPage from './pages/HelpPage';
 import FamilyPage from './pages/FamilyPage';
@@ -138,6 +139,7 @@ export default function App() {
             <Route path="gdpr-requests" element={<GDPRRequestPage />} />
             <Route path="data-broker-optout" element={<DataBrokerOptOutPage />} />
             <Route path="import" element={<ImportPage />} />
+            <Route path="health" element={<HealthPage />} />
             <Route path="storage-settings" element={<StorageSettingsPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="family" element={<FamilyPage />} />
