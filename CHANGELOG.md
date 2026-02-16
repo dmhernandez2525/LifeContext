@@ -73,6 +73,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced Input component with accessibilityLabel from label/placeholder and error alert role
 - Integrated OfflineBanner at root layout level for app-wide offline indication
 
+#### F7.1 Convex Backend Setup
+- Added ConvexClientProvider with graceful fallback for demo/offline mode when VITE_CONVEX_URL is unset
+- Added anonymous session management via localStorage UUID for vote tracking
+- Added rate-limited feature submission mutation (5 per session per hour)
+- Added admin mutations for feature status updates, soft-delete, and text search
+- Added roadmap CRUD functions with feature-to-roadmap linking and grouped queries
+- Added local fallback hook (useLocalFeatureRequests) with mock data for demo mode
+
 ## [0.4.1] - 2026-01-12
 
 ### Added
