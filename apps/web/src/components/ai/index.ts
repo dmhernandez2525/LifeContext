@@ -4,3 +4,4 @@ export { ConversationList } from './ConversationList';
 export { InsightCard } from './InsightCard';
 export { InsightsFeed } from './InsightsFeed';
 export { ReflectionSessionView } from './ReflectionSession';
+export { SynthesisReport } from './SynthesisReport';

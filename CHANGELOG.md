@@ -95,6 +95,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F12.4 Context Synthesis
+- Added context synthesis engine with journal and health analysis across 4 report periods (week/month/quarter/year)
+- Added SynthesisReport component with collapsible sections, narrative summaries, and bullet highlights
+- Added SynthesisPage with period selector tabs and auto-generation at `/app/synthesis`
+
 #### F12.3 Guided Reflection
 - Added guided reflection engine with 6 categories (gratitude, growth, relationships, health, goals, emotions) and 30 prompts
 - Added ReflectionSessionView with progress tracking, dot navigation, and response text areas
