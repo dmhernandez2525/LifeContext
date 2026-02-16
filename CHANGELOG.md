@@ -95,6 +95,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F11.2 Location Context
+- Added location context library with Haversine distance, place proximity detection, and visit summaries
+- Added location store with entry tracking, saved places management, and visit counting
+- Added LocationTracker with Geolocation API integration, error handling, and detected place display
+- Added PlaceManager with icon selector, configurable radius, and visit history at `/app/location`
+
 #### F11.1 Health Integration
 - Added health metrics library with 6 metric types, daily summaries, goal progress, and weekly averages
 - Added health store with entry management, import deduplication, and custom goal configuration
