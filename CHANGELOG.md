@@ -13,30 +13,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored onboarding into modular components under `apps/web/src/components/onboarding/`
 - Added skip confirmation dialog before onboarding can be bypassed
 - Added intent-based personalized onboarding paths for journaling, therapy, and legacy use cases
-- Added quick-start mode for minimal onboarding setup
-- Added onboarding progress persistence and resume support via localStorage draft state
+- Added quick-start mode for minimal setup with onboarding progress persistence/resume via localStorage draft state
 - Added onboarding analytics session tracking with completion, skip, drop-off, and per-step timing data
-- Added contextual per-step help tooltip explaining why each setup choice matters
-- Added onboarding summary step that reflects configured options before entering the app
+- Added contextual per-step help tooltip and onboarding summary step reflecting configured options before entering the app
 - Added stronger onboarding E2E coverage for skip confirmation, progress persistence, personalized paths, and completion analytics
 
 #### F5.2 Voice-Docs Backend
-- Added Convex voice-docs backend data model for conversations, messages, cache, analytics, and rate limits
-- Added backend action handlers for AI response generation and conversation summarization
+- Added Convex voice-docs backend data model for conversations, messages, cache, analytics, and rate limits, plus action handlers for AI response generation and conversation summarization
 - Added response caching and per-session rate limiting for voice-docs backend requests
 - Added fallback-response behavior and webhook emission for backend quality monitoring events
-- Added HTTP endpoints for voice-docs respond, summarize, and popular-question queries
-- Wired web Ask Docs assistant to use the backend service layer with section-aware context payloads
+- Added HTTP endpoints for voice-docs respond, summarize, and popular-question queries and wired Ask Docs to send section-aware context
 
 #### F5.3 Voice-Docs Navigation
-- Added command parsing and route targeting for natural language navigation in Ask Docs
-- Added contextual help suggestions and breadcrumb-aware help context labels
-- Added guided walkthrough overlays with spotlighted UI steps and quick-action triggers
-- Added deep-link search command routing for settings, journal, and question jump targets
-- Added command palette access for fast page navigation with fuzzy target filtering
-- Added persistent help history panel with replay and clear actions
-- Added section-based feature discovery prompts for first-time help interactions
-- Added E2E coverage for navigation commands, contextual suggestions, walkthrough progression, deep-link routing, and keyboard shortcut opening
+- Added Ask Docs navigation commands, contextual suggestions, breadcrumb-aware context, walkthrough overlays, deep-link search routes, command palette support, and persistent help history
+- Added E2E coverage for command parsing/navigation, contextual suggestion relevance, walkthrough progression, deep-link search routing, and keyboard shortcut opening
+
+#### F5.4 Voice-Docs UX
+- Added draggable/snap-to-edge floating trigger with minimized pill mode, unread notifications, onboarding tooltip, and touch haptic feedback
+- Added spring modal transitions, speech-recognition input with noise hints, quick actions, response feedback tracking, NPS prompting, theme sync, and E2E UX coverage
 
 ## [0.4.1] - 2026-01-12
 
