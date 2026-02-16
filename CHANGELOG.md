@@ -95,6 +95,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F10.1 Retention Policies
+- Added retention policy library with 6 data categories and 7 retention periods (30d to forever)
+- Added retention store with per-category policy management and auto-cleanup scheduling
+- Added RetentionSettings component with category toggles, period selectors, and cleanup controls
+- Default policies: journal/questions = forever, browser history = 1 year, cookies = 90 days
+
 #### F9.4 Dead Man's Switch
 - Added dead man's switch library with status calculation, urgency levels, and trigger detection
 - Added DeadManSwitch component with enable toggle, urgency-colored status card, and "I'm still here" reset button
