@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, BookOpen, Info } from 'lucide-react';
-import { DayOneImport, JourneyImport } from '@/components/import';
+import { DayOneImport, JourneyImport, AppleNotesImport } from '@/components/import';
 import { importEntries } from '@/lib/importers/importHandler';
 import type { ParsedEntry, ImportResult, ImportSource } from '@/lib/importers/types';
 import { SOURCE_LABELS } from '@/lib/importers/types';
@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 const SOURCES: { id: ImportSource; description: string; available: boolean }[] = [
   { id: 'dayone', description: 'Import from Day One JSON export', available: true },
   { id: 'journey', description: 'Import from Journey app export', available: true },
-  { id: 'apple-notes', description: 'Import from Apple Notes export', available: false },
+  { id: 'apple-notes', description: 'Import from Apple Notes export', available: true },
 ];
 
 export default function ImportPage() {
@@ -77,17 +77,8 @@ export default function ImportPage() {
       <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
         {activeSource === 'dayone' && <DayOneImport onImport={handleImport} />}
         {activeSource === 'journey' && <JourneyImport onImport={handleImport} />}
-        {activeSource === 'apple-notes' && <ComingSoon name="Apple Notes" />}
+        {activeSource === 'apple-notes' && <AppleNotesImport onImport={handleImport} />}
       </div>
     </motion.div>
-  );
-}
-
-function ComingSoon({ name }: { name: string }) {
-  return (
-    <div className="text-center py-12">
-      <BookOpen className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-      <p className="text-sm text-gray-500">{name} import coming soon</p>
-    </div>
   );
 }

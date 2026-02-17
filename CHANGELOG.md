@@ -95,6 +95,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F10.4 Apple Notes Import
+- Added Apple Notes HTML/text parser with HTML-to-text conversion, meta tag date extraction, and folder tagging
+- Added AppleNotesImport component with multi-file drag-and-drop upload supporting .html/.htm/.txt
+- Activated Apple Notes tab in ImportPage, completing the unified import hub for all three sources
+
 #### F10.3 Journey Import
 - Added Journey app JSON export parser with numeric mood mapping and dual format support (object/array)
 - Added JourneyImport component with drag-and-drop upload reusing shared ImportPreview
