@@ -95,6 +95,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F10.2 Day One Import
+- Added Day One JSON export parser with entry validation, mood inference, and location/weather extraction
+- Added shared import types and import handler with IndexedDB storage and deduplication via source tags
+- Added ImportPreview component with selectable entry list, date range summary, and batch controls
+- Added DayOneImport component with drag-and-drop upload, file validation, and four-phase import flow
+- Added unified ImportPage with tabbed source selector at `/app/import`
+
 #### F10.1 Retention Policies
 - Added retention policy library with 6 data categories and 7 retention periods (30d to forever)
 - Added retention store with per-category policy management and auto-cleanup scheduling
