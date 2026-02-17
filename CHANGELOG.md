@@ -95,6 +95,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F11.4 On This Day
+- Added "On This Day" memory engine matching journals, photos, and health data by month/day across years
+- Added OnThisDayCard with type-specific styling, year labels, photo thumbnails, and mood badges
+- Added OnThisDayFeed with year-grouped display and empty state
+- Added OnThisDayPage with date navigation at `/app/on-this-day`
+
 #### F11.3 Photo Integration
 - Added photo manager library with metadata extraction, date grouping, monthly counts, and file validation
 - Added photo store with batch upload, caption editing, tagging, and journal entry linking
