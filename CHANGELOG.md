@@ -63,6 +63,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added full notification preferences UI with per-category toggles and quiet hours support
 - Added scheduled notification tracking with 50-entry cap and category-based cancellation
 
+#### F6.4 Mobile Polish
+- Added semantic haptic feedback patterns (success, warning, error, confirm, destructive) with web-safe no-ops
+- Added network status detection hook with web (navigator.onLine) and native (NetInfo/AppState) support
+- Added animated offline banner with FadeInUp/FadeOutUp transitions and screen reader alert role
+- Added swipeable row gesture component with spring animation, configurable threshold, and haptic feedback
+- Added comprehensive accessibility helpers (a11yButton, a11yLink, a11yHeader, a11yImage, a11yToggle, a11yTab, a11yTextInput, a11yProgressBar)
+- Enhanced Button component with accessibilityRole and accessibilityState for disabled tracking
+- Enhanced Input component with accessibilityLabel from label/placeholder and error alert role
+- Integrated OfflineBanner at root layout level for app-wide offline indication
+
 ## [0.4.1] - 2026-01-12
 
 ### Added

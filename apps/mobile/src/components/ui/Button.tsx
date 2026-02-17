@@ -66,6 +66,8 @@ export function Button({
     <TouchableOpacity
       onPress={handlePress}
       disabled={isDisabled}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: isDisabled }}
       className={`
         rounded-xl
         flex-row items-center justify-center
