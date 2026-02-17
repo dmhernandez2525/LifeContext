@@ -81,6 +81,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added roadmap CRUD functions with feature-to-roadmap linking and grouped queries
 - Added local fallback hook (useLocalFeatureRequests) with mock data for demo mode
 
+#### F7.2 Feature Request CRUD
+- Refactored monolithic FeatureRequestPage (417 lines) into modular FeatureCard, SubmitFeatureModal, and FeatureDetailModal components
+- Added feature detail view with full description, voting section, and comment thread with admin badges
+- Added submit modal with duplicate detection warning when similar titles exist
+- Added full-text search across feature titles and descriptions
+- Added comment system with optional author name and character limits
+
 ## [0.4.1] - 2026-01-12
 
 ### Added
