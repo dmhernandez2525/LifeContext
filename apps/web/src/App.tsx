@@ -44,6 +44,7 @@ import PhotosPage from './pages/PhotosPage';
 import OnThisDayPage from './pages/OnThisDayPage';
 import PersonaPlexPage from './pages/PersonaPlexPage';
 import ReflectionPage from './pages/ReflectionPage';
+import SynthesisPage from './pages/SynthesisPage';
 import DataReclamationMarketingPage from './pages/DataReclamationMarketingPage';
 import HelpPage from './pages/HelpPage';
 import FamilyPage from './pages/FamilyPage';
@@ -150,6 +151,7 @@ export default function App() {
             <Route path="on-this-day" element={<OnThisDayPage />} />
             <Route path="persona-plex" element={<PersonaPlexPage />} />
             <Route path="reflection" element={<ReflectionPage />} />
+            <Route path="synthesis" element={<SynthesisPage />} />
             <Route path="storage-settings" element={<StorageSettingsPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="family" element={<FamilyPage />} />
