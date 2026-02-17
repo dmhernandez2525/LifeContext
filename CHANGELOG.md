@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added onboarding summary step that reflects configured options before entering the app
 - Added stronger onboarding E2E coverage for skip confirmation, progress persistence, personalized paths, and completion analytics
 
+#### F5.2 Voice-Docs Backend
+- Added Convex voice-docs backend data model for conversations, messages, cache, analytics, and rate limits
+- Added backend action handlers for AI response generation and conversation summarization
+- Added response caching and per-session rate limiting for voice-docs backend requests
+- Added fallback-response behavior and webhook emission for backend quality monitoring events
+- Added HTTP endpoints for voice-docs respond, summarize, and popular-question queries
+- Wired web Ask Docs assistant to use the backend service layer with section-aware context payloads
+
 ## [0.4.1] - 2026-01-12
 
 ### Added
