@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ChevronRight, HardDrive, Database, ShieldCheck, FileText, ChevronLeft, LucideIcon } from 'lucide-react-native';
+import { ChevronRight, HardDrive, Database, ShieldCheck, FileText, ChevronLeft, Bell, LucideIcon } from 'lucide-react-native';
 
 interface SettingsItemProps {
   icon: LucideIcon;
@@ -66,6 +66,19 @@ export default function SettingsIndexScreen() {
                 subtitle="App lock, biometrics, auto-lock"
                 color="#a855f7"
                 onPress={() => router.push('/settings/security')}
+            />
+        </View>
+
+        <Text className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-3 ml-1">
+          Notifications
+        </Text>
+        <View className="mb-8">
+            <SettingsItem
+                icon={Bell}
+                title="Notifications"
+                subtitle="Reminders, streaks, insights"
+                color="#f59e0b"
+                onPress={() => router.push('/settings/notifications')}
             />
         </View>
 

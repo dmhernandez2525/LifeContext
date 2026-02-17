@@ -53,6 +53,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added daily rotating thought-of-the-day and suggested prompt cards
 - Added deep linking from dashboard cards to recording, journal, brain dump, insights, and timeline screens
 
+#### F6.3 Push Notifications
+- Added local push notification infrastructure via expo-notifications with expo-task-manager
+- Added six notification categories: journal reminders, streak alerts, insight notifications, weekly summaries, inactivity nudges, and milestones
+- Added configurable daily journal reminder with selectable time (13 time options from 6 AM to 10 PM)
+- Added streak alert scheduling at 9 PM daily and weekly summary every Monday at 9 AM
+- Added inactivity nudge with configurable threshold (1, 2, 3, 5, or 7 days)
+- Added deep linking from notification taps to relevant app screens (journal, recording, insights)
+- Added full notification preferences UI with per-category toggles and quiet hours support
+- Added scheduled notification tracking with 50-entry cap and category-based cancellation
+
 ## [0.4.1] - 2026-01-12
 
 ### Added

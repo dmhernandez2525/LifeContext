@@ -12,6 +12,7 @@ export default function SettingsLayout() {
       <Stack.Screen name="security" />
       <Stack.Screen name="storage" />
       <Stack.Screen name="data" />
+      <Stack.Screen name="notifications" />
     </Stack>
   );
 }
