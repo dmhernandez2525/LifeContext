@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@lcc/types": "workspace:*",
-    "@anthropic-ai/sdk": "^0.30.0"
+    "@anthropic-ai/sdk": "^0.74.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
