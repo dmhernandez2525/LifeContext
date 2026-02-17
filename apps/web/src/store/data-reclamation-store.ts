@@ -50,6 +50,7 @@ interface DataReclamationState {
   setBookmarks: (bookmarks: Array<{ url: string; title: string; folder?: string }>) => void;
   addGDPRRequest: (request: GDPRRequest) => void;
   updateGDPRStatus: (id: string, status: GDPRRequest['status']) => void;
+  markGDPRReceived: (id: string) => void;
   addBrokerProfile: (profile: DataBrokerProfile) => void;
   clearAllData: () => void;
 }
@@ -81,6 +82,13 @@ export const useDataReclamationStore = create<DataReclamationState>()(
         set((state) => ({
           gdprRequests: state.gdprRequests.map((req) =>
             req.id === id ? { ...req, status } : req
+          ),
+        })),
+
+      markGDPRReceived: (id) =>
+        set((state) => ({
+          gdprRequests: state.gdprRequests.map((req) =>
+            req.id === id ? { ...req, status: 'received' as const, receivedDate: new Date() } : req
           ),
         })),
 

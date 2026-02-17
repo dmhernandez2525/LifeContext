@@ -95,6 +95,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F8.2 GDPR Automation
+- Added deadline tracking library with per-platform deadlines (30/45 days) and overdue detection
+- Added ComplianceDashboard component with compliance rate, avg response time, and status breakdown
+- Added RequestTracker with expandable rows, urgency sorting, deadline countdown, and status actions
+- Added markGDPRReceived store action that records received date alongside status change
+- Rewrote GDPRRequestPage with compliance dashboard, enhanced tracker, and sent-status indicators on platform cards
+- Extracted TemplateModal and CopyField into focused local components
+
 #### F8.1 Browser Data Collection
 - Added privacy scoring library with cookie categorization (tracking, analytics, advertising, functional) and 0-100 score
 - Added CollectionProgress component with step-by-step status indicators and overall progress bar
