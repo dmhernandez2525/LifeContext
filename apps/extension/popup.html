@@ -5,167 +5,272 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LifeContext Data Export</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       width: 400px;
-      min-height: 500px;
+      min-height: 480px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 24px;
+      padding: 20px;
     }
-    
+
     .header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    
-    .header h1 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 8px;
+
+    .header-left { text-align: left; }
+    .header h1 { font-size: 18px; font-weight: 700; }
+    .header p { font-size: 12px; opacity: 0.9; }
+
+    .settings-toggle {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
     }
-    
-    .header p {
-      font-size: 13px;
-      opacity: 0.9;
-    }
-    
+    .settings-toggle:hover { background: rgba(255,255,255,0.3); }
+
     .card {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255,255,255,0.15);
       backdrop-filter: blur(10px);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
     }
-    
     .card h3 {
-      font-size: 14px;
-      margin-bottom: 12px;
+      font-size: 13px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    
-    .icon {
-      width: 20px;
-      height: 20px;
+    .stat { font-size: 22px; font-weight: 700; margin-bottom: 2px; }
+    .label { font-size: 11px; opacity: 0.8; }
+
+    .last-export {
+      font-size: 11px;
+      opacity: 0.7;
+      text-align: center;
+      margin-bottom: 12px;
     }
-    
-    .stat {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    
-    .label {
-      font-size: 12px;
-      opacity: 0.8;
-    }
-    
-    button {
+
+    button.primary {
       width: 100%;
       background: white;
       color: #667eea;
       border: none;
-      padding: 14px;
+      padding: 12px;
       border-radius: 12px;
       font-weight: 700;
       font-size: 14px;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-    
-    button:active {
-      transform: translateY(0);
-    }
-    
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    
+    button.primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    button.primary:active { transform: translateY(0); }
+    button.primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
     .status {
-      margin-top: 16px;
-      padding: 12px;
-      background: rgba(0, 0, 0, 0.2);
+      margin-top: 12px;
+      padding: 10px;
+      background: rgba(0,0,0,0.2);
       border-radius: 8px;
       font-size: 12px;
       text-align: center;
     }
-    
-    .success {
-      background: rgba(72, 187, 120, 0.3);
-    }
-    
-    .error {
-      background: rgba(245, 101, 101, 0.3);
-    }
-    
+    .success { background: rgba(72,187,120,0.3); }
+    .error { background: rgba(245,101,101,0.3); }
+
     .loading {
       display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
       border-top-color: white;
       border-radius: 50%;
       animation: spin 0.6s linear infinite;
-      margin-left: 8px;
+      margin-left: 6px;
     }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Settings panel */
+    .settings-panel { display: none; }
+    .settings-panel.active { display: block; }
+    .main-panel.hidden { display: none; }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
     }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-label { font-size: 13px; font-weight: 500; }
+    .setting-desc { font-size: 11px; opacity: 0.7; }
+
+    select {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    select option { background: #555; color: white; }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+    }
+    .toggle.on { background: rgba(72,187,120,0.6); }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle.on::after { transform: translateX(20px); }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 13px;
+      cursor: pointer;
+      opacity: 0.8;
+      padding: 4px 0;
+      margin-bottom: 12px;
+    }
+    .back-btn:hover { opacity: 1; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>🔍 Data Reclamation</h1>
-    <p>Export your browser data to LifeContext</p>
+  <!-- Main panel -->
+  <div class="main-panel" id="mainPanel">
+    <div class="header">
+      <div class="header-left">
+        <h1>Data Reclamation</h1>
+        <p>Export your browser data to LifeContext</p>
+      </div>
+      <button class="settings-toggle" id="settingsBtn" title="Settings">&#9881;</button>
+    </div>
+
+    <div class="card">
+      <h3><span>&#128220;</span> Browser History</h3>
+      <div class="stat" id="historyCount">&mdash;</div>
+      <div class="label">URLs visited</div>
+    </div>
+
+    <div class="card">
+      <h3><span>&#127850;</span> Cookie Domains</h3>
+      <div class="stat" id="cookieCount">&mdash;</div>
+      <div class="label">Unique domains with cookies</div>
+    </div>
+
+    <div class="card">
+      <h3><span>&#128218;</span> Bookmarks</h3>
+      <div class="stat" id="bookmarkCount">&mdash;</div>
+      <div class="label">Saved bookmarks</div>
+    </div>
+
+    <div id="lastExport" class="last-export" style="display:none;"></div>
+
+    <button class="primary" id="exportBtn">Export to LifeContext</button>
+
+    <div id="status" class="status" style="display:none;"></div>
   </div>
-  
-  <div class="card">
-    <h3>
-      <span class="icon">📜</span>
-      Browser History
-    </h3>
-    <div class="stat" id="historyCount">—</div>
-    <div class="label">URLs visited (last 5 years)</div>
+
+  <!-- Settings panel -->
+  <div class="settings-panel" id="settingsPanel">
+    <button class="back-btn" id="backBtn">&larr; Back</button>
+    <h2 style="font-size:18px;margin-bottom:16px;">Settings</h2>
+
+    <div class="card">
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">History Lookback</div>
+          <div class="setting-desc">How far back to export</div>
+        </div>
+        <select id="historyDays">
+          <option value="365">1 year</option>
+          <option value="1095">3 years</option>
+          <option value="1825" selected>5 years</option>
+          <option value="3650">10 years</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Export History</div>
+        </div>
+        <button class="toggle on" id="toggleHistory" data-key="exportHistory"></button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Export Cookies</div>
+        </div>
+        <button class="toggle on" id="toggleCookies" data-key="exportCookies"></button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Export Bookmarks</div>
+        </div>
+        <button class="toggle on" id="toggleBookmarks" data-key="exportBookmarks"></button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Auto-Export</div>
+          <div class="setting-desc">Schedule automatic exports</div>
+        </div>
+        <button class="toggle" id="toggleAutoExport" data-key="autoExportEnabled"></button>
+      </div>
+
+      <div class="setting-row" id="intervalRow" style="display:none;">
+        <div>
+          <div class="setting-label">Frequency</div>
+        </div>
+        <select id="autoExportInterval">
+          <option value="daily">Daily</option>
+          <option value="weekly" selected>Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+    </div>
   </div>
-  
-  <div class="card">
-    <h3>
-      <span class="icon">🍪</span>
-      Cookie Domains
-    </h3>
-    <div class="stat" id="cookieCount">—</div>
-    <div class="label">Unique domains with cookies</div>
-  </div>
-  
-  <div class="card">
-    <h3>
-      <span class="icon">📚</span>
-      Bookmarks
-    </h3>
-    <div class="stat" id="bookmarkCount">—</div>
-    <div class="label">Saved bookmarks</div>
-  </div>
-  
-  <button id="exportBtn">Export to LifeContext</button>
-  
-  <div id="status" class="status" style="display: none;"></div>
-  
+
   <script src="popup.js"></script>
 </body>
 </html>
