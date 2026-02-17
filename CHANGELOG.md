@@ -95,6 +95,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F12.3 Guided Reflection
+- Added guided reflection engine with 6 categories (gratitude, growth, relationships, health, goals, emotions) and 30 prompts
+- Added ReflectionSessionView with progress tracking, dot navigation, and response text areas
+- Added ReflectionPage with category grid selector and session flow at `/app/reflection`
+
 #### F12.2 Proactive Insights
 - Added proactive insights engine with mood trend analysis, journaling streak tracking, and health pattern detection
 - Added InsightCard with type-specific icons, priority-based left border, and dismissable action links
