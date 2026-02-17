@@ -82,10 +82,11 @@ export default function HelpWalkthroughOverlay({
     <AnimatePresence>
       {walkthrough && step && (
         <motion.div
-          className="fixed inset-0 z-[75]"
+          className="fixed inset-0 z-[85]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          data-testid="help-walkthrough-overlay"
         >
           <div className="absolute inset-0 bg-black/60" />
 
@@ -102,7 +103,7 @@ export default function HelpWalkthroughOverlay({
             />
           )}
 
-          <div className="absolute z-[76] w-[340px] rounded-xl border border-gray-200 bg-white p-4 shadow-2xl dark:border-gray-700 dark:bg-gray-900" style={tooltipStyle}>
+          <div className="absolute z-[86] w-[340px] rounded-xl border border-gray-200 bg-white p-4 shadow-2xl dark:border-gray-700 dark:bg-gray-900" style={tooltipStyle}>
             <div className="mb-3 flex items-start justify-between gap-2">
               <div>
                 <p className="text-xs font-medium text-purple-600 dark:text-purple-300">

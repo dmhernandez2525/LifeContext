@@ -22,7 +22,7 @@ export default function HelpCommandPalette({ isOpen, onClose, onSelect }: HelpCo
       {isOpen && (
         <>
           <motion.div
-            className="fixed inset-0 z-[70] bg-black/50"
+            className="fixed inset-0 z-[80] bg-black/50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -30,7 +30,7 @@ export default function HelpCommandPalette({ isOpen, onClose, onSelect }: HelpCo
           />
 
           <motion.div
-            className="fixed inset-0 z-[71] flex items-start justify-center p-4 pt-24"
+            className="fixed inset-0 z-[81] flex items-start justify-center p-4 pt-24"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 16 }}
@@ -46,6 +46,7 @@ export default function HelpCommandPalette({ isOpen, onClose, onSelect }: HelpCo
                     type="text"
                     value={query}
                     autoFocus
+                    data-testid="help-command-palette-input"
                     placeholder="Jump to a page..."
                     onChange={(event) => setQuery(event.target.value)}
                     className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 outline-none focus:border-purple-400 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
