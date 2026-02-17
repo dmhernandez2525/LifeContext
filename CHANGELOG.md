@@ -95,6 +95,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F9.1 WebAuthn/Passkey Support
+- Added WebAuthn utility library with credential registration (ES256/RS256) and authentication
+- Added security store for WebAuthn credentials, duress password, key rotation, and dead man's switch state
+- Added PasskeyManager component with register, list, remove, and test authentication capabilities
+- Added platform authenticator detection with graceful fallback for unsupported browsers
+- Added "passkey as default" toggle to bypass passcode when passkey is available
+
 #### F8.4 Chrome Extension Enhancement
 - Added settings panel with configurable history lookback (1/3/5/10 years) and per-data-type export toggles
 - Added auto-export scheduling via Chrome Alarms API with daily, weekly, and monthly intervals
