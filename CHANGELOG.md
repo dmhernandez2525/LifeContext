@@ -95,6 +95,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F12.2 Proactive Insights
+- Added proactive insights engine with mood trend analysis, journaling streak tracking, and health pattern detection
+- Added InsightCard with type-specific icons, priority-based left border, and dismissable action links
+- Added InsightsFeed component rendering prioritized insights with empty state
+
 #### F12.1 Conversational Interface
 - Added PersonaPlex AI engine with context-aware system prompts and local pattern-matching responses
 - Added chat store with conversation management, auto-titling, and message persistence
