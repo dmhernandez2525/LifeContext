@@ -95,6 +95,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F8.1 Browser Data Collection
+- Added privacy scoring library with cookie categorization (tracking, analytics, advertising, functional) and 0-100 score
+- Added CollectionProgress component with step-by-step status indicators and overall progress bar
+- Added DataPreviewPanel with selective import checkboxes, top domain frequency, and PrivacyScoreCard
+- Added PrivacyScoreCard with color-coded score bar and category breakdown display
+- Rewrote DataReclamationPage with date range filtering, demo data generator, and two-column collection/preview layout
+- Added setCookieDomains and setBookmarks actions to data reclamation store
+
 #### F7.4 Public Roadmap
 - Refactored PublicRoadmapPage to use useRoadmap hook with mock data fallback
 - Added milestone view grouping features by milestone with progress bars and status icons
