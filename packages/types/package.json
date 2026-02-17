@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "typescript": "5.5.4",
+    "typescript": "5.9.3",
     "zod": "^3.23.8"
   },
   "peerDependencies": {
