@@ -8,8 +8,10 @@ import { motion } from 'framer-motion';
 import { Lock, Eye, EyeOff, AlertCircle, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
+import { useSecurityStore } from '@/store/security-store';
 import { hashPasscode } from '@lcc/encryption';
 import { wipeData } from '@/lib/data-transfer';
+import { activateDuress, deactivateDuress } from '@/lib/duressMode';
 import DangerConfirmationModal from './DangerConfirmationModal';
 
 // Storage key for security credentials (same as RegisterPage)
@@ -30,6 +32,7 @@ export default function LockScreen() {
   const [hasAccount, setHasAccount] = useState(true);
   const [showResetModal, setShowResetModal] = useState(false);
   const unlock = useAppStore((state) => state.unlock);
+  const { duressEnabled, duressHash } = useSecurityStore();
 
   // Check if user has an account on mount
   useEffect(() => {
@@ -65,9 +68,16 @@ export default function LockScreen() {
       // Hash the entered passcode with the stored salt
       const enteredHash = await hashPasscode(passcode, securityData.salt);
 
-      // Compare hashes
+      // Check for duress password first
+      if (duressEnabled && duressHash && enteredHash === duressHash) {
+        activateDuress();
+        unlock();
+        return;
+      }
+
+      // Compare hashes for real passcode
       if (enteredHash === securityData.hash) {
-        // Passcode is correct - unlock the app
+        deactivateDuress();
         unlock();
       } else {
         setError('Incorrect passcode. Please try again.');

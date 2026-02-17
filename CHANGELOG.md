@@ -95,6 +95,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added vote analytics dashboard with approval rate, category breakdown, and total counts
 - Added leaderboard component showing top 5 voted and top 5 trending features with rank badges
 
+#### F9.2 Duress Password
+- Added duress mode library with session-scoped activation and decoy journal entries, stats, and brain dumps
+- Added DuressSetup component with password configuration, validation against real passcode, and disable option
+- Integrated duress password detection into LockScreen unlock flow (checked before real passcode)
+- Duress mode uses sessionStorage so it clears on browser close with no visible indicator
+
 #### F9.1 WebAuthn/Passkey Support
 - Added WebAuthn utility library with credential registration (ES256/RS256) and authentication
 - Added security store for WebAuthn credentials, duress password, key rotation, and dead man's switch state
