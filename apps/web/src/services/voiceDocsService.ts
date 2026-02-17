@@ -2,6 +2,8 @@ const SESSION_STORAGE_KEY = 'lcc-voice-docs-session-id';
 const CONVERSATION_STORAGE_KEY = 'lcc-voice-docs-conversation-id';
 
 const routeSectionMap: Array<{ test: RegExp; section: string }> = [
+  { test: /\/help/, section: 'help' },
+  { test: /\/roadmap/, section: 'roadmap' },
   { test: /\/app\/journal/, section: 'journal' },
   { test: /\/app\/brain-dump/, section: 'brain-dump' },
   { test: /\/app\/settings/, section: 'settings' },
@@ -17,6 +19,10 @@ const fallbackBySection: Record<string, string> = {
     'Brain Dump is available. Start recording and review transcription and synthesis after capture.',
   settings:
     'Settings are available. You can manage encryption, export, storage location, and theme preferences.',
+  help:
+    'Help center is available. Try command phrases like "take me to roadmap" or "show me how to use commands".',
+  roadmap:
+    'Roadmap is available. You can view planned and in-progress features and vote on priorities.',
   default:
     'Voice Docs backend is not connected. Core app workflows are still available.',
 };
