@@ -1,54 +1,62 @@
 import React, { useEffect, useRef } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
+import { AppState, type AppStateStatus } from 'react-native';
 import { useSecurityStore } from '../../store/useSecurityStore';
 import { LockScreen } from './LockScreen';
 
 export function AppLockProvider({ children }: { children: React.ReactNode }) {
   const appState = useRef(AppState.currentState);
-  const { isEnabled, lockTimeout, lastActive, setLastActive, setIsLocked, isLocked } = useSecurityStore();
+  const {
+    isEnabled,
+    lockTimeout,
+    lastActive,
+    failedLockUntil,
+    isLocked,
+    setLastActive,
+    setIsLocked,
+  } = useSecurityStore();
 
-  useEffect(() => {
-    // Initial check on mount
-    if (isEnabled && lastActive) {
-      checkLockNecessity(Date.now());
-    }
-    
-    // Subscribe to AppState changes
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
-
-    return () => {
-      subscription.remove();
-    };
-  }, [isEnabled, lockTimeout, lastActive]);
-
-  const handleAppStateChange = (nextAppState: AppStateStatus) => {
-    const now = Date.now();
-
-    if (appState.current.match(/active/) && nextAppState === 'background') {
-      // Going to background -> Save timestamp
-      setLastActive(now);
-    } else if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-      // Coming to foreground -> Check timeout
-      if (isEnabled) {
-        checkLockNecessity(now);
-      }
+  const checkLockNecessity = (now: number): void => {
+    if (!isEnabled) {
+      return;
     }
 
-    appState.current = nextAppState;
-  };
-
-  const checkLockNecessity = (now: number) => {
-    if (!lastActive) {
-      // First time or lost state, lock if enabled implies we want security
+    if (failedLockUntil && now < failedLockUntil) {
       setIsLocked(true);
       return;
     }
 
-    const elapsed = (now - lastActive) / 1000; // seconds
-    if (elapsed >= lockTimeout) {
+    if (!lastActive) {
+      setIsLocked(true);
+      return;
+    }
+
+    const elapsedSeconds = (now - lastActive) / 1000;
+    if (elapsedSeconds >= lockTimeout) {
       setIsLocked(true);
     }
   };
+
+  useEffect(() => {
+    if (isEnabled) {
+      checkLockNecessity(Date.now());
+    }
+
+    const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+      const now = Date.now();
+
+      if (appState.current.match(/active/) && nextAppState === 'background') {
+        setLastActive(now);
+      }
+
+      if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+        checkLockNecessity(now);
+      }
+
+      appState.current = nextAppState;
+    });
+
+    return () => subscription.remove();
+  }, [isEnabled, lockTimeout, lastActive, failedLockUntil]);
 
   return (
     <>

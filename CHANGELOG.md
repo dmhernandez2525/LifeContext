@@ -32,6 +32,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added draggable/snap-to-edge floating trigger with minimized pill mode, unread notifications, onboarding tooltip, and touch haptic feedback
 - Added spring modal transitions, speech-recognition input with noise hints, quick actions, response feedback tracking, NPS prompting, theme sync, and E2E UX coverage
 
+#### F6.1 Mobile Authentication
+- Added passcode-based login with visual pin-dot feedback via PasscodePad component
+- Added biometric unlock (Face ID, Touch ID) via expo-local-authentication with fallback to passcode
+- Added encrypted credential storage using expo-secure-store with device-only keychain access
+- Added configurable auto-lock timeout with background/foreground detection via AppLockProvider
+- Added brute-force protection with exponential backoff (4s base, 5 min cap) and lockout countdown
+- Added passcode recovery flow with email + backup code validation via PasscodeRecoverySheet
+- Added multi-device session management with activity logging (200-entry cap) and session revocation
+- Added "Lock Now" home screen quick action via expo-quick-actions integration
+- Added full security settings page with biometric toggle, timeout selector, session list, and activity log
+
 ## [0.4.1] - 2026-01-12
 
 ### Added

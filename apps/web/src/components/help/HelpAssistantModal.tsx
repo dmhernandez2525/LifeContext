@@ -5,7 +5,7 @@ import HelpHistoryPanel from './HelpHistoryPanel';
 import HelpNpsPrompt from './HelpNpsPrompt';
 import HelpResponseFeedback from './HelpResponseFeedback';
 import { HELP_QUICK_ACTIONS } from './helpQuickActions';
-import type { HelpHistoryItem, WalkthroughDefinition } from './helpTypes';
+import type { HelpHistoryItem } from './helpTypes';
 import type { HelpFeedbackValue, HelpQuickAction } from './helpUxTypes';
 import type { VoiceDocsResponse } from '@/services/voiceDocsService';
 
@@ -197,7 +197,7 @@ export default function HelpAssistantModal({
 
               {isListening && (
                 <p data-testid="ask-docs-noise-hint" className="mt-2 text-xs text-red-600 dark:text-red-300">
-                  Listening... {interimTranscript ? `Heard: \"${interimTranscript}\". ` : ''}Tip: move to a quieter place and speak clearly.
+                  Listening... {interimTranscript ? `Heard: "${interimTranscript}". ` : ''}Tip: move to a quieter place and speak clearly.
                 </p>
               )}
               {speechError && <p className="mt-2 text-xs text-amber-600 dark:text-amber-300">{speechError}</p>}
